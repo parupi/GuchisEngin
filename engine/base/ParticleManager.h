@@ -77,16 +77,10 @@ private: // 構造体
 		ParticleForGPU* instancingDataPtr;  // インスタンシングデータを書き込むためのポインタ
 	};
 
-	//struct Emitter {
-	//	Transform transform; //!< エミッタのTransform
-	//	uint32_t count; //!< 発生数
-	//	float frequency; //!< 発生頻度
-	//	float frequencyTime; //!< 頻度用時刻
-	//};
-
 	struct TransformationMatrix {
 		Matrix4x4 WVP;
 		Matrix4x4 World;
+		Matrix4x4 WorldInverseTranspose;
 	};
 
 	struct VertexData {
@@ -157,9 +151,6 @@ private:
 	ParticleForGPU* instancingData_ = nullptr;
 	Material* materialData_;
 	VertexData* vertexData_ = nullptr;
-
-	D3D12_CPU_DESCRIPTOR_HANDLE srvHandleCPU_;
-	D3D12_GPU_DESCRIPTOR_HANDLE srvHandleGPU_;
 
 	std::unordered_map<std::string, ParticleGroup> particleGroups_;
 
