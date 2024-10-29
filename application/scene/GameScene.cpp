@@ -36,6 +36,8 @@ void GameScene::Initialize()
 	ParticleManager::GetInstance()->SetCamera(cameraManager_.GetActiveCamera().get());
 	emitter_ = new ParticleEmitter();
 	emitter_->Initialize("circle");
+	emitter2_ = new ParticleEmitter();
+	emitter2_->Initialize("circle");
 }
 
 void GameScene::Finalize()
@@ -49,7 +51,8 @@ void GameScene::Update()
 	cameraManager_.Update();
 
 	ParticleManager::GetInstance()->Update();
-	emitter_->Update({0.0f, 0.0f, 0.0f}, 3);
+	emitter_->Update({5.0f, 0.0f, 0.0f}, 3);
+	emitter2_->Update({-5.0f, 0.0f, 0.0f}, 3);
 	Vector3 normalCameraPos = normalCamera_->GetTranslate();
 	Vector3 bossCameraPos = bossCamera_->GetTranslate();
 

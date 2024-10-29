@@ -39,5 +39,6 @@ private:
 	std::unique_ptr<LightManager> lightManager_;
 
 	ParticleEmitter* emitter_;
+	ParticleEmitter* emitter2_;
 };
 
