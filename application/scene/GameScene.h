@@ -8,6 +8,9 @@
 #include <memory>
 #include <Audio.h>
 #include <CameraManager.h>
+#include <WorldTransform.h>
+#include <LightManager.h>
+#include <ParticleEmitter.h>
 class GameScene : public BaseScene
 {
 public:
@@ -31,5 +34,10 @@ private:
 	Vector4 color1 = { 1.0f, 1.0f, 1.0f, 1.0f };
 	Vector4 color2 = { 1.0f, 1.0f, 1.0f, 1.0f };
 	uint32_t soundHandle = 0u;
+
+	WorldTransform transform_;
+	std::unique_ptr<LightManager> lightManager_;
+
+	ParticleEmitter* emitter_;
 };
 
