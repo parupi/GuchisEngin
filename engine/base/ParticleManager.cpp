@@ -106,13 +106,7 @@ void ParticleManager::Update()
 		if (particleGroup.instancingDataPtr) {
 			std::memcpy(particleGroup.instancingDataPtr, instancingData_, sizeof(ParticleForGPU) * numInstance);
 		}
-
-
-
 	}
-	//ImGui::Begin("Particle");
-	//ImGui::SliderFloat4("color", &instancingData_[numInstance].color.x, 0.0f, 1.0f);
-	//ImGui::End();
 }
 
 void ParticleManager::Draw()
@@ -160,7 +154,7 @@ void ParticleManager::CreateParticleGroup(const std::string name, const std::str
 	particleGroup.instancingResource = dxManager_->CreateBufferResource(sizeof(ParticleForGPU) * kNumMaxInstance);
 
 	// インスタンシング用にSRVを確保してSRVインデックスを記録
-	particleGroup.srvIndex = srvManager_->Allocate();
+	//particleGroup.srvIndex = srvManager_->Allocate();
 
 	// インスタンシングデータを書き込むためのポインタを取得
 	particleGroup.instancingResource->Map(0, nullptr, reinterpret_cast<void**>(&particleGroup.instancingDataPtr));

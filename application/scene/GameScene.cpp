@@ -16,8 +16,8 @@ void GameScene::Initialize()
 	bossCamera_->SetTranslate(Vector3{ 0.0f, 0.0f, -100.0f });
 
 	// .objファイルからモデルを読み込む
-	ModelManager::GetInstance()->LoadModel("models/player/float_body.obj");
-	ModelManager::GetInstance()->LoadModel("plane.obj");
+	ModelManager::GetInstance()->LoadModel("resource", "models/player/float_body.obj");
+	ModelManager::GetInstance()->LoadModel("resource", "plane.obj");
 
 	object_ = new Object3d();
 	object_->Initialize();
@@ -66,8 +66,6 @@ void GameScene::Update()
 		cameraManager_.SetActiveCamera(1);
 	}
 	ImGui::End();
-
-	normalCameraPos += {0.0f, 0.0f, 0.01f};
 
 	normalCamera_->SetTranslate(normalCameraPos);
 	bossCamera_->SetTranslate(bossCameraPos);

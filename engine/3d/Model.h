@@ -12,9 +12,9 @@ public: // メンバ関数
 	void Initialize(ModelLoader* modelLoader, const std::string& directoryPath, const std::string& fileName);
 
 	void Draw();
-private:
+	// 頂点データの生成
 	void CreateVertexResource();
-private: // 構造体
+public: // 構造体
 	struct VertexData {
 		Vector4 position;
 		Vector2 texcoord;
@@ -42,6 +42,7 @@ private: // 構造体
 		std::vector<VertexData> vertices;
 		MaterialData material;
 	};
+private:
 
 private:
 	ModelLoader* modelLoader_ = nullptr;
@@ -50,22 +51,21 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
 
-
 	VertexData* vertexData_ = nullptr;
-
 
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
 
 private: // 実用化用変数
-	Vector3 position_ = { 0.0f, 0.0f, 0.0f };
-	Vector3 rotation_ = { 0.0f, 0.0f, 0.0f };
-	Vector3 size_ = { 1.0f, 1.0f, 1.0f};
+	//Vector3 position_ = { 0.0f, 0.0f, 0.0f };
+	//Vector3 rotation_ = { 0.0f, 0.0f, 0.0f };
+	//Vector3 size_ = { 1.0f, 1.0f, 1.0f};
 public:
 	// mtlファイルを読む関数
 	static MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 	// OBJファイルを読む関数
 	static ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
 public: // ゲッター // セッター //
-
+	void SetVertices(VertexData vertex);
+	void SetTexturePath(const std::string& filePath) { modelData_.material.textureFilePath = filePath; }
 };
 
