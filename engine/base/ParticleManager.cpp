@@ -318,7 +318,7 @@ void ParticleManager::CreatePipelineState()
 	// Depthの機能を有効化する
 	depthStencilDesc.DepthEnable = true;
 	// 書き込みします
-	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
 	// 比較関数はLessEqual。つまり、近ければ描画される
 	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 
@@ -377,7 +377,7 @@ void ParticleManager::CreateMaterialResource()
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	// 白を入れる
 	materialData_->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-	//materialData_->enableLighting = true;
+	materialData_->enableLighting = true;
 	materialData_->uvTransform = MakeIdentity4x4();
 }
 

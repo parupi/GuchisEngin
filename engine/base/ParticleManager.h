@@ -77,12 +77,6 @@ private: // 構造体
 		ParticleForGPU* instancingDataPtr;  // インスタンシングデータを書き込むためのポインタ
 	};
 
-	struct TransformationMatrix {
-		Matrix4x4 WVP;
-		Matrix4x4 World;
-		Matrix4x4 WorldInverseTranspose;
-	};
-
 	struct VertexData {
 		Vector4 position;
 		Vector2 texcoord;
@@ -96,8 +90,9 @@ private: // 構造体
 
 	struct Material {
 		Vector4 color;
-		Matrix4x4 uvTransform;
+		bool enableLighting;
 		float padding[3];
+		Matrix4x4 uvTransform;
 	};
 private:
 
