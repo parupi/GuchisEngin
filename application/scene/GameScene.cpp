@@ -16,10 +16,10 @@ void GameScene::Initialize()
 	bossCamera_->SetTranslate(Vector3{ 0.0f, 0.0f, -100.0f });
 
 	// .objファイルからモデルを読み込む
+
 	ModelManager::GetInstance()->LoadModel("plane.obj");
 	//ModelManager::GetInstance()->LoadModel("models/player/float_body.obj");
 	
-
 	object_ = new Object3d();
 	object_->Initialize();
 	object_->SetModel("plane.obj");
@@ -37,6 +37,8 @@ void GameScene::Initialize()
 	ParticleManager::GetInstance()->SetCamera(cameraManager_.GetActiveCamera().get());
 	emitter_ = new ParticleEmitter();
 	emitter_->Initialize("circle");
+	emitter2_ = new ParticleEmitter();
+	emitter2_->Initialize("circle");
 }
 
 void GameScene::Finalize()
@@ -50,7 +52,8 @@ void GameScene::Update()
 	cameraManager_.Update();
 
 	ParticleManager::GetInstance()->Update();
-	emitter_->Update({0.0f, 0.0f, 0.0f}, 3);
+	emitter_->Update({5.0f, 0.0f, 0.0f}, 3);
+	emitter2_->Update({-5.0f, 0.0f, 0.0f}, 3);
 	Vector3 normalCameraPos = normalCamera_->GetTranslate();
 	Vector3 bossCameraPos = bossCamera_->GetTranslate();
 
@@ -67,8 +70,6 @@ void GameScene::Update()
 		cameraManager_.SetActiveCamera(1);
 	}
 	ImGui::End();
-
-	//normalCameraPos += {0.0f, 0.0f, 0.01f};
 
 	normalCamera_->SetTranslate(normalCameraPos);
 	bossCamera_->SetTranslate(bossCameraPos);

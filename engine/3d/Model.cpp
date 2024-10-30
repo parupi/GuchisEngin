@@ -3,6 +3,7 @@
 #include "TextureManager.h"
 #include <Vector4.h>
 #include <Vector2.h>
+#include <ModelManager.h>
 
 void Model::Initialize(ModelLoader* modelManager, const std::string& directoryPath, const std::string& fileName)
 {
@@ -11,7 +12,7 @@ void Model::Initialize(ModelLoader* modelManager, const std::string& directoryPa
 	// モデルの読み込み
 	modelData_ = LoadObjFile(directoryPath, fileName);
 
-	CreateVertexResource();
+	//CreateVertexResource();
 
 	// .objの参照しているテクスチャファイルの読み込み
 	TextureManager::GetInstance()->LoadTexture(modelData_.material.textureFilePath);
@@ -24,7 +25,7 @@ void Model::Draw()
 	// VertexBufferViewを設定
 	modelLoader_->GetDxManager()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 	// SRVのDescriptorTableの先頭を設定。
-	modelLoader_->GetDxManager()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(modelData_.material.textureFilePath));
+	modelLoader_->GetSrvManager()->SetGraphicsRootDescriptorTable(2, modelData_.material.textureIndex);
 	// ドローコール
 	modelLoader_->GetDxManager()->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
 }
@@ -35,10 +36,10 @@ void Model::CreateVertexResource()
 	vertexResource_ = modelLoader_->GetDxManager()->CreateBufferResource(sizeof(VertexData) * modelData_.vertices.size());
 	// 頂点バッファビューを作成する
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();	// リソースの先頭アドレスから使う
-	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * modelData_.vertices.size());		// 使用するリソースのサイズは頂点のサイズ
-	vertexBufferView_.StrideInBytes = sizeof(VertexData);	// 1頂点当たりのサイズ
+	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * modelData_.vertices.size()); // 使用するリソースのサイズは頂点のサイズ
+	vertexBufferView_.StrideInBytes = sizeof(VertexData); // 1頂点当たりのサイズ
 	// 頂点リソースにデータを書き込む
-	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));		// 書き込むためのアドレスを取得
+	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_)); // 書き込むためのアドレスを取得
 	std::memcpy(vertexData_, modelData_.vertices.data(), sizeof(VertexData) * modelData_.vertices.size());
 }
 
@@ -198,4 +199,9 @@ Model::ModelData Model::LoadObjFile(const std::string& directoryPath, const std:
 	//}
 
 	return modelData;
+}
+
+void Model::SetVertices(VertexData vertex)
+{
+	modelData_.vertices.push_back(vertex);
 }
