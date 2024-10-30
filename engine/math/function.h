@@ -3,6 +3,7 @@
 #include "assert.h"
 #include "cmath"
 #include <Matrix4x4.h>
+#include <imgui.h>
 
 static const int kColumnWidth = 60;
 static const int kRowHeight = 20;
@@ -101,3 +102,9 @@ Vector3 ExtractTranslation(const Matrix4x4& matrix);
 Matrix4x4 ScaleMatrixFromVector3(const Vector3& scale);
 
 Matrix4x4 TranslationMatrixFromVector3(const Vector3& translate);
+
+Matrix4x4 MakeRotationAxisAngle(const Vector3& axis, float angle);
+
+void MatrixPrintImGui(const Matrix4x4& matrix, const char* label = "Matrix");
+
+Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to);

@@ -269,3 +269,107 @@ Matrix4x4 TranslationMatrixFromVector3(const Vector3& translate)
 
 	return translationMatrix;
 }
+
+Matrix4x4 MakeRotationAxisAngle(const Vector3& axis, float angle)
+{
+	// 回転軸ベクトルを正規化
+	Vector3 normalizedAxis = Normalize(axis);
+	float x = normalizedAxis.x;
+	float y = normalizedAxis.y;
+	float z = normalizedAxis.z;
+
+	// 三角関数を事前に計算
+	float cosTheta = std::cos(angle);
+	float sinTheta = std::sin(angle);
+	float oneMinusCosTheta = 1.0f - cosTheta;
+
+	// 回転行列を生成
+	Matrix4x4 rotationMatrix;
+	rotationMatrix.m[0][0] = cosTheta + x * x * oneMinusCosTheta;
+	rotationMatrix.m[0][1] = x * y * oneMinusCosTheta + z * sinTheta;
+	rotationMatrix.m[0][2] = x * z * oneMinusCosTheta - y * sinTheta;
+	rotationMatrix.m[0][3] = 0.0f;
+
+	rotationMatrix.m[1][0] = x * y * oneMinusCosTheta - z * sinTheta;
+	rotationMatrix.m[1][1] = cosTheta + y * y * oneMinusCosTheta;
+	rotationMatrix.m[1][2] = y * z * oneMinusCosTheta + x * sinTheta;
+	rotationMatrix.m[1][3] = 0.0f;
+
+	rotationMatrix.m[2][0] = z * x * oneMinusCosTheta + y * sinTheta;
+	rotationMatrix.m[2][1] = z * y * oneMinusCosTheta - x * sinTheta;
+	rotationMatrix.m[2][2] = cosTheta + z * z * oneMinusCosTheta;
+	rotationMatrix.m[2][3] = 0.0f;
+
+	rotationMatrix.m[3][0] = 0.0f;
+	rotationMatrix.m[3][1] = 0.0f;
+	rotationMatrix.m[3][2] = 0.0f;
+	rotationMatrix.m[3][3] = 1.0f;
+
+	return rotationMatrix;
+}
+
+void MatrixPrintImGui(const Matrix4x4& matrix, const char* label) {
+	ImGui::Begin(label);
+	ImGui::Text("%s:", label);
+	for (int row = 0; row < 4; ++row) {
+		ImGui::Text("%.3f  %.3f  %.3f  %.3f",
+			matrix.m[row][0], matrix.m[row][1], matrix.m[row][2], matrix.m[row][3]);
+	}
+	ImGui::End();
+}
+
+Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to)
+{
+	Vector3 fromNorm = Normalize(from);
+	Vector3 toNorm = Normalize(to);
+
+	// 回転軸を計算
+	Vector3 axis = Cross(fromNorm, toNorm);
+	float sinAngle = std::sqrt(Dot(axis, axis));  // 軸の長さは sin(角度) と等しい
+	float cosAngle = Dot(fromNorm, toNorm);       // 内積は cos(角度) と等しい
+
+	// 特殊ケース: ベクトルがほぼ一致する場合（回転不要）
+	if (sinAngle < 1e-6f) {
+		return MakeIdentity4x4();
+	}
+
+	// 特殊ケース: 180度の回転（ベクトルが正反対の場合）
+	if (cosAngle < -1.0f + 1e-6f) {
+		// 例えば (1,0,0) を (0,1,0) にマッピングするような任意の軸が必要
+		axis = std::abs(fromNorm.x) > 0.9f ? Vector3{ 0, 1, 0 } : Vector3{ 1, 0, 0 };
+		axis = Normalize(Cross(fromNorm, axis));
+		sinAngle = 1.0f;
+		cosAngle = -1.0f;
+	}
+	else {
+		// 軸を正規化
+		axis = Normalize(axis);
+	}
+
+	// ロドリゲスの回転公式を使って回転行列を作成
+	float x = axis.x, y = axis.y, z = axis.z;
+	float oneMinusCos = 1.0f - cosAngle;
+
+	Matrix4x4 rotationMatrix;
+	rotationMatrix.m[0][0] = cosAngle + x * x * oneMinusCos;
+	rotationMatrix.m[0][1] = x * y * oneMinusCos + z * sinAngle;
+	rotationMatrix.m[0][2] = x * z * oneMinusCos - y * sinAngle;
+	rotationMatrix.m[0][3] = 0.0f;
+
+	rotationMatrix.m[1][0] = y * x * oneMinusCos - z * sinAngle;
+	rotationMatrix.m[1][1] = cosAngle + y * y * oneMinusCos;
+	rotationMatrix.m[1][2] = y * z * oneMinusCos + x * sinAngle;
+	rotationMatrix.m[1][3] = 0.0f;
+
+	rotationMatrix.m[2][0] = z * x * oneMinusCos + y * sinAngle;
+	rotationMatrix.m[2][1] = z * y * oneMinusCos - x * sinAngle;
+	rotationMatrix.m[2][2] = cosAngle + z * z * oneMinusCos;
+	rotationMatrix.m[2][3] = 0.0f;
+
+	rotationMatrix.m[3][0] = 0.0f;
+	rotationMatrix.m[3][1] = 0.0f;
+	rotationMatrix.m[3][2] = 0.0f;
+	rotationMatrix.m[3][3] = 1.0f;
+
+	return rotationMatrix;
+}

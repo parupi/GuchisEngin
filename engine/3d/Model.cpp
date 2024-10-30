@@ -4,13 +4,15 @@
 #include <Vector4.h>
 #include <Vector2.h>
 #include <ModelManager.h>
+#include <WorldTransform.h>
+
 
 void Model::Initialize(ModelLoader* modelManager, const std::string& directoryPath, const std::string& fileName)
 {
 	modelLoader_ = modelManager;
 
 	// モデルの読み込み
-	modelData_ = LoadObjFile(directoryPath, fileName);
+	modelData_ = LoadModelFile(directoryPath, fileName);
 
 	CreateVertexResource();
 
@@ -20,8 +22,21 @@ void Model::Initialize(ModelLoader* modelManager, const std::string& directoryPa
 	modelData_.material.textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(modelData_.material.textureFilePath);
 }
 
-void Model::Draw()
+void Model::Draw(WorldTransform& transform, Camera* camera)
 {
+	Matrix4x4 worldViewProjectionMatrix;
+	if (camera) {
+		const Matrix4x4& viewProjectionMatrix = camera->GetViewProjectionMatrix();
+		worldViewProjectionMatrix = transform.GetMatWorld() * viewProjectionMatrix;
+	}
+	else {
+		worldViewProjectionMatrix = transform.GetMatWorld();
+	}
+	transform.SetMapWVP(modelData_.rootNode.localMatrix * worldViewProjectionMatrix);
+	transform.SetMapWorld(modelData_.rootNode.localMatrix * transform.GetMatWorld());
+
+	// wvp用のCBufferの場所を設定
+	modelLoader_->GetDxManager()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transform.GetConstBuffer()->GetGPUVirtualAddress());
 	// VertexBufferViewを設定
 	modelLoader_->GetDxManager()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 	// SRVのDescriptorTableの先頭を設定。
@@ -43,54 +58,56 @@ void Model::CreateVertexResource()
 	std::memcpy(vertexData_, modelData_.vertices.data(), sizeof(VertexData) * modelData_.vertices.size());
 }
 
-Model::MaterialData Model::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename)
-{
-	MaterialData materialData;
-	std::string line;
-	std::ifstream file(directoryPath + "/" + filename);
-	assert(file.is_open());
+//Model::MaterialData Model::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename)
+//{
+//	MaterialData materialData;
+//	std::string line;
+//	std::ifstream file(directoryPath + "/" + filename);
+//	assert(file.is_open());
+//
+//	while (std::getline(file, line)) {
+//		std::string identifier;
+//		std::istringstream s(line);
+//		s >> identifier;
+//
+//		if (identifier == "newmtl") {
+//			s >> materialData.name;
+//		}
+//		else if (identifier == "Ns") {
+//			s >> materialData.Ns;
+//		}
+//		else if (identifier == "Ka") {
+//			s >> materialData.Ka.r >> materialData.Ka.g >> materialData.Ka.b;
+//		}
+//		else if (identifier == "Kd") {
+//			s >> materialData.Kd.r >> materialData.Kd.g >> materialData.Kd.b;
+//		}
+//		else if (identifier == "Ks") {
+//			s >> materialData.Ks.r >> materialData.Ks.g >> materialData.Ks.b;
+//		}
+//		else if (identifier == "Ni") {
+//			s >> materialData.Ni;
+//		}
+//		else if (identifier == "d") {
+//			s >> materialData.d;
+//		}
+//		else if (identifier == "illum") {
+//			s >> materialData.illum;
+//		}
+//		else if (identifier == "map_Kd") {
+//			std::string textureFilename;
+//			s >> textureFilename;
+//			materialData.textureFilePath = directoryPath + "/" + textureFilename;
+//		}
+//	}
+//	return materialData;
+//}
 
-	while (std::getline(file, line)) {
-		std::string identifier;
-		std::istringstream s(line);
-		s >> identifier;
-
-		if (identifier == "newmtl") {
-			s >> materialData.name;
-		}
-		else if (identifier == "Ns") {
-			s >> materialData.Ns;
-		}
-		else if (identifier == "Ka") {
-			s >> materialData.Ka.r >> materialData.Ka.g >> materialData.Ka.b;
-		}
-		else if (identifier == "Kd") {
-			s >> materialData.Kd.r >> materialData.Kd.g >> materialData.Kd.b;
-		}
-		else if (identifier == "Ks") {
-			s >> materialData.Ks.r >> materialData.Ks.g >> materialData.Ks.b;
-		}
-		else if (identifier == "Ni") {
-			s >> materialData.Ni;
-		}
-		else if (identifier == "d") {
-			s >> materialData.d;
-		}
-		else if (identifier == "illum") {
-			s >> materialData.illum;
-		}
-		else if (identifier == "map_Kd") {
-			std::string textureFilename;
-			s >> textureFilename;
-			materialData.textureFilePath = directoryPath + "/" + textureFilename;
-		}
-	}
-	return materialData;
-}
-
-Model::ModelData Model::LoadObjFile(const std::string& directoryPath, const std::string& filename)
+Model::ModelData Model::LoadModelFile(const std::string& directoryPath, const std::string& filename)
 {
 	ModelData modelData;
+
+
 
 	// モデルの生成とファイルの読み込み
 	Assimp::Importer importer;
@@ -135,7 +152,44 @@ Model::ModelData Model::LoadObjFile(const std::string& directoryPath, const std:
 			modelData.material.textureFilePath = directoryPath + "/" + textureFilePath.C_Str();
 		}
 	}
+
+	modelData.rootNode = ReadNode(scene->mRootNode);
 	return modelData;
+}
+
+Model::Node Model::ReadNode(aiNode* node)
+{
+	Node result;
+	aiMatrix4x4 aiLocalMatrix = node->mTransformation; // nodeのlocalMatrixを取得
+	aiLocalMatrix.Transpose(); // 列ベクトルを行ベクトルに転置
+	result.localMatrix.m[0][0] = aiLocalMatrix[0][0];
+	result.localMatrix.m[0][1] = aiLocalMatrix[0][1];
+	result.localMatrix.m[0][2] = aiLocalMatrix[0][2];
+	result.localMatrix.m[0][3] = aiLocalMatrix[0][3];
+
+	result.localMatrix.m[1][0] = aiLocalMatrix[1][0];
+	result.localMatrix.m[1][1] = aiLocalMatrix[1][1];
+	result.localMatrix.m[1][2] = aiLocalMatrix[1][2];
+	result.localMatrix.m[1][3] = aiLocalMatrix[1][3];
+
+	result.localMatrix.m[2][0] = aiLocalMatrix[2][0];
+	result.localMatrix.m[2][1] = aiLocalMatrix[2][1];
+	result.localMatrix.m[2][2] = aiLocalMatrix[2][2];
+	result.localMatrix.m[2][3] = aiLocalMatrix[2][3];
+
+	result.localMatrix.m[3][0] = aiLocalMatrix[3][0];
+	result.localMatrix.m[3][1] = aiLocalMatrix[3][1];
+	result.localMatrix.m[3][2] = aiLocalMatrix[3][2];
+	result.localMatrix.m[3][3] = aiLocalMatrix[3][3];
+
+	result.name = node->mName.C_Str(); // node名を格納
+	result.children.resize(node->mNumChildren); // 子供の数だけ確保
+	for (uint32_t childIndex = 0; childIndex < node->mNumChildren; ++childIndex) {
+		// 再帰的に読むことで階層構造を作る
+		result.children[childIndex] = ReadNode(node->mChildren[childIndex]);
+	}
+
+	return result;
 }
 
 void Model::SetVertices(VertexData vertex)
