@@ -17,7 +17,7 @@ void GameScene::Initialize()
 
 	// .objファイルからモデルを読み込む
 
-	ModelManager::GetInstance()->LoadModel("plane.obj");
+	ModelManager::GetInstance()->LoadModel("resource", "plane.obj");
 	//ModelManager::GetInstance()->LoadModel("models/player/float_body.obj");
 	
 	object_ = new Object3d();
