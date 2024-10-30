@@ -5,6 +5,9 @@
 #include "Vector2.h"
 #include "Matrix4x4.h"
 #include <fstream>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 class Model
 {
 public: // メンバ関数
