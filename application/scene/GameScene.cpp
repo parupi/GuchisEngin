@@ -16,13 +16,12 @@ void GameScene::Initialize()
 	bossCamera_->SetTranslate(Vector3{ 0.0f, 0.0f, -100.0f });
 
 	// .objファイルからモデルを読み込む
-
-	ModelManager::GetInstance()->LoadModel("resource", "plane.obj");
+	ModelManager::GetInstance()->LoadModel("resource", "uvChecker.gltf");
 	//ModelManager::GetInstance()->LoadModel("models/player/float_body.obj");
 	
 	object_ = new Object3d();
 	object_->Initialize();
-	object_->SetModel("plane.obj");
+	object_->SetModel("uvChecker.gltf");
 
 	transform_.Initialize();
 
@@ -76,6 +75,25 @@ void GameScene::Update()
 
 	transform_.TransferMatrix();
 
+	Quaternion q1 = { 2.0f, 3.0f, 4.0f, 1.0f };
+	Quaternion q2 = { 1.0f, 3.0f, 5.0f, 2.0f };
+	Quaternion identity = Quaternion::Identity();
+	Quaternion conj = q1.Conjugate();
+	Quaternion inv = q1.Inverse();
+	Quaternion normal = q1.Unit();
+	Quaternion mul1 = q1 * q2;
+	Quaternion mul2 = q2 * q1;
+	float norm = q1.Norm();
+
+	identity.DisplayInImGui("Identity");
+	conj.DisplayInImGui("Conjugate");
+	inv.DisplayInImGui("Inverse");
+	normal.DisplayInImGui("Normalize");
+	mul1.DisplayInImGui("Multiply(q1, q2)");
+	mul2.DisplayInImGui("Multiply(q2, q1)");
+	ImGui::Begin("Quaternion");
+	ImGui::Text("%f", norm);
+	ImGui::End();
 }
 
 void GameScene::Draw()
