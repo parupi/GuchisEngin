@@ -38,6 +38,10 @@ void ParticleManager::Initialize(DirectXManager* dxManager, SrvManager* srvManag
 	// リソースの生成と値の設定
 	CreateParticleResource();
 	CreateMaterialResource();
+
+	accelerationField.acceleration = { 15.0f, 0.0f, 0.0f };
+	accelerationField.area.min = { -10.0f, -10.0f, -10.0f };
+	accelerationField.area.max = { 10.0f, 10.0f, 10.0f };
 }
 
 
@@ -68,6 +72,10 @@ void ParticleManager::Update()
 
 			if (numInstance >= kNumMaxInstance) {
 				break;
+			}
+
+			if (IsCollision(accelerationField.area, (*particleIterator).transform.translate)) {
+				(*particleIterator).velocity += accelerationField.acceleration * kDeltaTime;
 			}
 
 			// パーティクルの更新処理

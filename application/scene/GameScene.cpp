@@ -100,6 +100,6 @@ void GameScene::Draw()
 	Object3dManager::GetInstance()->DrawSet();
 	lightManager_->BindLightsToShader();
 
-	object_->Draw(transform_);
+	//object_->Draw(transform_);
 	ParticleManager::GetInstance()->Draw();
 }

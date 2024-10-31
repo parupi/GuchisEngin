@@ -328,3 +328,16 @@ Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to)
 
 	return rotationMatrix;
 }
+
+bool IsCollision(const AABB& aabb, const Vector3& point) {
+	//const Vector3& emitterPos = emitter.transform.translate;
+	//const AABB& area = field.area;
+
+	// エミッタの位置がAABBの範囲内にあるかどうかを判定
+	bool xOverlap = (point.x >= aabb.min.x) && (point.x <= aabb.max.x);
+	bool yOverlap = (point.y >= aabb.min.y) && (point.y <= aabb.max.y);
+	bool zOverlap = (point.z >= aabb.min.z) && (point.z <= aabb.max.z);
+
+	// すべての軸で重なっていれば当たっていると判断
+	return xOverlap && yOverlap && zOverlap;
+}

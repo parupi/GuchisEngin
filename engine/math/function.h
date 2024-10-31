@@ -14,6 +14,12 @@ struct Transform {
 	Vector3 translate;
 };
 
+struct AABB {
+	Vector3 min;    //!< 最小点
+	Vector3 max;    //!< 最大点
+};
+
+
 //// 内積
 //float Dot(const Vector3& v1, const Vector3& v2);
 //
@@ -72,3 +78,5 @@ Vector3 ExtractTranslation(const Matrix4x4& matrix);
 //Matrix4x4 MakeRotaeAxisAngle(const Vector3& axis, float angle);
 
 Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to);
+
+bool IsCollision(const AABB& aabb, const Vector3& point);

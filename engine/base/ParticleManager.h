@@ -94,6 +94,11 @@ private: // 構造体
 		float padding[3];
 		Matrix4x4 uvTransform;
 	};
+
+	struct AccelerationField {
+		Vector3 acceleration; //!< 加速度
+		AABB area; //!< 範囲
+	};
 private:
 
 	void CreateRootSignature();
@@ -160,4 +165,6 @@ private:
 	uint32_t numInstance = 0;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource;
+
+	AccelerationField accelerationField;
 };
