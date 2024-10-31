@@ -110,6 +110,37 @@ Quaternion MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle) {
     );
 }
 
+Quaternion Slerp(Quaternion q0, Quaternion q1, float t)
+{
+    float dot = Dot(q0, q1);
+    if (dot < 0.0f) {
+        q0 = { -q0.x, -q0.y, -q0.z, -q0.w }; // 反対方向に補間
+        dot = -dot;
+    }
+
+    // なす角を求める
+    float theta = std::acos(dot);
+    float sinTheta = std::sin(theta);
+
+    // 補間係数を求める
+    if (sinTheta > 0.001f) { // 数値安定性のための閾値
+        float scale0 = std::sin((1 - t) * theta) / sinTheta;
+        float scale1 = std::sin(t * theta) / sinTheta;
+
+        // 補間後のQuaternionを計算
+        return q0 * scale0 + q1 * scale1;
+    }
+    else {
+        // ほぼ同じ方向の場合、線形補間
+        return q0 * (1 - t) + q1 * t;
+    }
+}
+
+float Dot(const Quaternion& q0, const Quaternion& q1)
+{
+    return { q0.x * q1.x + q0.y * q1.y + q0.z * q1.z + q0.w * q1.w };
+}
+
 // ImGuiを使ったクォータニオンの描画
 void PrintOnImGui(const Quaternion& q, const char* label) {
     ImGui::Begin("Quaternion");
