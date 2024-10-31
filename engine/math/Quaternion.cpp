@@ -1,11 +1,13 @@
 #include "Quaternion.h"
-#include <cmath>
+#include <cmath>    // sqrtf
+#include <stdexcept>
 #include <imgui.h>
-
-// Constructor
+#include <Matrix4x4.h>
+#include <Vector3.h>
+// コンストラクタ
 Quaternion::Quaternion(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
 
-// Quaternion multiplication
+// クォータニオンの乗算
 Quaternion Quaternion::operator*(const Quaternion& q) const {
     return Quaternion(
         w * q.x + x * q.w + y * q.z - z * q.y,
@@ -15,39 +17,102 @@ Quaternion Quaternion::operator*(const Quaternion& q) const {
     );
 }
 
-// Identity quaternion (multiplicative identity)
-Quaternion Quaternion::Identity() {
+// 等価・非等価演算子
+bool Quaternion::operator==(const Quaternion& q) const {
+    return x == q.x && y == q.y && z == q.z && w == q.w;
+}
+
+bool Quaternion::operator!=(const Quaternion& q) const {
+    return !(*this == q);
+}
+
+// 加算・減算演算子
+Quaternion Quaternion::operator+(const Quaternion& q) const {
+    return Quaternion(x + q.x, y + q.y, z + q.z, w + q.w);
+}
+
+Quaternion Quaternion::operator-(const Quaternion& q) const {
+    return Quaternion(x - q.x, y - q.y, z - q.z, w - q.w);
+}
+
+Quaternion& Quaternion::operator+=(const Quaternion& q) {
+    x += q.x;
+    y += q.y;
+    z += q.z;
+    w += q.w;
+    return *this;
+}
+
+Quaternion& Quaternion::operator-=(const Quaternion& q) {
+    x -= q.x;
+    y -= q.y;
+    z -= q.z;
+    w -= q.w;
+    return *this;
+}
+
+// スカラー倍演算子
+Quaternion Quaternion::operator*(float scalar) const {
+    return Quaternion(x * scalar, y * scalar, z * scalar, w * scalar);
+}
+
+Quaternion& Quaternion::operator*=(float scalar) {
+    x *= scalar;
+    y *= scalar;
+    z *= scalar;
+    w *= scalar;
+    return *this;
+}
+
+// 単位クォータニオン（乗法の単位元）
+Quaternion Identity() {
     return Quaternion(0, 0, 0, 1);
 }
 
-// Conjugate of quaternion
-Quaternion Quaternion::Conjugate() const {
-    return Quaternion(-x, -y, -z, w);
+// クォータニオンの共役
+Quaternion Conjugate(const Quaternion& q) {
+    return Quaternion(-q.x, -q.y, -q.z, q.w);
 }
 
-// Norm (magnitude) of quaternion
-float Quaternion::Norm() const {
-    return std::sqrt(x * x + y * y + z * z + w * w);
+// クォータニオンのノルム
+float Norm(const Quaternion& q) {
+    return sqrtf(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w);
 }
 
-// Normalize quaternion to unit length
-Quaternion Quaternion::Unit() const {
-    float norm = Norm();
-    if (norm == 0) return Quaternion(0, 0, 0, 1); // Return identity if norm is zero
-    return Quaternion(x / norm, y / norm, z / norm, w / norm);
+// クォータニオンの正規化
+Quaternion Normalize(const Quaternion& q) {
+    float norm = Norm(q);
+    if (norm == 0.0f) {
+        throw std::runtime_error("Cannot normalize a zero-norm quaternion.");
+    }
+    return Quaternion(q.x / norm, q.y / norm, q.z / norm, q.w / norm);
 }
 
-// Inverse quaternion
-Quaternion Quaternion::Inverse() const {
-    float normSq = x * x + y * y + z * z + w * w;
-    if (normSq == 0) return Quaternion(0, 0, 0, 1); // Return identity if norm is zero
-    Quaternion conj = Conjugate();
-    return Quaternion(conj.x / normSq, conj.y / normSq, conj.z / normSq, conj.w / normSq);
+// クォータニオンの逆
+Quaternion Inverse(const Quaternion& q) {
+    float norm = Norm(q);
+    if (norm == 0.0f) {
+        throw std::runtime_error("Cannot invert a zero-norm quaternion.");
+    }
+    Quaternion conjugate = Conjugate(q);
+    return Quaternion(conjugate.x / (norm * norm), conjugate.y / (norm * norm), conjugate.z / (norm * norm), conjugate.w / (norm * norm));
 }
 
-// Display quaternion values in ImGui
-void Quaternion::DisplayInImGui(const char* label) const {
+Quaternion MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle) {
+    Vector3 normalAxis = Normalize(axis);
+    float halfAngle = angle * 0.5f;
+    float sinHalfAngle = sinf(halfAngle);
+    return Quaternion(
+        normalAxis.x * sinHalfAngle,
+        normalAxis.y * sinHalfAngle,
+        normalAxis.z * sinHalfAngle,
+        cosf(halfAngle)
+    );
+}
+
+// ImGuiを使ったクォータニオンの描画
+void PrintOnImGui(const Quaternion& q, const char* label) {
     ImGui::Begin("Quaternion");
-    ImGui::Text("%s: (x: %.3f, y: %.3f, z: %.3f, w: %.3f)", label, x, y, z, w);
+    ImGui::Text("%s: (x: %.2f, y: %.2f, z: %.2f, w: %.2f)", label, q.x, q.y, q.z, q.w);
     ImGui::End();
 }

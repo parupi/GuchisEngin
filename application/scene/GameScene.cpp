@@ -3,6 +3,9 @@
 #include <ModelManager.h>
 #include <ParticleManager.h>
 #include <imgui.h>
+#include <Quaternion.h>
+#include <Vector3.h>
+#include <Matrix4x4.h>
 
 void GameScene::Initialize()
 {
@@ -75,25 +78,16 @@ void GameScene::Update()
 
 	transform_.TransferMatrix();
 
-	Quaternion q1 = { 2.0f, 3.0f, 4.0f, 1.0f };
-	Quaternion q2 = { 1.0f, 3.0f, 5.0f, 2.0f };
-	Quaternion identity = Quaternion::Identity();
-	Quaternion conj = q1.Conjugate();
-	Quaternion inv = q1.Inverse();
-	Quaternion normal = q1.Unit();
-	Quaternion mul1 = q1 * q2;
-	Quaternion mul2 = q2 * q1;
-	float norm = q1.Norm();
+	Vector3 pointY = { 2.1f, -0.9f, 1.3f };
+	Quaternion rotation = MakeRotateAxisAngleQuaternion(Vector3(1.0f, 0.4f, -0.2f), 0.45);
+	Matrix4x4 rotateMatrix = MakeRotateMatrix(rotation);
+	Vector3 rotateByQuaternion = RotateVector(pointY, rotation);
+	Vector3 rotateByMatrix = Transformm_(pointY, rotateMatrix);
 
-	identity.DisplayInImGui("Identity");
-	conj.DisplayInImGui("Conjugate");
-	inv.DisplayInImGui("Inverse");
-	normal.DisplayInImGui("Normalize");
-	mul1.DisplayInImGui("Multiply(q1, q2)");
-	mul2.DisplayInImGui("Multiply(q2, q1)");
-	ImGui::Begin("Quaternion");
-	ImGui::Text("%f", norm);
-	ImGui::End();
+	PrintOnImGui(rotation);
+	PrintOnImGui(rotateMatrix);
+	PrintOnImGui(rotateByQuaternion);
+	PrintOnImGui(rotateByMatrix);
 }
 
 void GameScene::Draw()

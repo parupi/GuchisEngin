@@ -11,7 +11,7 @@
 #include <WorldTransform.h>
 #include <LightManager.h>
 #include <ParticleEmitter.h>
-#include <Quaternion.h>
+
 class GameScene : public BaseScene
 {
 public:
