@@ -78,16 +78,20 @@ void GameScene::Update()
 
 	transform_.TransferMatrix();
 
-	Vector3 pointY = { 2.1f, -0.9f, 1.3f };
-	Quaternion rotation = MakeRotateAxisAngleQuaternion(Vector3(1.0f, 0.4f, -0.2f), 0.45);
-	Matrix4x4 rotateMatrix = MakeRotateMatrix(rotation);
-	Vector3 rotateByQuaternion = RotateVector(pointY, rotation);
-	Vector3 rotateByMatrix = Transformm_(pointY, rotateMatrix);
+	Quaternion rotation0 = MakeRotateAxisAngleQuaternion({ 0.71f, 0.71f, 0.0f }, 0.3f);
+	Quaternion rotation1 = { -rotation0.x, -rotation0.y, -rotation0.z, -rotation0.w };
 
-	PrintOnImGui(rotation);
-	PrintOnImGui(rotateMatrix);
-	PrintOnImGui(rotateByQuaternion);
-	PrintOnImGui(rotateByMatrix);
+	Quaternion interpolate0 = Slerp(rotation0, rotation1, 0.0f);
+	Quaternion interpolate1 = Slerp(rotation0, rotation1, 0.3f);
+	Quaternion interpolate2 = Slerp(rotation0, rotation1, 0.5f);
+	Quaternion interpolate3 = Slerp(rotation0, rotation1, 0.7f);
+	Quaternion interpolate4 = Slerp(rotation0, rotation1, 1.0f);
+
+	PrintOnImGui(interpolate0);
+	PrintOnImGui(interpolate1);
+	PrintOnImGui(interpolate2);
+	PrintOnImGui(interpolate3);
+	PrintOnImGui(interpolate4);
 }
 
 void GameScene::Draw()
