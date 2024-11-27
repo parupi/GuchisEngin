@@ -1,5 +1,6 @@
 #include "MyGameTitle.h"
 #include <SceneFactory.h>
+#include <ParticleResources.h>
 
 void MyGameTitle::Initialize()
 {
@@ -11,7 +12,7 @@ void MyGameTitle::Initialize()
 	// 3Dテクスチャマネージャーの初期化
 	ModelManager::GetInstance()->Initialize(dxManager.get(), srvManager.get());
 	// パーティクルマネージャーの初期化
-	ParticleManager::GetInstance()->Initialize(dxManager.get(), srvManager.get());
+	ParticleResources::GetInstance()->Initialize(dxManager.get(), srvManager.get());
 	// スプライト共通部の初期化
 	SpriteManager::GetInstance()->Initialize(dxManager.get());
 	// オブジェクト共通部
@@ -30,10 +31,10 @@ void MyGameTitle::Initialize()
 
 void MyGameTitle::Finalize()
 {
-	ParticleManager::GetInstance()->Finalize();
+	ParticleResources::GetInstance()->Finalize();
 	SpriteManager::GetInstance()->Finalize();
 	Object3dManager::GetInstance()->Finalize();
-
+	ModelManager::GetInstance()->Finalize();
 	ImGuiManager::GetInstance()->Finalize();
 	GuchisFramework::Finalize();
 }

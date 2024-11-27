@@ -17,7 +17,7 @@ void Object3dManager::Initialize(DirectXManager* directXManager)
 	dxManager_ = directXManager;
 
 	CreateRootSignature();
-	inputLayoutDesc_ = CreateInputElementDesc();
+	CreateInputElementDesc();
 	CreateBlendState();
 	CreateRasterizerState();
 	LoadShader();
@@ -44,13 +44,18 @@ void Object3dManager::CreateRootSignature()
 	descriptorRange[0].NumDescriptors = 1;															// 数は1つ
 	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;									// SRVを使う
 	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;	// Offsetを自動計算
-
+	// Skinning用
+	D3D12_DESCRIPTOR_RANGE descriptorRangeForInstancing[1] = {};
+	descriptorRangeForInstancing[0].BaseShaderRegister = 0;		// 0から始まる
+	descriptorRangeForInstancing[0].NumDescriptors = 1;			// 数は1つ
+	descriptorRangeForInstancing[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;	// SRVを使う
+	descriptorRangeForInstancing[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 	// RootSignature作成
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	// RootParameter作成。PixelShaderのMaterialとVertezShaderのTransform
-	D3D12_ROOT_PARAMETER rootParameters[13] = {};
+	D3D12_ROOT_PARAMETER rootParameters[14] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;			// CBVを使う
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;			// PixelShaderで使う
 	rootParameters[0].Descriptor.ShaderRegister = 0;			// レジスタ番号0とバインド
@@ -62,6 +67,13 @@ void Object3dManager::CreateRootSignature()
 	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;						// PixelShaderで使う
 	rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRange;					// Tableの中身の配列を指定
 	rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);		// Tableで利用する数
+	// Skinning用
+	rootParameters[13].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;         // DescriptorTableで使う
+	rootParameters[13].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;                  // VertexShaderで使う
+	rootParameters[13].DescriptorTable.pDescriptorRanges = descriptorRangeForInstancing;            // Well用のDescriptorRange
+	rootParameters[13].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeForInstancing);
+	//rootParameters[13].Descriptor.ShaderRegister = 0; // register(t0)と対応
+
 	// カメラ
 	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;						// DescriptorTableで使う
 	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;						// PixelShaderで使う
@@ -113,39 +125,45 @@ void Object3dManager::CreateRootSignature()
 	descriptionRootSignature.NumStaticSamplers = _countof(staticSamplers);
 
 	// シリアライズしてバイナリにする
-
 	HRESULT hr = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
 	if (FAILED(hr)) {
 		Logger::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 		assert(false);
 	}
 	// バイナリをもとに生成
-
 	hr = dxManager_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature_));
 	assert(SUCCEEDED(hr));
 }
 
-D3D12_INPUT_LAYOUT_DESC Object3dManager::CreateInputElementDesc()
+void Object3dManager::CreateInputElementDesc()
 {
 	// InputLayout
-	D3D12_INPUT_ELEMENT_DESC inputElementDescs[3] = {};
-	inputElementDescs[0].SemanticName = "POSITION";
-	inputElementDescs[0].SemanticIndex = 0;
-	inputElementDescs[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	inputElementDescs[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-	inputElementDescs[1].SemanticName = "TEXCOORD";
-	inputElementDescs[1].SemanticIndex = 0;
-	inputElementDescs[1].Format = DXGI_FORMAT_R32G32_FLOAT;
-	inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-	inputElementDescs[2].SemanticName = "NORMAL";
-	inputElementDescs[2].SemanticIndex = 0;
-	inputElementDescs[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-	inputElementDescs[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
-	inputLayoutDesc.pInputElementDescs = inputElementDescs;
-	inputLayoutDesc.NumElements = _countof(inputElementDescs);
+	inputElementDescs_[0].SemanticName = "POSITION";
+	inputElementDescs_[0].SemanticIndex = 0;
+	inputElementDescs_[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	inputElementDescs_[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+	inputElementDescs_[1].SemanticName = "TEXCOORD";
+	inputElementDescs_[1].SemanticIndex = 0;
+	inputElementDescs_[1].Format = DXGI_FORMAT_R32G32_FLOAT;
+	inputElementDescs_[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+	inputElementDescs_[2].SemanticName = "NORMAL";
+	inputElementDescs_[2].SemanticIndex = 0;
+	inputElementDescs_[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	inputElementDescs_[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+	inputElementDescs_[3].SemanticName = "WEIGHT";
+	inputElementDescs_[3].SemanticIndex = 0;
+	inputElementDescs_[3].Format = DXGI_FORMAT_R32G32B32A32_FLOAT; // float4
+	inputElementDescs_[3].InputSlot = 1; // 1番目のslotのVBVのことだと伝える
+	inputElementDescs_[3].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+	inputElementDescs_[4].SemanticName = "INDEX";
+	inputElementDescs_[4].SemanticIndex = 0;
+	inputElementDescs_[4].Format = DXGI_FORMAT_R32G32B32A32_SINT; // int4
+	inputElementDescs_[4].InputSlot = 1; // 1番目のslotのVBVのことだと伝える
+	inputElementDescs_[4].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
-	return inputLayoutDesc;
+	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
+	inputLayoutDesc_.pInputElementDescs = inputElementDescs_.data();
+	inputLayoutDesc_.NumElements = static_cast<UINT>(inputElementDescs_.size());
 }
 
 void Object3dManager::CreateBlendState()
@@ -172,7 +190,7 @@ void Object3dManager::CreateRasterizerState()
 void Object3dManager::LoadShader()
 {
 	// Shaderをコンパイルする
-	vertexShaderBlob_ = dxManager_->CompileShader(L"./resource/shaders/Object3d.VS.hlsl", L"vs_6_0");
+	vertexShaderBlob_ = dxManager_->CompileShader(L"./resource/shaders/SkinningObject3d.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob_ != nullptr);
 
 	pixelShaderBlob_ = dxManager_->CompileShader(L"./resource/shaders/Object3d.PS.hlsl", L"ps_6_0");
@@ -186,8 +204,7 @@ void Object3dManager::CreatePipelineState()
 	// PSOを生成する
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
 	graphicsPipelineStateDesc.pRootSignature = rootSignature_.Get();			// RootSignature
-	graphicsPipelineStateDesc.InputLayout = inputLayoutDesc_;			// InputLayout
-	//graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;			// InputLayout
+	graphicsPipelineStateDesc.InputLayout = inputLayoutDesc_;			// InputLayouty
 	graphicsPipelineStateDesc.VS = { vertexShaderBlob_->GetBufferPointer(), vertexShaderBlob_->GetBufferSize() };			// vertexShader
 	graphicsPipelineStateDesc.PS = { pixelShaderBlob_->GetBufferPointer(), pixelShaderBlob_->GetBufferSize() };			// PixelShade
 	graphicsPipelineStateDesc.BlendState = blendDesc_;					// BlendState
@@ -215,7 +232,6 @@ void Object3dManager::CreatePipelineState()
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
 	// 実際に生成
-	//Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState = nullptr;
 	hr = dxManager_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_));
 	assert(SUCCEEDED(hr));
 }

@@ -1,14 +1,14 @@
 #include "SpriteManager.h"
 
-std::unique_ptr<SpriteManager> SpriteManager::instance = nullptr;
+SpriteManager* SpriteManager::instance = nullptr;
 std::once_flag SpriteManager::initInstanceFlag;
 
 SpriteManager* SpriteManager::GetInstance()
 {
 	std::call_once(initInstanceFlag, []() {
-		instance = std::make_unique<SpriteManager>();
+		instance = new SpriteManager();
 		});
-	return instance.get();
+	return instance;
 }
 
 void SpriteManager::Initialize(DirectXManager* directXManager) {
@@ -16,7 +16,7 @@ void SpriteManager::Initialize(DirectXManager* directXManager) {
 	dxManager_ = directXManager;
 
 	CreateRootSignature();
-	inputLayoutDesc_ = CreateInputElementDesc();
+	CreateInputElementDesc();
 	CreateBlendState();
 	CreateRasterizerState();
 	LoadShader();
@@ -110,27 +110,24 @@ void SpriteManager::CreateRootSignature() {
 	assert(SUCCEEDED(hr));
 }
 
-D3D12_INPUT_LAYOUT_DESC SpriteManager::CreateInputElementDesc()
+void SpriteManager::CreateInputElementDesc()
 {
 	// InputLayout
-	D3D12_INPUT_ELEMENT_DESC inputElementDescs[3] = {};
-	inputElementDescs[0].SemanticName = "POSITION";
-	inputElementDescs[0].SemanticIndex = 0;
-	inputElementDescs[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	inputElementDescs[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-	inputElementDescs[1].SemanticName = "TEXCOORD";
-	inputElementDescs[1].SemanticIndex = 0;
-	inputElementDescs[1].Format = DXGI_FORMAT_R32G32_FLOAT;
-	inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-	inputElementDescs[2].SemanticName = "NORMAL";
-	inputElementDescs[2].SemanticIndex = 0;
-	inputElementDescs[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-	inputElementDescs[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
-	inputLayoutDesc.pInputElementDescs = inputElementDescs;
-	inputLayoutDesc.NumElements = _countof(inputElementDescs);
+	inputElementDescs_[0].SemanticName = "POSITION";
+	inputElementDescs_[0].SemanticIndex = 0;
+	inputElementDescs_[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	inputElementDescs_[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+	inputElementDescs_[1].SemanticName = "TEXCOORD";
+	inputElementDescs_[1].SemanticIndex = 0;
+	inputElementDescs_[1].Format = DXGI_FORMAT_R32G32_FLOAT;
+	inputElementDescs_[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+	inputElementDescs_[2].SemanticName = "NORMAL";
+	inputElementDescs_[2].SemanticIndex = 0;
+	inputElementDescs_[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	inputElementDescs_[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
-	return inputLayoutDesc;
+	inputLayoutDesc_.pInputElementDescs = inputElementDescs_;
+	inputLayoutDesc_.NumElements = _countof(inputElementDescs_);
 }
 
 void SpriteManager::CreateBlendState()
@@ -220,4 +217,5 @@ void SpriteManager::Finalize()
 	{
 		errorBlob->Release();
 	}
+	delete instance;
 }

@@ -19,12 +19,12 @@ void GameScene::Initialize()
 	bossCamera_->SetTranslate(Vector3{ 0.0f, 0.0f, -100.0f });
 
 	// .objファイルからモデルを読み込む
-	ModelManager::GetInstance()->LoadModel("resource", "uvChecker.gltf");
+	ModelManager::GetInstance()->LoadModel("resource", "walk.gltf");
 	//ModelManager::GetInstance()->LoadModel("models/player/float_body.obj");
 	
 	object_ = new Object3d();
-	object_->Initialize();
-	object_->SetModel("uvChecker.gltf");
+	object_->Initialize("walk.gltf");
+	//object_->SetModel("uvChecker.gltf");
 
 	transform_.Initialize();
 
@@ -35,12 +35,15 @@ void GameScene::Initialize()
 	lightManager_->SetDirLightActive(0, true);
 	lightManager_->SetDirLightIntensity(0, 1.0f);
 
-	ParticleManager::GetInstance()->CreateParticleGroup("circle", "resource/circle.png");
-	ParticleManager::GetInstance()->SetCamera(cameraManager_.GetActiveCamera().get());
-	emitter_ = new ParticleEmitter();
-	emitter_->Initialize("circle");
-	emitter2_ = new ParticleEmitter();
-	emitter2_->Initialize("circle");
+	//ParticleManager::GetInstance()->CreateParticleGroup("circle", "resource/circle.png");
+	//ParticleManager::GetInstance()->CreateParticleGroup("test", "resource/circle.png");
+	//ParticleManager::GetInstance()->SetCamera(cameraManager_.GetActiveCamera().get());
+	//emitter_ = new ParticleEmitter();
+	//emitter_->Initialize("circle");
+	//emitter2_ = new ParticleEmitter();
+	//emitter2_->Initialize("test");
+
+	//ParticleManager::GetInstance()->SetParticleVelocityLange("test", -10.0f, 10.0f);
 }
 
 void GameScene::Finalize()
@@ -50,12 +53,13 @@ void GameScene::Finalize()
 
 void GameScene::Update()
 {
-
+	object_->AnimationUpdate();
 	cameraManager_.Update();
 
-	ParticleManager::GetInstance()->Update();
-	emitter_->Update({5.0f, 0.0f, 0.0f}, 3);
-	emitter2_->Update({-5.0f, 0.0f, 0.0f}, 3);
+	//ParticleManager::GetInstance()->Update();
+	//emitter_->Update({5.0f, 0.0f, 0.0f}, 10000);
+	//emitter2_->Update({-5.0f, 0.0f, 0.0f}, 10000);
+
 	Vector3 normalCameraPos = normalCamera_->GetTranslate();
 	Vector3 bossCameraPos = bossCamera_->GetTranslate();
 
@@ -101,5 +105,5 @@ void GameScene::Draw()
 	lightManager_->BindLightsToShader();
 
 	object_->Draw(transform_);
-	ParticleManager::GetInstance()->Draw();
+	//ParticleManager::GetInstance()->Draw();
 }

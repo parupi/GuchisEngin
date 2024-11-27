@@ -1,6 +1,7 @@
 #include "Matrix4x4.h"
 #include <imgui.h>
 #include <Quaternion.h>
+#include <Vector3.h>
 
 // デフォルトコンストラクタ
 Matrix4x4::Matrix4x4() : m{ {0.0f} } {}
@@ -213,6 +214,12 @@ Matrix4x4 MakeIdentity4x4() {
     return { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
 }
 
+
+Matrix4x4 MakeTranslateMatrix(const Vector3& translate) { return { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, translate.x, translate.y, translate.z, 1 }; }
+
+Matrix4x4 MakeScaleMatrix(const Vector3& scale) { return { scale.x, 0, 0, 0, 0, scale.y, 0, 0, 0, 0, scale.z, 0, 0, 0, 0, 1 }; }
+
+
 // X軸回転行列
 Matrix4x4 MakeRotateXMatrix(float radian) {
     return { 1, 0, 0, 0, 0, cosf(radian), sinf(radian), 0, 0, -sinf(radian), cosf(radian), 0, 0, 0, 0, 1 };
@@ -226,6 +233,33 @@ Matrix4x4 MakeRotateYMatrix(float radian) {
 // Z軸回転行列
 Matrix4x4 MakeRotateZMatrix(float radian) {
     return { cosf(radian), sinf(radian), 0, 0, -sinf(radian), cosf(radian), 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
+}
+
+Matrix4x4 MakeRotateXYZMatrix(Vector3 rotate) {
+    Matrix4x4 rotateXMatrix = MakeRotateXMatrix(rotate.x);
+    Matrix4x4 rotateYMatrix = MakeRotateYMatrix(rotate.y);
+    Matrix4x4 rotateZMatrix = MakeRotateZMatrix(rotate.z);
+    Matrix4x4 rotateMatrix = (rotateYMatrix * rotateXMatrix * rotateZMatrix);
+    return rotateMatrix;
+}
+
+Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate) {
+    Matrix4x4 scaleMatrix = MakeScaleMatrix(scale);
+    Matrix4x4 rotateXMatrix = MakeRotateXMatrix(rotate.x);
+    Matrix4x4 rotateYMatrix = MakeRotateYMatrix(rotate.y);
+    Matrix4x4 rotateZMatrix = MakeRotateZMatrix(rotate.z);
+    Matrix4x4 translateMatrix = MakeTranslateMatrix(translate);
+    Matrix4x4 rotateMatrix = rotateXMatrix * rotateYMatrix * rotateZMatrix;
+
+    return { scaleMatrix * rotateMatrix * translateMatrix };
+}
+
+Matrix4x4 MakeAffineMatrixFromQuaternion(const Vector3& scale, const Quaternion& rotate, const Vector3& translate) {
+    Matrix4x4 scaleMatrix = MakeScaleMatrix(scale);
+    Matrix4x4 rotateMatrix = MakeRotateMatrix(rotate);
+    Matrix4x4 translateMatrix = MakeTranslateMatrix(translate);
+
+    return scaleMatrix * rotateMatrix * translateMatrix;
 }
 
 void PrintOnImGui(const Matrix4x4& matrix, const char* label) {
