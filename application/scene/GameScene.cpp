@@ -20,10 +20,10 @@ void GameScene::Initialize()
 
 	// .objファイルからモデルを読み込む
 	ModelManager::GetInstance()->LoadModel("resource", "walk.gltf");
-	//ModelManager::GetInstance()->LoadModel("models/player/float_body.obj");
+	ModelManager::GetInstance()->LoadModel("resource", "plane.obj");
 	
 	object_ = new Object3d();
-	object_->Initialize("walk.gltf");
+	object_->Initialize("plane.obj");
 	//object_->SetModel("uvChecker.gltf");
 
 	transform_.Initialize();
@@ -101,6 +101,7 @@ void GameScene::Update()
 void GameScene::Draw()
 {
 	// 3Dオブジェクト描画前処理
+	Object3dManager::GetInstance()->DrawSetForAnimation();
 	Object3dManager::GetInstance()->DrawSet();
 	lightManager_->BindLightsToShader();
 
