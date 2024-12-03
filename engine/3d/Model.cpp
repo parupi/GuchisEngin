@@ -28,23 +28,38 @@ void Model::Initialize(ModelLoader* modelManager, const std::string& directoryPa
 
 void Model::Draw(WorldTransform& transform)
 {
-	D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
-		vertexBufferView_,
-		skeleton_->GetSkinCluster().influenceBufferView
-	};
+	if (modelData_.isHasBones) {
 
-	// wvp用のCBufferの場所を設定
-	modelLoader_->GetDxManager()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transform.GetConstBuffer()->GetGPUVirtualAddress());
-	modelLoader_->GetDxManager()->GetCommandList()->SetGraphicsRootDescriptorTable(13, skeleton_->GetSkinCluster().paletteSrvHandle.second);
-	// VertexBufferViewを設定
-	//modelLoader_->GetDxManager()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
-	modelLoader_->GetDxManager()->GetCommandList()->IASetVertexBuffers(0, 2, vbvs);
-	modelLoader_->GetDxManager()->GetCommandList()->IASetIndexBuffer(&indexBufferView_);
-	// SRVのDescriptorTableの先頭を設定。
-	modelLoader_->GetSrvManager()->SetGraphicsRootDescriptorTable(2, modelData_.material.textureIndex);
-	// ドローコール
-	//modelLoader_->GetDxManager()->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
-	modelLoader_->GetDxManager()->GetCommandList()->DrawIndexedInstanced(UINT(modelData_.indices.size()), 1, 0, 0, 0);
+		D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
+			vertexBufferView_,
+			skeleton_->GetSkinCluster().influenceBufferView
+		};
+
+		// wvp用のCBufferの場所を設定
+		modelLoader_->GetDxManager()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transform.GetConstBuffer()->GetGPUVirtualAddress());
+		modelLoader_->GetDxManager()->GetCommandList()->SetGraphicsRootDescriptorTable(13, skeleton_->GetSkinCluster().paletteSrvHandle.second);
+		// VertexBufferViewを設定
+		//modelLoader_->GetDxManager()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
+		modelLoader_->GetDxManager()->GetCommandList()->IASetVertexBuffers(0, 2, vbvs);
+		modelLoader_->GetDxManager()->GetCommandList()->IASetIndexBuffer(&indexBufferView_);
+		// SRVのDescriptorTableの先頭を設定。
+		modelLoader_->GetSrvManager()->SetGraphicsRootDescriptorTable(2, modelData_.material.textureIndex);
+		// ドローコール
+		//modelLoader_->GetDxManager()->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
+		modelLoader_->GetDxManager()->GetCommandList()->DrawIndexedInstanced(UINT(modelData_.indices.size()), 1, 0, 0, 0);
+	}
+	else {
+		// wvp用のCBufferの場所を設定
+		modelLoader_->GetDxManager()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transform.GetConstBuffer()->GetGPUVirtualAddress());
+		// VertexBufferViewを設定
+		modelLoader_->GetDxManager()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
+		modelLoader_->GetDxManager()->GetCommandList()->IASetIndexBuffer(&indexBufferView_);
+		// SRVのDescriptorTableの先頭を設定。
+		modelLoader_->GetSrvManager()->SetGraphicsRootDescriptorTable(2, modelData_.material.textureIndex);
+		// ドローコール
+		//modelLoader_->GetDxManager()->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
+		modelLoader_->GetDxManager()->GetCommandList()->DrawIndexedInstanced(UINT(modelData_.indices.size()), 1, 0, 0, 0);
+	}
 }
 
 void Model::CreateVertexResource()
