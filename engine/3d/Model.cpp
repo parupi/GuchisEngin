@@ -5,8 +5,8 @@
 #include <Vector2.h>
 #include <ModelManager.h>
 #include <WorldTransform.h>
-#include <Skeleton.h>
-#include <Animator.h>
+//#include <Skeleton.h>
+//#include <Animator.h>
 
 void Model::Initialize(ModelLoader* modelManager, const std::string& directoryPath, const std::string& fileName)
 {
@@ -16,6 +16,8 @@ void Model::Initialize(ModelLoader* modelManager, const std::string& directoryPa
 
 	// モデルの読み込み
 	modelData_ = LoadModelFile(directoryPath_, fileName);
+	animation_ = LoadAnimationFile(directoryPath_, fileName);
+	skeleton_ = CreateSkeleton(modelData_.rootNode);
 
 	CreateVertexResource();
 	CreateIndexResource();
@@ -32,12 +34,13 @@ void Model::Draw(WorldTransform& transform)
 
 		D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
 			vertexBufferView_,
-			skeleton_->GetSkinCluster().influenceBufferView
+			vertexBufferView_
+			//skeleton_->GetSkinCluster().influenceBufferView
 		};
 
 		// wvp用のCBufferの場所を設定
 		modelLoader_->GetDxManager()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transform.GetConstBuffer()->GetGPUVirtualAddress());
-		modelLoader_->GetDxManager()->GetCommandList()->SetGraphicsRootDescriptorTable(13, skeleton_->GetSkinCluster().paletteSrvHandle.second);
+		//modelLoader_->GetDxManager()->GetCommandList()->SetGraphicsRootDescriptorTable(13, skeleton_->GetSkinCluster().paletteSrvHandle.second);
 		// VertexBufferViewを設定
 		//modelLoader_->GetDxManager()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 		modelLoader_->GetDxManager()->GetCommandList()->IASetVertexBuffers(0, 2, vbvs);
@@ -216,9 +219,178 @@ bool Model::HasBones(const aiScene* scene)
 	return false;
 }
 
+Model::Animation Model::LoadAnimationFile(const std::string& directoryPath, const std::string& filename)
+{
+	//animation; // 今回作るアニメーション
+	Assimp::Importer importer;
+	std::string filePath = directoryPath + "/" + filename;
+	const aiScene* scene = importer.ReadFile(filePath.c_str(), 0);
+	assert(scene->mNumAnimations != 0); // アニメーションがない場合
+	aiAnimation* animationAssimp = scene->mAnimations[0]; // 最初のアニメーションだけ採用
+	animation_.duration = float(animationAssimp->mDuration / animationAssimp->mTicksPerSecond); // 時間の単位を変換
 
+	for (uint32_t channelIndex = 0; channelIndex < animationAssimp->mNumChannels; ++channelIndex) {
+		aiNodeAnim* nodeAnimationAssimp = animationAssimp->mChannels[channelIndex];
+		NodeAnimation& nodeAnimation = animation_.nodeAnimations[nodeAnimationAssimp->mNodeName.C_Str()];
+
+		// Position
+		for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumPositionKeys; ++keyIndex) {
+			aiVectorKey& keyAssimp = nodeAnimationAssimp->mPositionKeys[keyIndex];
+			KeyframeVector3 keyframe{};
+			keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond); // 秒に変換
+			keyframe.value = { -keyAssimp.mValue.x, keyAssimp.mValue.y, keyAssimp.mValue.z }; // 右手->左手
+			nodeAnimation.translate.keyframes.push_back(keyframe);
+		}
+
+		// Scale
+		for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumScalingKeys; ++keyIndex) {
+			aiVectorKey& keyAssimp = nodeAnimationAssimp->mScalingKeys[keyIndex];
+			KeyframeVector3 keyframe{};
+			keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond); // 秒に変換
+			keyframe.value = { keyAssimp.mValue.x, keyAssimp.mValue.y, keyAssimp.mValue.z }; // 右手->左手変換は不要
+			nodeAnimation.scale.keyframes.push_back(keyframe);
+		}
+
+		// Rotation
+		for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumRotationKeys; ++keyIndex) {
+			aiQuatKey& keyAssimp = nodeAnimationAssimp->mRotationKeys[keyIndex];
+			KeyframeQuaternion keyframe;
+			keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond); // 秒に変換
+
+			// 右手->左手座標系の変換
+			keyframe.value = { -keyAssimp.mValue.x, keyAssimp.mValue.y, keyAssimp.mValue.z, -keyAssimp.mValue.w };
+			nodeAnimation.rotate.keyframes.push_back(keyframe);
+		}
+	}
+	// 解析完了
+	return animation_;
+}
+
+void Model::UpdateAnimation()
+{
+	
+
+	NodeAnimation& rootNodeAnimation = animation_.nodeAnimations[modelData_.rootNode.name]; // ルートノードに入ってるアニメーションを取得
+	//NodeAnimation& rootNodeAnimation = animation.nodeAnimations["mixamorig:LeftArm"]; // ルートノードに入ってるアニメーションを取得
+	Vector3 scale, translate;
+	Quaternion rotate;
+	//if (!model_->GetModelData().isHasBones) {
+	translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime);
+	rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
+	scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime);
+	modelData_.rootNode.localMatrix = MakeAffineMatrixFromQuaternion(scale, rotate, translate);
+}
+
+void Model::UpdateSkeleton(SkeletonData& skeleton)
+{
+	for (auto& joint : skeleton.joints) {
+		joint.localMatrix = MakeAffineMatrixFromQuaternion(joint.transform.scale, joint.transform.rotate, joint.transform.translate);
+
+		if (joint.parent && *joint.parent < skeleton.joints.size()) {
+			joint.skeletonSpaceMatrix = joint.localMatrix * skeleton.joints[*joint.parent].skeletonSpaceMatrix;
+		}
+		else {
+			joint.skeletonSpaceMatrix = joint.localMatrix;
+		}
+	}
+}
+
+Vector3 Model::CalculateValue(const std::vector<KeyframeVector3>& keyframes, float time)
+{
+	assert(!keyframes.empty());// キーがないものは返す値がわからないのでだめ
+	if (keyframes.size() == 1 || time <= keyframes[0].time) {// キーが一つか、時刻がキーフレーム前なら最初の値とする
+		return keyframes[0].value;
+	}
+	for (size_t index = 0; index < keyframes.size() - 1; ++index) {
+		size_t nextIndex = index + 1;
+		// indexとnextIndexの二つのkeyframeを取得して範囲内に時刻があるかを判定
+		if (keyframes[index].time <= time && time <= keyframes[nextIndex].time) {
+			// 範囲内を補間する
+			float t = (time - keyframes[index].time) / (keyframes[nextIndex].time - keyframes[index].time);
+			return Lerp(keyframes[index].value, keyframes[nextIndex].value, t);
+		}
+	}
+	// ここまで来た場合は一番後の時刻よりも後ろなので最後の値を返すことにする
+	return (*keyframes.rbegin()).value;
+}
+
+Quaternion Model::CalculateValue(const std::vector<KeyframeQuaternion>& keyframes, float time)
+{
+	assert(!keyframes.empty());// キーがないものは返す値がわからないのでだめ
+	if (keyframes.size() == 1 || time <= keyframes[0].time) {// キーが一つか、時刻がキーフレーム前なら最初の値とする
+		return keyframes[0].value;
+	}
+	for (size_t index = 0; index < keyframes.size() - 1; ++index) {
+		size_t nextIndex = index + 1;
+		// indexとnextIndexの二つのkeyframeを取得して範囲内に時刻があるかを判定
+		if (keyframes[index].time <= time && time <= keyframes[nextIndex].time) {
+			// 範囲内を補間する
+			float t = (time - keyframes[index].time) / (keyframes[nextIndex].time - keyframes[index].time);
+			return Slerp(keyframes[index].value, keyframes[nextIndex].value, t);
+		}
+	}
+	// ここまで来た場合は一番後の時刻よりも後ろなので最後の値を返すことにする
+	return (*keyframes.rbegin()).value;
+}
 
 void Model::SetVertices(VertexData vertex)
 {
 	modelData_.vertices.push_back(vertex);
+}
+
+Model::SkeletonData Model::CreateSkeleton(const Model::Node& rootNode) {
+	SkeletonData skeleton;
+	skeleton.root = CreateJoint(rootNode, {}, skeleton.joints);
+
+	// 名前とindexのマッピングを行いアクセスしやすくする
+	for (const Joint& joint : skeleton.joints) {
+		skeleton.jointMap.emplace(joint.name, joint.index);
+	}
+	return skeleton;
+}
+
+int32_t Model::CreateJoint(const Model::Node& node, const std::optional<int32_t>& parent, std::vector<Joint>& joints) {
+	Joint joint;
+	joint.name = node.name;
+	joint.localMatrix = node.localMatrix;
+	joint.skeletonSpaceMatrix = MakeIdentity4x4();
+	joint.transform = node.transform;
+	joint.index = static_cast<int32_t>(joints.size());
+	joint.parent = parent;
+	joints.push_back(joint);
+
+	for (const auto& child : node.children) {
+		int32_t childIndex = CreateJoint(child, joint.index, joints);
+		joints[joint.index].children.push_back(childIndex);
+	}
+
+	return joint.index;
+}
+
+void Model::ApplyAnimation(SkeletonData& skeleton, const Animation& animation, float animationTime)
+{
+	for (auto& joint : skeleton.joints) {
+		if (auto it = animation.nodeAnimations.find(joint.name); it != animation.nodeAnimations.end()) {
+			const NodeAnimation& nodeAnimation = it->second;
+			joint.transform.translate = CalculateValue(nodeAnimation.translate.keyframes, animationTime);
+			joint.transform.rotate = CalculateValue(nodeAnimation.rotate.keyframes, animationTime);
+			joint.transform.scale = CalculateValue(nodeAnimation.scale.keyframes, animationTime);
+		}
+	}
+}
+
+void Model::Update()
+{
+	animationTime += 1.0f / 60.0f;
+	animationTime = std::fmod(animationTime, animation_.duration); // 最後までいったらリピート再生
+
+	//UpdateAnimation();
+	ApplyAnimation(skeleton_, animation_, animationTime);
+	UpdateSkeleton(skeleton_);
+
+	for (auto& joint : skeleton_.joints) {
+		PrintOnImGui(joint.transform.translate, "Skeleton");
+		PrintOnImGui(joint.transform.rotate, "Skeleton");
+		PrintOnImGui(joint.transform.scale, "Skeleton");
+	}
 }

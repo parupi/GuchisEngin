@@ -20,11 +20,14 @@ void GameScene::Initialize()
 
 	// .objファイルからモデルを読み込む
 	ModelManager::GetInstance()->LoadModel("resource", "walk.gltf");
-	ModelManager::GetInstance()->LoadModel("resource", "plane.obj");
+	//ModelManager::GetInstance()->LoadModel("resource", "plane.obj");
+	//ModelManager::GetInstance()->LoadModel("resource", "AnimatedCube.gltf");
 	
 	object_ = new Object3d();
-	object_->Initialize("plane.obj");
+	//object_->Initialize("plane.obj");
+	object_->Initialize("walk.gltf");
 	//object_->SetModel("uvChecker.gltf");
+	//object_->SetModel("AnimatedCube.gltf");
 
 	transform_.Initialize();
 
@@ -79,6 +82,12 @@ void GameScene::Update()
 
 	normalCamera_->SetTranslate(normalCameraPos);
 	bossCamera_->SetTranslate(bossCameraPos);
+
+	ImGui::Begin("Transform");
+	ImGui::DragFloat3("translate", &transform_.translation_.x, 0.01f);
+	ImGui::DragFloat3("rotation", &transform_.rotation_.x, 0.01f);
+	ImGui::DragFloat3("scale", &transform_.scale_.x, 0.01f);
+	ImGui::End();
 
 	transform_.TransferMatrix();
 

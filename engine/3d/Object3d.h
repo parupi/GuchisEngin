@@ -12,8 +12,8 @@
 class Object3dManager;
 class WorldTransform;
 
-class Animator;
-class Skeleton;
+//class Animator;
+//class Skeleton;
 
 class Object3d
 {
@@ -46,7 +46,7 @@ private: // メンバ変数
 	Object3dManager* objectManager_ = nullptr;
 	Model* model_ = nullptr;
 	Camera* camera_ = nullptr;
-	Animator* animator_ = nullptr;
+	//Animator* animator_ = nullptr;
 	
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Resource> cameraResource_ = nullptr;
@@ -64,7 +64,7 @@ public: // ゲッター // セッター //
 	void SetModel(Model* model) { model_ = model; }
 	void SetModel(const std::string& filePath);
 	Model* GetModel() { return model_; }
-	Animator* GetAnimator() { return animator_; }
+	//Animator* GetAnimator() { return animator_; }
 	// カメラ
 	void SetCamera(Camera* camera) { camera_ = camera; }
 	// 色

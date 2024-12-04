@@ -89,7 +89,7 @@ Vector3 RotateVector(const Vector3& vector, const Quaternion& quaternion) {
     return Vector3(rotatedQuat.x, rotatedQuat.y, rotatedQuat.z);
 }
 
-Vector3 Leap(const Vector3& start, const Vector3& end, float t) {
+Vector3 Lerp(const Vector3& start, const Vector3& end, float t) {
     return start * (1.0f - t) + end * t;
 }
 

@@ -11,12 +11,10 @@ void Skeleton::Initialize(Model* model)
 
 void Skeleton::Update()
 {
-	for (Joint& joint : skeletonData_.joints) {
-		// ローカル行列を計算
+	for (auto& joint : skeletonData_.joints) {
 		joint.localMatrix = MakeAffineMatrixFromQuaternion(joint.transform.scale, joint.transform.rotate, joint.transform.translate);
 
-		// 親の行列を考慮してスケルトンスペース行列を計算
-		if (joint.parent) {
+		if (joint.parent && *joint.parent < skeletonData_.joints.size()) {
 			joint.skeletonSpaceMatrix = joint.localMatrix * skeletonData_.joints[*joint.parent].skeletonSpaceMatrix;
 		}
 		else {
@@ -34,33 +32,43 @@ void Skeleton::Update()
 	}
 }
 
-void Skeleton::CreateSkeleton(const Model::Node& rootNode)
+void Skeleton::ApplyAnimation(const Animator::Animation* animation, float animationTime)
 {
-    skeletonData_.root = CreateJoint(rootNode, {}, skeletonData_.joints);
-
-    // 名前とindexのマッピングをする
-    for (const Joint& joint : skeletonData_.joints) {
-        skeletonData_.jointMap.emplace(joint.name, joint.index);
-    }
+	for (auto& joint : skeletonData_.joints) {
+		auto it = animation->nodeAnimations.find(joint.name);
+		if (it != animation->nodeAnimations.end()) {
+			const Animator::NodeAnimation& nodeAnimation = it->second;
+			joint.transform.translate = Animator::CalculateValue(nodeAnimation.translate.keyframes, animationTime);
+			joint.transform.rotate = Animator::CalculateValue(nodeAnimation.rotate.keyframes, animationTime);
+			joint.transform.scale = Animator::CalculateValue(nodeAnimation.scale.keyframes, animationTime);
+		}
+	}
 }
 
-int32_t Skeleton::CreateJoint(const Model::Node& node, const std::optional<int32_t>& parent, std::vector<Joint>& joints)
-{
-    Joint joint;
-    joint.name = node.name;
-    joint.localMatrix = node.localMatrix;
-    joint.skeletonSpaceMatrix = MakeIdentity4x4();
-    joint.transform = node.transform;
-    joint.index = uint32_t(joints.size()); // 現在登録されている数を入れる
-    joint.parent = parent;
-    joints.push_back(joint); // SkeletonのJoint列に追加
-    for (const Model::Node& child : node.children) {
-        // 子Jointを作成しそのIndexを登録
-        int32_t childIndex = CreateJoint(child, joint.index, joints);
-        joints[joint.index].children.push_back(childIndex);
-    }
-    // 自身のIndexを返す
-    return joint.index;
+void Skeleton::CreateSkeleton(const Model::Node& rootNode) {
+	skeletonData_.root = CreateJoint(rootNode, {}, skeletonData_.joints);
+
+	for (const auto& joint : skeletonData_.joints) {
+		skeletonData_.jointMap[joint.name] = joint.index;
+	}
+}
+
+int32_t Skeleton::CreateJoint(const Model::Node& node, const std::optional<int32_t>& parent, std::vector<Joint>& joints) {
+	Joint joint;
+	joint.name = node.name;
+	joint.localMatrix = node.localMatrix;
+	joint.skeletonSpaceMatrix = MakeIdentity4x4();
+	joint.transform = node.transform;
+	joint.index = static_cast<int32_t>(joints.size());
+	joint.parent = parent;
+	joints.push_back(joint);
+
+	for (const auto& child : node.children) {
+		int32_t childIndex = CreateJoint(child, joint.index, joints);
+		joints[joint.index].children.push_back(childIndex);
+	}
+
+	return joint.index;
 }
 
 Skeleton::SkinCluster Skeleton::CreateSkinCluster()
