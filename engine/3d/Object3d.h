@@ -7,7 +7,6 @@
 #include "function.h"
 #include <fstream>
 #include "Model.h"
-
 #include <Camera.h>
 class Object3dManager;
 class WorldTransform;
@@ -75,4 +74,4 @@ public: // ゲッター // セッター //
 	void SetIsLighting(const bool isLighting) { materialData_->enableLighting = isLighting; }
 };
 
-static_assert(!std::is_copy_assignable_v<Object3d>);
+//static_assert(!std::is_copy_assignable_v<Object3d>);

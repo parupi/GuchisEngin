@@ -4,8 +4,8 @@
 //#include "imgui.h"
 #include <WorldTransform.h>
 #include <numbers>
-#include <Skeleton.h>
-#include <Animator.h>
+//#include <Skeleton.h>
+//#include <Animator.h>
 #include "ModelManager.h"
 Object3d::~Object3d()
 {
@@ -52,8 +52,14 @@ void Object3d::Draw(WorldTransform& worldTransform)
 	}
 
 	if (model_->GetModelData().isAnimation) {
-		worldTransform.SetMapWVP(/*model_->GetModelData().rootNode.localMatrix * */worldViewProjectionMatrix);
-		worldTransform.SetMapWorld(model_->GetModelData().rootNode.localMatrix * worldTransform.GetMatWorld());
+		if (model_->GetModelData().isHasBones) {
+			worldTransform.SetMapWVP(/*model_->GetModelData().rootNode.localMatrix * */worldViewProjectionMatrix);
+			worldTransform.SetMapWorld(/*model_->GetModelData().rootNode.localMatrix * */worldTransform.GetMatWorld());
+		}
+		else {
+			worldTransform.SetMapWVP(model_->GetModelData().rootNode.localMatrix * worldViewProjectionMatrix);
+			worldTransform.SetMapWorld(model_->GetModelData().rootNode.localMatrix * worldTransform.GetMatWorld());
+		}
 	}
 	else {
 		worldTransform.SetMapWVP(/*model_->GetModelData().rootNode.localMatrix * */worldViewProjectionMatrix);

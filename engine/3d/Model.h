@@ -11,6 +11,7 @@
 #include <Camera.h>
 #include <span>
 #include <map>
+//#include <DebugSphere.h>
 
 class WorldTransform;
 //class Animator;
@@ -121,9 +122,33 @@ public: // 構造体
 		std::vector<Joint> joints;
 	};
 
+	// スキンクラスター
+	static const uint32_t kNumMaxInfluence = 4;
+	struct VertexInfluence {
+		std::array<float, kNumMaxInfluence> weights;
+		std::array<int32_t, kNumMaxInfluence> jointIndices;
+	};
+
+	struct WellForGPU {
+		Matrix4x4 skeletonSpaceMatrix; // 位置用
+		Matrix4x4 skeletonSpaceInverseTransposeMatrix;
+	};
+
+	struct SkinCluster {
+		std::vector<Matrix4x4> inverseBindPoseMatrices;
+
+		Microsoft::WRL::ComPtr<ID3D12Resource> influenceResource;
+		D3D12_VERTEX_BUFFER_VIEW influenceBufferView;
+		std::span<VertexInfluence> mappedInfluence;
+
+		Microsoft::WRL::ComPtr<ID3D12Resource> paletteResource;
+		std::span<WellForGPU> mappedPalette;
+		std::pair<D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_GPU_DESCRIPTOR_HANDLE> paletteSrvHandle;
+		uint32_t srvIndex;
+	};
+
 	// 現在のアニメーションタイム
 	float animationTime = 0.0f;
-	Matrix4x4 localMatrix;
 	///↑↑↑アニメーション用構造体(引っ越し予定)↑↑↑///
 private:
 	ModelLoader* modelLoader_ = nullptr;
@@ -132,6 +157,7 @@ private:
 	ModelData modelData_;
 	Animation animation_;
 	SkeletonData skeleton_;
+	SkinCluster skinCluster_;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_ = nullptr;
@@ -143,6 +169,9 @@ private:
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
 
 	std::string directoryPath_;
+
+	// デバッグ用変数
+	//std::vector<DebugSphere> spheres_;
 public:
 	// mtlファイルを読む関数
 	//static MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
@@ -172,10 +201,20 @@ public:
 	void ApplyAnimation(SkeletonData& skeleton, const Animation& animation, float animationTime);
 	// 全体の更新
 	void Update();
+	// SkinClusterを生成する関数
+	SkinCluster CreateSkinCluster(const SkeletonData& skeleton, const ModelData& modelData);
+	// スキンクラスターの更新
+	void UpdateSkinCluster(SkinCluster& skinCluster, const SkeletonData& skeleton);
 	///↑↑↑アニメーション用関数(引っ越し予定)↑↑↑///
 
+
+	///↓↓↓デバッグ用関数↓↓↓///
+	std::vector<Vector3> GetConnectionPositions();
+	uint32_t GetConnectionCount();
+	///↑↑↑デバッグ用関数↑↑↑///
+
 public: // ゲッター // セッター //
-	void SetVertices(VertexData vertex);
+	//void SetVertices(VertexData vertex);
 	void SetTexturePath(const std::string& filePath) { modelData_.material.textureFilePath = filePath; }
 
 	ModelData GetModelData() { return modelData_; }
@@ -185,6 +224,6 @@ public: // ゲッター // セッター //
 	//SkinCluster GetSkinCluster(){return }
 	//void SetSkeleton(Skeleton* skeleton) { skeleton_ = skeleton; }
 	//Skeleton* GetSkeleton() { return skeleton_; }
-	Matrix4x4 GetLocalMatrix() const { return localMatrix; }
+
 };
 

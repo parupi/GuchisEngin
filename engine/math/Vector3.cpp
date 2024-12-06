@@ -95,7 +95,7 @@ Vector3 Lerp(const Vector3& start, const Vector3& end, float t) {
 
 void PrintOnImGui(const Vector3& v, const char* label)
 {
-    ImGui::Begin("Vector3");
-    ImGui::Text("%s: (x: %.2f, y: %.2f, z: %.2f)", label, v.x, v.y, v.z);
+    ImGui::Begin(label);
+    ImGui::Text("%s: (x: %.2f, y: %.2f, z: %.2f)", "Vector3", v.x, v.y, v.z);
     ImGui::End();
 }
