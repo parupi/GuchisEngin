@@ -44,6 +44,7 @@ void MyGameTitle::Update()
 	ImGuiManager::GetInstance()->Begin();
 	GuchisFramework::Update();
 
+	GlobalVariables::GetInstance()->Update();
 
 	ImGuiManager::GetInstance()->End();
 }

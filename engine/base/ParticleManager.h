@@ -8,6 +8,7 @@
 #include <Camera.h>
 #include <Vector2.h>
 #include "ParticleResources.h"
+#include "GlobalVariables.h"
 class ParticleManager
 {
 public:
@@ -86,6 +87,22 @@ private: // 構造体
 		float padding[3];
 		Matrix4x4 uvTransform;
 	};
+
+	struct ParticleParameters {
+		Vector2 translateX;
+		Vector2 translateY;
+		Vector2 translateZ;
+		Vector2 rotateX;
+		Vector2 rotateY;
+		Vector2 rotateZ;
+		Vector2 scale;
+		Vector2 velocityX;
+		Vector2 velocityY;
+		Vector2 velocityZ;
+		Vector2 lifeTime;
+		Vector3 colorMin;
+		Vector3 colorMax;
+	};
 private:
 	// パーティクル用のリソースの生成
 	void CreateParticleResource();
@@ -94,13 +111,14 @@ private:
 	// パーティクルを生成する関数
 	Particle MakeNewParticle(const std::string name, std::mt19937& randomEngine, const Vector3& translate);
 
+	ParticleParameters LoadParticleParameters(GlobalVariables* global, const std::string& groupName);
 public:
 
 	// nameで指定した名前のパーティクルグループにパーティクルを発生させる関数
 	std::list<Particle> Emit(const std::string name, const Vector3& position, uint32_t count);
 
 private:
-	const uint32_t kNumMaxInstance = 128;	// 最大インスタンス数
+	const uint32_t kNumMaxInstance = 512;	// 最大インスタンス数
 	// パーティクル用リソースの宣言
 	Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource_;
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;
@@ -110,27 +128,23 @@ private:
 	Material* materialData_;
 	VertexData* vertexData_ = nullptr;
 private:
-
 	DirectXManager* dxManager_ = nullptr;
 	SrvManager* srvManager_ = nullptr;
 	Camera* camera_ = nullptr;
+
+	// グローバルバリアース
+	GlobalVariables* global_ = GlobalVariables::GetInstance();
+
 	// ランダム用変数宣言
 	std::mt19937 randomEngine;
 
 	std::unordered_map<std::string, ParticleGroup> particleGroups_;
-	// 汎用化用変数
-	std::unordered_map<std::string, Vector2> particleTranslateX_;
-	std::unordered_map<std::string, Vector2> particleTranslateY_;
-	std::unordered_map<std::string, Vector2> particleTranslateZ_;
-	std::unordered_map<std::string, Vector2> particleRotateX_;
-	std::unordered_map<std::string, Vector2> particleRotateY_;
-	std::unordered_map<std::string, Vector2> particleRotateZ_;
-	std::unordered_map<std::string, Vector2> particleScale_;
-	std::unordered_map<std::string, Vector2> particleVelocityX_;
-	std::unordered_map<std::string, Vector2> particleVelocityY_;
-	std::unordered_map<std::string, Vector2> particleVelocityZ_;
-	std::unordered_map<std::string, Vector2> particleLifeTime_;
-	std::unordered_map<std::string, Vector2> particleColor_;
+	
+	// 名前ごとにまとめて管理する1つのマップ
+	std::unordered_map<std::string, ParticleParameters> particleParams_;
+	// アルファ値だけグループごとに変えれるようにしとく
+	std::unordered_map<std::string, float> alpha_;
+
 
 	bool isBillboard = true;
 	const float kDeltaTime = 1.0f / 60.0f;
@@ -144,18 +158,6 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource;
 
-public:
-	void SetTranslateXLange(const std::string name, float min, float max) { particleTranslateX_[name] = { min, max }; }
-	void SetTranslateYLange(const std::string name, float min, float max) { particleTranslateY_[name] = { min, max }; }
-	void SetTranslateZLange(const std::string name, float min, float max) { particleTranslateZ_[name] = { min, max }; }
-	void SetRotateXLange(const std::string name, float min, float max) { particleRotateX_[name] = { min, max }; }
-	void SetRotateYLange(const std::string name, float min, float max) { particleRotateY_[name] = { min, max }; }
-	void SetRotateZLange(const std::string name, float min, float max) { particleRotateZ_[name] = { min, max }; }
-	void SetScaleLange(const std::string name, float min, float max) { particleScale_[name] = { min, max }; }
-	void SetVelocityXLange(const std::string name, float min, float max) { particleVelocityX_[name] = { min, max }; }
-	void SetVelocityYLange(const std::string name, float min, float max) { particleVelocityY_[name] = { min, max }; }
-	void SetVelocityZLange(const std::string name, float min, float max) { particleVelocityZ_[name] = { min, max }; }
-	void SetColorLange(const std::string name, float min, float max) { particleColor_[name] = { min, max }; }
-	void SetLifeTimeLange(const std::string name, float min, float max) { particleLifeTime_[name] = { min, max }; }
-
+	public:
+	void SetAlpha(const std::string name, float alpha) { alpha_[name] = alpha; }
 };

@@ -132,6 +132,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\debuger\LeakChecker.cpp" />
     <ClCompile Include="engine\core\GuchisFramework.cpp" />
     <ClCompile Include="application\scene\GameScene.cpp" />
+    <ClCompile Include="application\scene\fade\Fade.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\math\Easing.cpp" />
     <ClCompile Include="engine\math\function.cpp" />
@@ -150,7 +151,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\core\MyGameTitle.cpp" />
     <ClCompile Include="application\scene\TitleScene.cpp" />
     <ClCompile Include="engine\scene\SceneManager.cpp" />
-    <ClCompile Include="engine\scene\SceneFactory.cpp" />
+    <ClCompile Include="application\scene\SceneFactory.cpp" />
     <ClCompile Include="engine\base\ParticleEmitter.cpp" />
     <ClCompile Include="engine\math\Quaternion.cpp" />
     <ClCompile Include="engine\math\Vector3.cpp" />
@@ -222,9 +223,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="application\scene\GameScene.h" />
     <ClInclude Include="application\scene\TitleScene.h" />
     <ClInclude Include="engine\scene\SceneManager.h" />
-    <ClInclude Include="engine\scene\SceneFactory.h" />
+    <ClInclude Include="application\scene\SceneFactory.h" />
     <ClInclude Include="engine\base\ParticleEmitter.h" />
     <ClInclude Include="engine\math\Quaternion.h" />
+    <ClInclude Include="application\scene\fade\Fade.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

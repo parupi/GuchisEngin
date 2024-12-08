@@ -21,6 +21,9 @@ void ParticleManager::Initialize()
 	// リソースの生成と値の設定
 	CreateParticleResource();
 	CreateMaterialResource();
+
+	// jsonファイルの読み込み
+	global_->LoadFiles();
 }
 
 
@@ -52,7 +55,7 @@ void ParticleManager::Update()
 			}
 
 			// パーティクルの更新処理
-			float alpha;
+			float alpha{};
 			if (groupName == "snow") {
 				if ((*particleIterator).transform.translate.y <= 0) {
 					(*particleIterator).currentTime += kDeltaTime;
@@ -64,13 +67,13 @@ void ParticleManager::Update()
 				}
 			}
 			else {
-				if ((*particleIterator).isAlive) {
+				if ((*particleIterator).transform.translate.y >= -15.0f) {
 					(*particleIterator).transform.translate += (*particleIterator).velocity * kDeltaTime;
-					alpha = 1.0f;
+					(*particleIterator).transform.rotate += {0.1f, 0.1f, 0.1f};
+					alpha = alpha_[groupName];
 				}
 				else {
 					(*particleIterator).currentTime += kDeltaTime;
-					alpha = 1.0f - ((*particleIterator).currentTime / (*particleIterator).lifeTime);
 				}
 			}
 
@@ -105,6 +108,8 @@ void ParticleManager::Update()
 		if (particleGroup.instancingDataPtr) {
 			std::memcpy(particleGroup.instancingDataPtr, instancingData_, sizeof(ParticleForGPU) * numInstance);
 		}
+
+		particleParams_[groupName] = LoadParticleParameters(global_, groupName);
 	}
 }
 
@@ -163,6 +168,29 @@ void ParticleManager::CreateParticleGroup(const std::string name, const std::str
 
 	// インスタンス数を初期化
 	particleGroup.instanceCount = 0;
+
+	// パーティクルグループごとにグローバルバリアースを作る
+	global_->AddItem(name, "minTranslate", Vector3{});
+	global_->AddItem(name, "maxTranslate", Vector3{});
+
+	global_->AddItem(name, "minRotate", Vector3{});
+	global_->AddItem(name, "maxRotate", Vector3{});
+
+	global_->AddItem(name, "minScale", float{});
+	global_->AddItem(name, "maxScale", float{});
+
+	global_->AddItem(name, "minVelocity", Vector3{});
+	global_->AddItem(name, "maxVelocity", Vector3{});
+
+	global_->AddItem(name, "minLifeTime", float{});
+	global_->AddItem(name, "maxLifeTime", float{});
+
+	global_->AddItem(name, "minColor", Vector3{});
+	global_->AddItem(name, "maxColor", Vector3{});
+
+	global_->AddItem(name, "minAlpha", float{});
+	global_->AddItem(name, "maxAlpha", float{});
+
 }
 
 void ParticleManager::CreateParticleResource()
@@ -218,50 +246,70 @@ void ParticleManager::CreateMaterialResource()
 ParticleManager::Particle ParticleManager::MakeNewParticle(const std::string name, std::mt19937& randomEngine, const Vector3& translate)
 {
 	Particle particle{};
-	if (name == "snow") {
-		std::uniform_real_distribution<float> distTranslate(-15.0f, 15.0f);
-		std::uniform_real_distribution<float> distSize(0.075f, 0.15f);
-		std::uniform_real_distribution<float> distVelocity(-0.5f, 0.5f);
-		std::uniform_real_distribution<float> distVelocityY(-1.0f, 0.001f);
-		std::uniform_real_distribution<float> distColor(0.8f, 1.0f);
-		std::uniform_real_distribution<float> distTime(1.0f, 3.0f);
 
-		float scale = distSize(randomEngine);
-		particle.transform.scale = { scale, scale, scale };
-		particle.transform.rotate = { 0.0f, 0.0f, 0.0f };
-		Vector3 randomTranslate = { distTranslate(randomEngine), 20.0f, distTranslate(randomEngine) };
-		particle.transform.translate = translate + randomTranslate;
-		particle.velocity = { distVelocity(randomEngine), distVelocityY(randomEngine), distVelocity(randomEngine) };
-		particle.color = { distColor(randomEngine) , distColor(randomEngine) , distColor(randomEngine) , 1.0f };
-		particle.lifeTime = distTime(randomEngine);
-		particle.currentTime = 0.0f;
-	}
-	else {
+	const auto& params = particleParams_[name];
 
-		std::uniform_real_distribution<float> distTranslationX(particleTranslateX_[name].x, particleTranslateX_[name].y);
-		std::uniform_real_distribution<float> distTranslationY(particleTranslateY_[name].x, particleTranslateY_[name].y);
-		std::uniform_real_distribution<float> distTranslationZ(particleTranslateZ_[name].x, particleTranslateZ_[name].y);
-		std::uniform_real_distribution<float> distRotationX(particleRotateX_[name].x, particleRotateX_[name].y);
-		std::uniform_real_distribution<float> distRotationY(particleRotateY_[name].x, particleRotateY_[name].y);
-		std::uniform_real_distribution<float> distRotationZ(particleRotateZ_[name].x, particleRotateZ_[name].y);
-		std::uniform_real_distribution<float> distScale(particleScale_[name].x, particleScale_[name].y);
-		std::uniform_real_distribution<float> distVelocityX(particleVelocityX_[name].x, particleVelocityX_[name].y);
-		std::uniform_real_distribution<float> distVelocityY(particleVelocityY_[name].x, particleVelocityY_[name].y);
-		std::uniform_real_distribution<float> distVelocityZ(particleVelocityZ_[name].x, particleVelocityZ_[name].y);
-		std::uniform_real_distribution<float> distColor(particleColor_[name].x, particleColor_[name].y);
-		std::uniform_real_distribution<float> distTime(particleLifeTime_[name].x, particleLifeTime_[name].y);
-		float randomScale = distScale(randomEngine);
-		particle.transform.scale = { randomScale, randomScale, randomScale };
-		particle.transform.rotate = { distRotationX(randomEngine), distRotationY(randomEngine), distRotationZ(randomEngine) };
-		Vector3 randomTranslate = { distTranslationX(randomEngine), distTranslationY(randomEngine), distTranslationZ(randomEngine) };
-		particle.transform.translate = translate + randomTranslate;
-		particle.velocity = { distVelocityX(randomEngine), distVelocityY(randomEngine), distVelocityZ(randomEngine) };
-		particle.color = { distColor(randomEngine) , distColor(randomEngine) , distColor(randomEngine) , 1.0f };
-		particle.lifeTime = distTime(randomEngine);
-		particle.currentTime = 0.0f;
-	}
+	std::uniform_real_distribution<float> distTranslationX(params.translateX.x, params.translateX.y);
+	std::uniform_real_distribution<float> distTranslationY(params.translateY.x, params.translateY.y);
+	std::uniform_real_distribution<float> distTranslationZ(params.translateZ.x, params.translateZ.y);
+
+	std::uniform_real_distribution<float> distRotationX(params.rotateX.x, params.rotateX.y);
+	std::uniform_real_distribution<float> distRotationY(params.rotateY.x, params.rotateY.y);
+	std::uniform_real_distribution<float> distRotationZ(params.rotateZ.x, params.rotateZ.y);
+
+	std::uniform_real_distribution<float> distScale(params.scale.x, params.scale.y);
+
+	std::uniform_real_distribution<float> distVelocityX(params.velocityX.x, params.velocityX.y);
+	std::uniform_real_distribution<float> distVelocityY(params.velocityY.x, params.velocityY.y);
+	std::uniform_real_distribution<float> distVelocityZ(params.velocityZ.x, params.velocityZ.y);
+
+	std::uniform_real_distribution<float> distTime(params.lifeTime.x, params.lifeTime.y);
+	std::uniform_real_distribution<float> distColorR(params.colorMin.x, params.colorMax.x);
+	std::uniform_real_distribution<float> distColorG(params.colorMin.y, params.colorMax.y);
+	std::uniform_real_distribution<float> distColorB(params.colorMin.z, params.colorMax.z);
+	float randomScale = distScale(randomEngine);
+	particle.transform.scale = { randomScale, randomScale, randomScale };
+	particle.transform.rotate = { distRotationX(randomEngine), distRotationY(randomEngine), distRotationZ(randomEngine) };
+	Vector3 randomTranslate = { distTranslationX(randomEngine), distTranslationY(randomEngine), distTranslationZ(randomEngine) };
+	particle.transform.translate = translate + randomTranslate;
+	particle.velocity = { distVelocityX(randomEngine), distVelocityY(randomEngine), distVelocityZ(randomEngine) };
+	particle.color = { distColorR(randomEngine) , distColorG(randomEngine) , distColorB(randomEngine) , 1.0f };
+	particle.lifeTime = distTime(randomEngine);
+	particle.currentTime = 0.0f;
 
 	return particle;
+}
+
+ParticleManager::ParticleParameters ParticleManager::LoadParticleParameters(GlobalVariables* global, const std::string& groupName)
+{
+	ParticleParameters params;
+
+	// Translate
+	params.translateX = { global->GetVector3Value(groupName, "minTranslate").x, global->GetVector3Value(groupName, "maxTranslate").x };
+	params.translateY = { global->GetVector3Value(groupName, "minTranslate").y, global->GetVector3Value(groupName, "maxTranslate").y };
+	params.translateZ = { global->GetVector3Value(groupName, "minTranslate").z, global->GetVector3Value(groupName, "maxTranslate").z };
+
+	// Rotate
+	params.rotateX = { global->GetVector3Value(groupName, "minRotate").x, global->GetVector3Value(groupName, "maxRotate").x };
+	params.rotateY = { global->GetVector3Value(groupName, "minRotate").y, global->GetVector3Value(groupName, "maxRotate").y };
+	params.rotateZ = { global->GetVector3Value(groupName, "minRotate").z, global->GetVector3Value(groupName, "maxRotate").z };
+
+	// Scale
+	params.scale = { global->GetFloatValue(groupName, "minScale"), global->GetFloatValue(groupName, "maxScale") };
+
+	// Velocity
+	params.velocityX = { global->GetVector3Value(groupName, "minVelocity").x, global->GetVector3Value(groupName, "maxVelocity").x };
+	params.velocityY = { global->GetVector3Value(groupName, "minVelocity").y, global->GetVector3Value(groupName, "maxVelocity").y };
+	params.velocityZ = { global->GetVector3Value(groupName, "minVelocity").z, global->GetVector3Value(groupName, "maxVelocity").z };
+
+	// LifeTime
+	params.lifeTime = { global->GetFloatValue(groupName, "minLifeTime"), global->GetFloatValue(groupName, "maxLifeTime") };
+
+	// Color
+	params.colorMin = global->GetVector3Value(groupName, "minColor");
+	params.colorMax = global->GetVector3Value(groupName, "maxColor");
+
+	return params;
 }
 
 std::list<ParticleManager::Particle> ParticleManager::Emit(const std::string name, const Vector3& position, uint32_t count)

@@ -39,7 +39,7 @@ private:
 	WorldTransform transform_;
 	std::unique_ptr<LightManager> lightManager_;
 
-	ParticleEmitter* emitter_;
-	ParticleEmitter* emitter2_;
+	std::unique_ptr<ParticleManager> particleManager_ = nullptr;
+	std::unique_ptr<ParticleEmitter> snowEmitter_ = nullptr;
 };
 
