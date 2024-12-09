@@ -15,7 +15,8 @@ void GameScene::Initialize()
 	cameraManager_.AddCamera(normalCamera_);
 	cameraManager_.AddCamera(bossCamera_);
 	cameraManager_.SetActiveCamera(0);
-	normalCamera_->SetTranslate(Vector3{ 0.0f, 10.0f, -30.0f });
+	normalCamera_->SetTranslate(Vector3{ 0.0f, 35.0f, -44.0f });
+	normalCamera_->SetRotate(Vector3{ 0.68f, 0.0f, 0.0f });
 	bossCamera_->SetTranslate(Vector3{ 0.0f, 0.0f, -100.0f });
 
 	// .objファイルからモデルを読み込む
@@ -40,21 +41,11 @@ void GameScene::Initialize()
 	lightManager_->SetDirLightActive(0, true);
 	lightManager_->SetDirLightIntensity(0, 1.0f);
 
-	//ParticleManager::GetInstance()->CreateParticleGroup("circle", "resource/circle.png");
-	//ParticleManager::GetInstance()->CreateParticleGroup("test", "resource/circle.png");
-	//ParticleManager::GetInstance()->SetCamera(cameraManager_.GetActiveCamera().get());
-	//emitter_ = new ParticleEmitter();
-	//emitter_->Initialize("circle");
-	//emitter2_ = new ParticleEmitter();
-	//emitter2_->Initialize("test");
-
-	//ParticleManager::GetInstance()->SetParticleVelocityLange("test", -10.0f, 10.0f);
-
-	for (uint32_t i = 0; i < object_->GetModel()->GetConnectionCount(); i++) {
-		DebugSphere* sphere = new DebugSphere();
-		sphere->Initialize();
-		spheres_.push_back(sphere);
-	}
+	particleManager_ = std::make_unique<ParticleManager>();
+	particleManager_->Initialize();
+	particleManager_->CreateParticleGroup("snow", "resource/snow.png");
+	snowEmitter_ = std::make_unique<ParticleEmitter>();
+	snowEmitter_->Initialize(particleManager_.get(), "snow");
 }
 
 void GameScene::Finalize()
@@ -99,6 +90,9 @@ void GameScene::Update()
 
 	transform_.TransferMatrix();
 
+	particleManager_->Update();
+	snowEmitter_->Update({ 0.0f, 2.0f, 0.0f }, 10);
+
 	ImGui::Begin("SetModel");
 	if (ImGui::Button("Set Work"))
 	{
@@ -109,27 +103,18 @@ void GameScene::Update()
 		object_->SetModel("sneakWalk.gltf");
 	}
 	ImGui::End();
-
-	for (size_t i = 0; i < spheres_.size(); i++) {
-		spheres_[i]->Update(object_->GetModel()->GetConnectionPositions()[i]);
-	}
-
 }
 
 void GameScene::Draw()
 {
 	// 3Dオブジェクト描画前処理
 	Object3dManager::GetInstance()->DrawSetForAnimation();
+	ParticleResources::GetInstance()->DrawSet();
+	particleManager_->Draw();
 	lightManager_->BindLightsToShader();
 
 	object_->Draw(transform_);
 	Object3dManager::GetInstance()->DrawSet();
 	lightManager_->BindLightsToShader();
 	
-	for (size_t i = 0; i < spheres_.size(); i++) {
-		spheres_[i]->Draw();
-	}
-
-
-	//ParticleManager::GetInstance()->Draw();
 }

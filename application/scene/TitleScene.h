@@ -3,6 +3,11 @@
 #include <BaseScene.h>
 #include "SceneManager.h"
 #include <memory>
+#include <fade/Fade.h>
+#include "ParticleEmitter.h"
+#include "ParticleManager.h"
+#include "CameraManager.h"
+
 class TitleScene : public BaseScene
 {
 public:
@@ -16,6 +21,23 @@ public:
 	void Draw() override;
 
 private:
-	std::unique_ptr<Camera> camera_ = nullptr;
+
+	void ChangePhase();
+
+private:
+	enum class TitlePhase {
+		kFadeIn,
+		kTitle,
+		kFadeOut
+	};
+private:
+	std::shared_ptr<Camera> camera_ = nullptr;
+	CameraManager cameraManager_;
+	std::unique_ptr<Fade> fade_;
+
+	TitlePhase phase_ = TitlePhase::kFadeIn;
+
+	std::unique_ptr<ParticleManager> particleManager_ = nullptr;
+	std::unique_ptr<ParticleEmitter> snowEmitter_ = nullptr;
 };
 
