@@ -4,6 +4,7 @@
 #include <optional>
 #include <map>
 #include <Model.h>
+#include "Animator.h"
 
 class Skeleton
 {
@@ -55,6 +56,8 @@ public:
 	void Update();
 	// SkinClusterの更新
 	//void Update();
+	// 
+	void ApplyAnimation(const Animator::Animation* animation, float animationTime);
 private:
 	// Nodeの階層からSkeletonを作る
 	void CreateSkeleton(const Model::Node& rootNode);
