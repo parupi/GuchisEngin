@@ -38,7 +38,7 @@ void Animator::Update()
 	//rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
 	//scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime);
 
-	localMatrix = MakeAffineMatrixFromQuaternion(scale, rotate, translate);
+	localMatrix = MakeAffineMatrix(scale, rotate, translate);
 
 	// 骨ごとの状態更新
 	//ApplySkeleton();

@@ -138,7 +138,7 @@ Quaternion Slerp(Quaternion q0, Quaternion q1, float t)
 
 float Dot(const Quaternion& q0, const Quaternion& q1)
 {
-    return { q0.x * q1.x + q0.y * q1.y + q0.z * q1.z + q0.w * q1.w };
+    return q0.x * q1.x + q0.y * q1.y + q0.z * q1.z + q0.w * q1.w;
 }
 
 // ImGuiを使ったクォータニオンの描画

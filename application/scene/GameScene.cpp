@@ -27,7 +27,7 @@ void GameScene::Initialize()
 
 	object_ = new Object3d();
 	//object_->Initialize("plane.obj");
-	object_->Initialize("simpleSkin.gltf");
+	object_->Initialize("walk.gltf");
 	//object_->Initialize("uvChecker.gltf");
 	//object_->Initialize("AnimatedCube.gltf");
 

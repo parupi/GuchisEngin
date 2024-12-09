@@ -12,7 +12,7 @@ void Skeleton::Initialize(Model* model)
 void Skeleton::Update()
 {
 	for (auto& joint : skeletonData_.joints) {
-		joint.localMatrix = MakeAffineMatrixFromQuaternion(joint.transform.scale, joint.transform.rotate, joint.transform.translate);
+		joint.localMatrix = MakeAffineMatrix(joint.transform.scale, joint.transform.rotate, joint.transform.translate);
 
 		if (joint.parent && *joint.parent < skeletonData_.joints.size()) {
 			joint.skeletonSpaceMatrix = joint.localMatrix * skeletonData_.joints[*joint.parent].skeletonSpaceMatrix;
