@@ -11,6 +11,7 @@
 #include <WorldTransform.h>
 #include <LightManager.h>
 #include <ParticleEmitter.h>
+#include "DebugSphere.h"
 
 class GameScene : public BaseScene
 {
@@ -41,5 +42,6 @@ private:
 
 	std::unique_ptr<ParticleManager> particleManager_ = nullptr;
 	std::unique_ptr<ParticleEmitter> snowEmitter_ = nullptr;
+
 };
 

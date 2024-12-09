@@ -21,11 +21,16 @@ void GameScene::Initialize()
 
 	// .objファイルからモデルを読み込む
 	ModelManager::GetInstance()->LoadModel("resource", "walk.gltf");
-	ModelManager::GetInstance()->LoadModel("resource", "plane.obj");
-	
+	ModelManager::GetInstance()->LoadModel("resource", "simpleSkin.gltf");
+	ModelManager::GetInstance()->LoadModel("resource", "sneakWalk.gltf");
+	//ModelManager::GetInstance()->LoadModel("resource", "plane.obj");
+	ModelManager::GetInstance()->LoadModel("resource", "AnimatedCube.gltf");
+
 	object_ = new Object3d();
-	object_->Initialize("plane.obj");
-	//object_->SetModel("uvChecker.gltf");
+	//object_->Initialize("plane.obj");
+	object_->Initialize("walk.gltf");
+	//object_->Initialize("uvChecker.gltf");
+	//object_->Initialize("AnimatedCube.gltf");
 
 	transform_.Initialize();
 
@@ -77,24 +82,39 @@ void GameScene::Update()
 	normalCamera_->SetTranslate(normalCameraPos);
 	bossCamera_->SetTranslate(bossCameraPos);
 
+	ImGui::Begin("Transform");
+	ImGui::DragFloat3("translate", &transform_.translation_.x, 0.01f);
+	ImGui::DragFloat3("rotation", &transform_.rotation_.x, 0.01f);
+	ImGui::DragFloat3("scale", &transform_.scale_.x, 0.01f);
+	ImGui::End();
+
 	transform_.TransferMatrix();
 
 	particleManager_->Update();
 	snowEmitter_->Update({ 0.0f, 2.0f, 0.0f }, 10);
+
+	ImGui::Begin("SetModel");
+	if (ImGui::Button("Set Work"))
+	{
+		object_->SetModel("walk.gltf");
+	}
+	if (ImGui::Button("Set sneakWalk"))
+	{
+		object_->SetModel("sneakWalk.gltf");
+	}
+	ImGui::End();
 }
 
 void GameScene::Draw()
 {
 	// 3Dオブジェクト描画前処理
 	Object3dManager::GetInstance()->DrawSetForAnimation();
-	lightManager_->BindLightsToShader();
-
-
-	Object3dManager::GetInstance()->DrawSet();
-	lightManager_->BindLightsToShader();
-
-	//object_->Draw(transform_);
-
 	ParticleResources::GetInstance()->DrawSet();
 	particleManager_->Draw();
+	lightManager_->BindLightsToShader();
+
+	object_->Draw(transform_);
+	Object3dManager::GetInstance()->DrawSet();
+	lightManager_->BindLightsToShader();
+	
 }

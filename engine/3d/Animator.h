@@ -7,10 +7,10 @@
 #include <string>
 #include <optional>
 #include <Model.h>
-#include <Skeleton.h>
+//#include <Skeleton.h>
 
 //class Model;
-//class Skeleton;
+class Skeleton;
 
 class Animator {
 public:
@@ -19,7 +19,7 @@ public:
 	// 再生
 	void Update();
 	// Skeletonを適応する
-	void ApplySkeleton();
+	//void ApplySkeleton();
 public: // 構造体
 	template <typename tValue>
 	struct Keyframe {
@@ -47,13 +47,11 @@ public: // 構造体
 private:
 	// アニメーションを読む処理
 	Animation LoadAnimationFile(const std::string& directoryPath, const std::string& filename);
+public:
 	// 任意の時刻を取得する (Vector3)
-	Vector3 CalculateValue(const std::vector<KeyframeVector3>& keyframes, float time);
+	static Vector3 CalculateValue(const std::vector<KeyframeVector3>& keyframes, float time);
 	// 任意の時刻を取得する (Quaternion)
-	Quaternion CalculateValue(const std::vector<KeyframeQuaternion>& keyframes, float time);
-//	void UpdateNodeTransforms(const Model::Node& node, const Skeleton::Joint* parentJoint, float animationTime);
-//	Vector3 CalculateInterpolatedValue(const std::vector<KeyframeVector3>& keyframes, float animationTime);
-//	Quaternion CalculateInterpolatedValue(const std::vector<KeyframeQuaternion>& keyframes, float animationTime);
+	static Quaternion CalculateValue(const std::vector<KeyframeQuaternion>& keyframes, float time);
 private:
 	// アニメーション
 	Animation animation;
