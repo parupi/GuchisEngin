@@ -11,6 +11,7 @@
 #include <WorldTransform.h>
 #include <LightManager.h>
 #include <ParticleEmitter.h>
+#include "DebugSphere.h"
 
 class GameScene : public BaseScene
 {
@@ -41,5 +42,7 @@ private:
 
 	ParticleEmitter* emitter_;
 	ParticleEmitter* emitter2_;
+
+	std::vector<DebugSphere*> spheres_;
 };
 

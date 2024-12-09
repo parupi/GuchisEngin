@@ -20,11 +20,16 @@ void GameScene::Initialize()
 
 	// .objファイルからモデルを読み込む
 	ModelManager::GetInstance()->LoadModel("resource", "walk.gltf");
-	ModelManager::GetInstance()->LoadModel("resource", "plane.obj");
-	
+	ModelManager::GetInstance()->LoadModel("resource", "simpleSkin.gltf");
+	ModelManager::GetInstance()->LoadModel("resource", "sneakWalk.gltf");
+	//ModelManager::GetInstance()->LoadModel("resource", "plane.obj");
+	ModelManager::GetInstance()->LoadModel("resource", "AnimatedCube.gltf");
+
 	object_ = new Object3d();
-	object_->Initialize("plane.obj");
-	//object_->SetModel("uvChecker.gltf");
+	//object_->Initialize("plane.obj");
+	object_->Initialize("walk.gltf");
+	//object_->Initialize("uvChecker.gltf");
+	//object_->Initialize("AnimatedCube.gltf");
 
 	transform_.Initialize();
 
@@ -44,6 +49,12 @@ void GameScene::Initialize()
 	//emitter2_->Initialize("test");
 
 	//ParticleManager::GetInstance()->SetParticleVelocityLange("test", -10.0f, 10.0f);
+
+	for (uint32_t i = 0; i < object_->GetModel()->GetConnectionCount(); i++) {
+		DebugSphere* sphere = new DebugSphere();
+		sphere->Initialize();
+		spheres_.push_back(sphere);
+	}
 }
 
 void GameScene::Finalize()
@@ -80,31 +91,45 @@ void GameScene::Update()
 	normalCamera_->SetTranslate(normalCameraPos);
 	bossCamera_->SetTranslate(bossCameraPos);
 
+	ImGui::Begin("Transform");
+	ImGui::DragFloat3("translate", &transform_.translation_.x, 0.01f);
+	ImGui::DragFloat3("rotation", &transform_.rotation_.x, 0.01f);
+	ImGui::DragFloat3("scale", &transform_.scale_.x, 0.01f);
+	ImGui::End();
+
 	transform_.TransferMatrix();
 
-	Quaternion rotation0 = MakeRotateAxisAngleQuaternion({ 0.71f, 0.71f, 0.0f }, 0.3f);
-	Quaternion rotation1 = { -rotation0.x, -rotation0.y, -rotation0.z, -rotation0.w };
+	ImGui::Begin("SetModel");
+	if (ImGui::Button("Set Work"))
+	{
+		object_->SetModel("walk.gltf");
+	}
+	if (ImGui::Button("Set sneakWalk"))
+	{
+		object_->SetModel("sneakWalk.gltf");
+	}
+	ImGui::End();
 
-	Quaternion interpolate0 = Slerp(rotation0, rotation1, 0.0f);
-	Quaternion interpolate1 = Slerp(rotation0, rotation1, 0.3f);
-	Quaternion interpolate2 = Slerp(rotation0, rotation1, 0.5f);
-	Quaternion interpolate3 = Slerp(rotation0, rotation1, 0.7f);
-	Quaternion interpolate4 = Slerp(rotation0, rotation1, 1.0f);
+	for (size_t i = 0; i < spheres_.size(); i++) {
+		spheres_[i]->Update(object_->GetModel()->GetConnectionPositions()[i]);
+	}
 
-	PrintOnImGui(interpolate0);
-	PrintOnImGui(interpolate1);
-	PrintOnImGui(interpolate2);
-	PrintOnImGui(interpolate3);
-	PrintOnImGui(interpolate4);
 }
 
 void GameScene::Draw()
 {
 	// 3Dオブジェクト描画前処理
 	Object3dManager::GetInstance()->DrawSetForAnimation();
-	Object3dManager::GetInstance()->DrawSet();
 	lightManager_->BindLightsToShader();
 
 	object_->Draw(transform_);
+	Object3dManager::GetInstance()->DrawSet();
+	lightManager_->BindLightsToShader();
+	
+	for (size_t i = 0; i < spheres_.size(); i++) {
+		spheres_[i]->Draw();
+	}
+
+
 	//ParticleManager::GetInstance()->Draw();
 }
