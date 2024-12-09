@@ -40,12 +40,6 @@ void GameScene::Initialize()
 
 	lightManager_->SetDirLightActive(0, true);
 	lightManager_->SetDirLightIntensity(0, 1.0f);
-
-	particleManager_ = std::make_unique<ParticleManager>();
-	particleManager_->Initialize();
-	particleManager_->CreateParticleGroup("snow", "resource/snow.png");
-	snowEmitter_ = std::make_unique<ParticleEmitter>();
-	snowEmitter_->Initialize(particleManager_.get(), "snow");
 }
 
 void GameScene::Finalize()
@@ -57,10 +51,6 @@ void GameScene::Update()
 {
 	object_->AnimationUpdate();
 	cameraManager_.Update();
-
-	//ParticleManager::GetInstance()->Update();
-	//emitter_->Update({5.0f, 0.0f, 0.0f}, 10000);
-	//emitter2_->Update({-5.0f, 0.0f, 0.0f}, 10000);
 
 	Vector3 normalCameraPos = normalCamera_->GetTranslate();
 	Vector3 bossCameraPos = bossCamera_->GetTranslate();
@@ -90,9 +80,6 @@ void GameScene::Update()
 
 	transform_.TransferMatrix();
 
-	particleManager_->Update();
-	snowEmitter_->Update({ 0.0f, 2.0f, 0.0f }, 10);
-
 	ImGui::Begin("SetModel");
 	if (ImGui::Button("Set Work"))
 	{
@@ -109,11 +96,9 @@ void GameScene::Draw()
 {
 	// 3Dオブジェクト描画前処理
 	Object3dManager::GetInstance()->DrawSetForAnimation();
-	ParticleResources::GetInstance()->DrawSet();
-	particleManager_->Draw();
 	lightManager_->BindLightsToShader();
-
 	object_->Draw(transform_);
+
 	Object3dManager::GetInstance()->DrawSet();
 	lightManager_->BindLightsToShader();
 	
