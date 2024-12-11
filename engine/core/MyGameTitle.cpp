@@ -8,11 +8,11 @@ void MyGameTitle::Initialize()
 	// ImGui初期化
 	ImGuiManager::GetInstance()->Initialize(winManager.get(), dxManager.get());
 	// 2Dテクスチャマネージャーの初期化
-	TextureManager::GetInstance()->Initialize(dxManager.get(), srvManager.get());
+	TextureManager::GetInstance()->Initialize(dxManager.get(), srvManager);
 	// 3Dテクスチャマネージャーの初期化
-	ModelManager::GetInstance()->Initialize(dxManager.get(), srvManager.get());
+	ModelManager::GetInstance()->Initialize(dxManager.get(), srvManager);
 	// パーティクルマネージャーの初期化
-	ParticleResources::GetInstance()->Initialize(dxManager.get(), srvManager.get());
+	ParticleResources::GetInstance()->Initialize(dxManager.get(), srvManager);
 	// スプライト共通部の初期化
 	SpriteManager::GetInstance()->Initialize(dxManager.get());
 	// オブジェクト共通部
@@ -51,10 +51,11 @@ void MyGameTitle::Update()
 
 void MyGameTitle::Draw()
 {
-	dxManager->BeginDraw();
+	dxManager->BeginDrawForRenderTarget();
 	srvManager->BeginDraw();
-
 	SceneManager::GetInstance()->Draw();
+
+	dxManager->BeginDraw();
 
 	ImGuiManager::GetInstance()->Draw();
 

@@ -61,13 +61,17 @@ private: // メンバ変数
 	Microsoft::WRL::ComPtr<ID3D12Fence> fence_ = nullptr;
 	HANDLE fenceEvent_ = nullptr;
 	// RTVを2つ作るのでディスクリプタを2つ用意
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles_[2]{};
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles_[3]{};
 
 	D3D12_RESOURCE_BARRIER barrier_{};
 
 	// 記録時間(FPS固定用)
 	std::chrono::steady_clock::time_point reference_;
 
+	// オフスクリーン用変数
+	Microsoft::WRL::ComPtr<ID3D12Resource> offScreenResource_;
+	uint32_t srvIndex_;
+	std::pair<D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_GPU_DESCRIPTOR_HANDLE> srvHandle_;
 private:
 	
 
@@ -84,9 +88,10 @@ public:
 	
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 
-	// オフスクリーン用変数
+	// オフスクリーン用関数
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateRenderTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor);
-
+	void CreateRTVForOffScreen();
+	void CreateSRVForOffScreen();
 private:
 	void InitializeDXGIDevice();
 	// コマンド関連の初期化
@@ -118,6 +123,8 @@ public:
 	/// </summary>
 	void BeginDraw();
 
+	void BeginDrawForRenderTarget();
+
 	/// <summary>
 	/// 描画後処理
 	/// </summary>
@@ -140,11 +147,11 @@ public:
 
 	void StartImGuiFrame();
 
-	void SetRenderTargets(UINT backBufferIndex);
+	void SetRenderTargets(D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle);
 
 	void ClearDepthStencilView();
 
-	void ClearRenderTarget(UINT backBufferIndex);
+	void ClearRenderTarget(D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle);
 
 	void RenderImGui();
 

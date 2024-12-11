@@ -40,7 +40,7 @@ protected:
 
 	std::unique_ptr<WindowManager> winManager = nullptr;
 	std::unique_ptr<DirectXManager> dxManager = nullptr;
-	std::unique_ptr<SrvManager> srvManager = nullptr;
+	SrvManager* srvManager = nullptr;
 	std::unique_ptr<AbstractSceneFactory> sceneFactory_ = nullptr;
 };
 

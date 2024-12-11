@@ -2,6 +2,17 @@
 
 const uint32_t SrvManager::kMaxCount = 512;
 
+SrvManager* SrvManager::instance = nullptr;
+std::once_flag SrvManager::initInstanceFlag;
+
+SrvManager* SrvManager::GetInstance()
+{
+	std::call_once(initInstanceFlag, []() {
+		instance = new SrvManager();
+		});
+	return instance;
+}
+
 void SrvManager::Initialize(DirectXManager* dxManager)
 {
 	dxManager_ = dxManager;

@@ -2,7 +2,17 @@
 #include <DirectXManager.h>
 class SrvManager
 {
-public: // メンバ関数
+private:
+	static SrvManager* instance;
+	static std::once_flag initInstanceFlag;
+
+	SrvManager() = default;
+	~SrvManager() = default;
+	SrvManager(SrvManager&) = default;
+	SrvManager& operator=(SrvManager&) = default;
+public:
+	// シングルトンインスタンスの取得
+	static SrvManager* GetInstance();
 	// 初期化
 	void Initialize(DirectXManager* dxManager);
 	// 確保
@@ -36,7 +46,7 @@ private:
 	// 次に使用するSRVインデックス
 	uint32_t useIndex = 0;
 
-public: // ゲッター // セッター //
+public: // アクセッサ
 
 
 };
