@@ -15,7 +15,6 @@
 #include "ImGuiManager.h"
 #include "GlobalVariables.h"
 
-
 class MyGameTitle : public GuchisFramework
 {
 public: 

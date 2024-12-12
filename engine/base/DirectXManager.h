@@ -11,6 +11,9 @@
 #include <chrono>
 #include <thread>
 #include <vector>
+#include <Vector4.h>
+
+class SrvManager;
 
 class DirectXManager
 {
@@ -60,12 +63,17 @@ private: // メンバ変数
 	Microsoft::WRL::ComPtr<ID3D12Fence> fence_ = nullptr;
 	HANDLE fenceEvent_ = nullptr;
 	// RTVを2つ作るのでディスクリプタを2つ用意
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles_[2]{};
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles_[3]{};
 
 	D3D12_RESOURCE_BARRIER barrier_{};
 
 	// 記録時間(FPS固定用)
 	std::chrono::steady_clock::time_point reference_;
+
+	// オフスクリーン用変数
+	Microsoft::WRL::ComPtr<ID3D12Resource> offScreenResource_;
+	uint32_t srvIndex_;
+	std::pair<D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_GPU_DESCRIPTOR_HANDLE> srvHandle_;
 
 private:
 	
@@ -76,16 +84,18 @@ public:
 
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(Microsoft::WRL::ComPtr<ID3D12Device> device, D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible);
 
-	//D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap, uint32_t descriptorSize, uint32_t index);
-	//D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap, uint32_t descriptorSize, uint32_t index);
-
-	Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(const std::wstring& filePath, const wchar_t* profile);
+	IDxcBlob* CompileShader(const std::wstring& filePath, const wchar_t* profile);
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(Microsoft::WRL::ComPtr<ID3D12Device> device, int32_t width, int32_t height);
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata& metadata);
 	void UploadTextureData(Microsoft::WRL::ComPtr<ID3D12Resource> texture, const DirectX::ScratchImage& mipImages);
 	
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 
+	// オフスクリーン用関数
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateRenderTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor);
+	void CreateRTVForOffScreen();
+	void CreateSRVForOffScreen(SrvManager* srvManager);
+	std::pair<D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_GPU_DESCRIPTOR_HANDLE> GetSrvHandle() const { return srvHandle_; }
 private:
 	void InitializeDXGIDevice();
 	// コマンド関連の初期化
@@ -117,6 +127,8 @@ public:
 	/// </summary>
 	void BeginDraw();
 
+	void BeginDrawForRenderTarget();
+
 	/// <summary>
 	/// 描画後処理
 	/// </summary>
@@ -139,11 +151,11 @@ public:
 
 	void StartImGuiFrame();
 
-	void SetRenderTargets(UINT backBufferIndex);
+	void SetRenderTargets(D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle);
 
 	void ClearDepthStencilView();
 
-	void ClearRenderTarget(UINT backBufferIndex);
+	void ClearRenderTarget(D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle);
 
 	void RenderImGui();
 
