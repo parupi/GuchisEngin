@@ -9,10 +9,10 @@ void GuchisFramework::Initialize()
 	dxManager = std::make_unique<DirectXManager>();
 	dxManager->Initialize(winManager.get());
 	// SRVマネージャーの初期化
-	srvManager = SrvManager::GetInstance();
+	srvManager = std::make_unique<SrvManager>();
 	srvManager->Initialize(dxManager.get());
 
-	dxManager->CreateSRVForOffScreen();
+	dxManager->CreateSRVForOffScreen(srvManager.get());
 	// 入力の初期化
 	Input::GetInstance()->Initialize();
 	// Audioの初期化

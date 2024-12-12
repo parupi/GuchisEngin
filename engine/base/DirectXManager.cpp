@@ -3,10 +3,10 @@
 #include "DirectXManager.h"
 #include <cassert>
 #include <format>
+#include <SrvManager.h>
 
 #include "imgui_impl_dx12.h"
 #include "imgui_impl_win32.h"
-#include <SrvManager.h>
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -91,7 +91,7 @@ void DirectXManager::UpdateFixFPS()
 	reference_ = std::chrono::steady_clock::now();
 }
 
-Microsoft::WRL::ComPtr<IDxcBlob> DirectXManager::CompileShader(const std::wstring& filePath, const wchar_t* profile)
+IDxcBlob* DirectXManager::CompileShader(const std::wstring& filePath, const wchar_t* profile)
 {
 	//1.hlslファイルを読む
 	// これからシェーダーをコンパイルする旨をログに出す
@@ -319,12 +319,12 @@ void DirectXManager::CreateRTVForOffScreen()
 	offScreenResource_ = CreateRenderTextureResource(WindowManager::kClientWidth, WindowManager::kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTargetClearValue);
 }
 
-void DirectXManager::CreateSRVForOffScreen()
+void DirectXManager::CreateSRVForOffScreen(SrvManager* srvManager)
 {
-	srvIndex_ = SrvManager::GetInstance()->Allocate();
-	srvHandle_.first = SrvManager::GetInstance()->GetCPUDescriptorHandle(srvIndex_);
-	srvHandle_.second = SrvManager::GetInstance()->GetGPUDescriptorHandle(srvIndex_);
-	SrvManager::GetInstance()->CreateSRVforTexture2D(srvIndex_, offScreenResource_.Get(), DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, 1);
+	srvIndex_ = srvManager->Allocate();
+	srvHandle_.first = srvManager->GetCPUDescriptorHandle(srvIndex_);
+	srvHandle_.second = srvManager->GetGPUDescriptorHandle(srvIndex_);
+	srvManager->CreateSRVforTexture2D(srvIndex_, offScreenResource_.Get(), DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, 1);
 }
 
 void DirectXManager::InitializeDXGIDevice()

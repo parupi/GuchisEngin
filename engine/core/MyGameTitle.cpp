@@ -8,15 +8,18 @@ void MyGameTitle::Initialize()
 	// ImGui初期化
 	ImGuiManager::GetInstance()->Initialize(winManager.get(), dxManager.get());
 	// 2Dテクスチャマネージャーの初期化
-	TextureManager::GetInstance()->Initialize(dxManager.get(), srvManager);
+	TextureManager::GetInstance()->Initialize(dxManager.get(), srvManager.get());
 	// 3Dテクスチャマネージャーの初期化
-	ModelManager::GetInstance()->Initialize(dxManager.get(), srvManager);
+	ModelManager::GetInstance()->Initialize(dxManager.get(), srvManager.get());
 	// パーティクルマネージャーの初期化
-	ParticleResources::GetInstance()->Initialize(dxManager.get(), srvManager);
+	ParticleResources::GetInstance()->Initialize(dxManager.get(), srvManager.get());
 	// スプライト共通部の初期化
 	SpriteManager::GetInstance()->Initialize(dxManager.get());
 	// オブジェクト共通部
 	Object3dManager::GetInstance()->Initialize(dxManager.get());
+
+	offScreen_ = std::make_unique<OffScreen>();
+	offScreen_->Initialize(dxManager.get());
 
 	// 最初のシーンを生成
 	sceneFactory_ = std::make_unique<SceneFactory>();
@@ -55,7 +58,10 @@ void MyGameTitle::Draw()
 	srvManager->BeginDraw();
 	SceneManager::GetInstance()->Draw();
 
+
 	dxManager->BeginDraw();
+
+	offScreen_->Draw();
 
 	ImGuiManager::GetInstance()->Draw();
 

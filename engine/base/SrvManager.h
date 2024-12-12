@@ -2,17 +2,7 @@
 #include <DirectXManager.h>
 class SrvManager
 {
-private:
-	static SrvManager* instance;
-	static std::once_flag initInstanceFlag;
-
-	SrvManager() = default;
-	~SrvManager() = default;
-	SrvManager(SrvManager&) = default;
-	SrvManager& operator=(SrvManager&) = default;
 public:
-	// シングルトンインスタンスの取得
-	static SrvManager* GetInstance();
 	// 初期化
 	void Initialize(DirectXManager* dxManager);
 	// 確保
