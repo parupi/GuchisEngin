@@ -30,20 +30,16 @@ private:
 	struct VertexData {
 		Vector4 position;
 		Vector2 texcoord;
-		Vector3 normal;
 	};
 
 	struct Material {
 		Vector4 color;
-		bool enableLighting;
-		float padding[3];
 		Matrix4x4 uvTransform;
 	};
 
 	struct TransformationMatrix {
 		Matrix4x4 WVP;
 		Matrix4x4 World;
-		Matrix4x4 WorldInverseTranspose;
 	};
 
 	SpriteManager* spriteManager_ = nullptr;

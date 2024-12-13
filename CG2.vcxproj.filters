@@ -218,6 +218,9 @@
     <ClCompile Include="engine\base\OffScreen.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="engine\base\PsoManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\Object3d.PS.hlsl">
@@ -230,6 +233,8 @@
     <FxCompile Include="resource\shaders\Particle.VS.hlsl" />
     <FxCompile Include="resource\shaders\CopyImage.PS.hlsl" />
     <FxCompile Include="resource\shaders\CopyImage.VS.hlsl" />
+    <FxCompile Include="resource\shaders\Sprite.VS.hlsl" />
+    <FxCompile Include="resource\shaders\Sprite.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -391,6 +396,9 @@
     <ClInclude Include="engine\base\OffScreen.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="engine\base\PsoManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt">
@@ -403,5 +411,6 @@
     </None>
     <None Include="resource\shaders\Particle.hlsli" />
     <None Include="resource\shaders\CopyImage.hlsli" />
+    <None Include="resource\shaders\Sprite.hlsli" />
   </ItemGroup>
 </Project>

@@ -3,6 +3,7 @@
 #include <Camera.h>
 #include <memory>
 #include <mutex>
+#include "PsoManager.h"
 class Object3dManager
 {
 private:
@@ -17,7 +18,7 @@ public:
 	// シングルトンインスタンスの取得
 	static Object3dManager* GetInstance();
 	// 初期化
-	void Initialize(DirectXManager* directXManager);
+	void Initialize(DirectXManager* directXManager, PSOManager* psoManager);
 	// 終了
 	void Finalize();
 	// 描画前処理
@@ -40,6 +41,7 @@ private:
 private:
 	// DirectXのポインタ
 	DirectXManager* dxManager_ = nullptr;
+	PSOManager* psoManager_ = nullptr;
 	// カメラのポインタ
 	Camera* defaultCamera_ = nullptr;
 
@@ -50,10 +52,10 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineStateForAnimation_ = nullptr;
 
-	std::array<D3D12_INPUT_ELEMENT_DESC, 3> inputElementDescs_;
+	
 	std::array<D3D12_INPUT_ELEMENT_DESC, 5> inputElementDescsForAnimation_;
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDescForAnimation_{};
-	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc_{};
+	
 	// BlendState
 	D3D12_BLEND_DESC blendDesc_{};
 	D3D12_RASTERIZER_DESC rasterizerDesc_{};

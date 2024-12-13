@@ -2,6 +2,7 @@
 #include "DirectXManager.h"
 #include <memory>
 #include <mutex>
+#include <PsoManager.h>
 // スプライト共通部
 class SpriteManager
 {
@@ -17,9 +18,9 @@ public:
 	// シングルトンインスタンスの取得
 	static SpriteManager* GetInstance();
 	// 初期化
-	void Initialize(DirectXManager* directXManager);
+	void Initialize(DirectXManager* directXManager, PSOManager* posManager);
 	// 描画前処理
-	void DrawSet();
+	void DrawSet(BlendMode blendMode = BlendMode::kNormal);
 	// 終了
 	void Finalize();
 
@@ -33,22 +34,7 @@ private:
 private:
 	// DirectXのポインタ
 	DirectXManager* dxManager_ = nullptr;
-	// ルートシグネチャ
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;
-	// PSO
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState_ = nullptr;
-
-	D3D12_INPUT_ELEMENT_DESC inputElementDescs_[3] = {};
-	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc_{};
-	// BlendState
-	D3D12_BLEND_DESC blendDesc_{};
-	D3D12_RASTERIZER_DESC rasterizerDesc_{};
-
-	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob_ = nullptr;
-	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob_ = nullptr;
-
-	ID3DBlob* signatureBlob = nullptr;
-	ID3DBlob* errorBlob = nullptr;
+	PSOManager* psoManager_ = nullptr;
 
 public:
 	DirectXManager* GetDxManager() const { return dxManager_; }
