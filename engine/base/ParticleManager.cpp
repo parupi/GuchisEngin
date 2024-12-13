@@ -70,7 +70,7 @@ void ParticleManager::Update()
 				if ((*particleIterator).transform.translate.y >= -15.0f) {
 					(*particleIterator).transform.translate += (*particleIterator).velocity * kDeltaTime;
 					(*particleIterator).transform.rotate += {0.1f, 0.1f, 0.1f};
-					alpha = alpha_[groupName];
+					alpha = 1.0f;
 				}
 				else {
 					(*particleIterator).currentTime += kDeltaTime;

@@ -31,7 +31,7 @@ private:
 	std::shared_ptr<Camera> bossCamera_;
 
 	Object3d* object_;
-	std::vector<Sprite*> sprites;
+	Sprite* sprite;
 
 	Vector4 color1 = { 1.0f, 1.0f, 1.0f, 1.0f };
 	Vector4 color2 = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -41,7 +41,7 @@ private:
 	std::unique_ptr<LightManager> lightManager_;
 
 	std::unique_ptr<ParticleManager> particleManager_ = nullptr;
-	std::unique_ptr<ParticleEmitter> snowEmitter_ = nullptr;
+	std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
 
 };
 

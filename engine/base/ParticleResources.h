@@ -2,6 +2,7 @@
 #include <DirectXManager.h>
 #include <SrvManager.h>
 #include "Camera.h"
+#include "PsoManager.h"
 class ParticleResources
 {
 private:
@@ -15,42 +16,18 @@ public:
 	// シングルトンインスタンスの取得
 	static ParticleResources* GetInstance();
 	// 初期化
-	void Initialize(DirectXManager* dxManager, SrvManager* srvManager);
+	void Initialize(DirectXManager* dxManager, SrvManager* srvManager, PSOManager* psoManager);
 	// 終了
 	void Finalize();
 	// 描画前処理
-	void DrawSet();
-private:
-
-	void CreateRootSignature();
-	void CreateInputElementDesc();
-	void CreateBlendState();
-	void CreateRasterizerState();
-	void LoadShader();
-	void CreatePipelineState();
+	void DrawSet(BlendMode blendMode = BlendMode::kNormal);
 
 private:
 	// DxManager
 	DirectXManager* dxManager_ = nullptr;
 	SrvManager* srvManager_ = nullptr;
+	PSOManager* psoManager_ = nullptr;
 	Camera* camera_ = nullptr;
-
-	// ルートシグネチャ
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;
-	// PSO
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState_ = nullptr;
-
-	D3D12_INPUT_ELEMENT_DESC inputElementDescs_[3] = {};
-	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc_{};
-	// BlendState
-	D3D12_BLEND_DESC blendDesc_{};
-	D3D12_RASTERIZER_DESC rasterizerDesc_{};
-
-	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob_ = nullptr;
-	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob_ = nullptr;
-
-	ID3DBlob* signatureBlob = nullptr;
-	ID3DBlob* errorBlob = nullptr;
 
 public:
 	DirectXManager* GetDxManager() { return dxManager_; }

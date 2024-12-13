@@ -95,13 +95,13 @@ private: // 構造体
 		Vector2 rotateX;
 		Vector2 rotateY;
 		Vector2 rotateZ;
-		Vector2 scale;
+		Vector2 scale = {1.0f, 1.0f};
 		Vector2 velocityX;
 		Vector2 velocityY;
 		Vector2 velocityZ;
-		Vector2 lifeTime;
+		Vector2 lifeTime = {1.0f, 3.0f};
 		Vector3 colorMin;
-		Vector3 colorMax;
+		Vector3 colorMax = {1.0f, 1.0f, 1.0f };
 	};
 private:
 	// パーティクル用のリソースの生成

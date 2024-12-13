@@ -23,8 +23,9 @@ void GameScene::Initialize()
 	ModelManager::GetInstance()->LoadModel("resource", "walk.gltf");
 	ModelManager::GetInstance()->LoadModel("resource", "simpleSkin.gltf");
 	ModelManager::GetInstance()->LoadModel("resource", "sneakWalk.gltf");
-	//ModelManager::GetInstance()->LoadModel("resource", "plane.obj");
+	ModelManager::GetInstance()->LoadModel("resource", "test.gltf");
 	ModelManager::GetInstance()->LoadModel("resource", "AnimatedCube.gltf");
+	TextureManager::GetInstance()->LoadTexture("resource/uvChecker.png");
 
 	object_ = new Object3d();
 	//object_->Initialize("plane.obj");
@@ -34,23 +35,36 @@ void GameScene::Initialize()
 
 	transform_.Initialize();
 
+	sprite = new Sprite();
+	sprite->Initialize("resource/uvChecker.png");
+
 	// ============ライト=================//
 	lightManager_ = std::make_unique<LightManager>();
 	lightManager_->Initialize();
 
 	lightManager_->SetDirLightActive(0, true);
 	lightManager_->SetDirLightIntensity(0, 1.0f);
+
+	particleManager_ = std::make_unique<ParticleManager>();
+	particleManager_->Initialize();
+	particleManager_->CreateParticleGroup("test", "resource/uvChecker.png");
 }
 
 void GameScene::Finalize()
 {
-
+	delete object_;
+	delete sprite;
 }
 
 void GameScene::Update()
 {
+	particleManager_->Emit("test", transform_.translation_, 1);
+	particleManager_->Update();
+
 	object_->AnimationUpdate();
 	cameraManager_.Update();
+
+	sprite->Update();
 
 	Vector3 normalCameraPos = normalCamera_->GetTranslate();
 	Vector3 bossCameraPos = bossCamera_->GetTranslate();
@@ -102,4 +116,9 @@ void GameScene::Draw()
 	Object3dManager::GetInstance()->DrawSet();
 	lightManager_->BindLightsToShader();
 	
+	SpriteManager::GetInstance()->DrawSet();
+	sprite->Draw();
+
+	ParticleResources::GetInstance()->DrawSet();
+	particleManager_->Draw();
 }
