@@ -60,7 +60,7 @@ void MyGameTitle::Draw()
 
 	dxManager->BeginDraw();
 
-	offScreen_->Draw();
+	offScreen_->Draw(OffScreenEffectType::kGray);
 
 	ImGuiManager::GetInstance()->Draw();
 

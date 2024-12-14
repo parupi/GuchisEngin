@@ -232,9 +232,10 @@
     <FxCompile Include="resource\shaders\Particle.PS.hlsl" />
     <FxCompile Include="resource\shaders\Particle.VS.hlsl" />
     <FxCompile Include="resource\shaders\CopyImage.PS.hlsl" />
-    <FxCompile Include="resource\shaders\CopyImage.VS.hlsl" />
+    <FxCompile Include="resource\shaders\Fullscreen.VS.hlsl" />
     <FxCompile Include="resource\shaders\Sprite.VS.hlsl" />
     <FxCompile Include="resource\shaders\Sprite.PS.hlsl" />
+    <FxCompile Include="resource\shaders\GrayScale.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -410,7 +411,7 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="resource\shaders\Particle.hlsli" />
-    <None Include="resource\shaders\CopyImage.hlsli" />
+    <None Include="resource\shaders\Fullscreen.hlsli" />
     <None Include="resource\shaders\Sprite.hlsli" />
   </ItemGroup>
 </Project>
