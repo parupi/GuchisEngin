@@ -95,7 +95,7 @@ void Object3d::CreateCameraResource()
 	// 書き込むためのアドレスを取得
 	cameraResource_->Map(0, nullptr, reinterpret_cast<void**>(&cameraData_));
 	// 初期値を入れる
-	cameraData_->worldPosition = { 1.0f, 1.0f, 1.0f };
+	cameraData_->worldPosition = { 0.0f, 0.0f, -50.0f };
 }
 
 void Object3d::SetModel(const std::string& filePath)

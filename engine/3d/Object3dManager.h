@@ -26,17 +26,6 @@ public:
 	// アニメーション用描画前処理
 	void DrawSetForAnimation();
 private:
-	void CreateRootSignature();
-	void CreateRootSignatureForAnimation();
-	void CreateInputElementDesc();
-	void CreateInputElementDescForAnimation();
-	void CreateBlendState();
-	void CreateRasterizerState();
-	void LoadShader();
-	void LoadShaderForAnimation();
-	void CreatePipelineState();
-	void CreatePipelineStateForAnimation();
-private:
 
 private:
 	// DirectXのポインタ
@@ -44,30 +33,6 @@ private:
 	PSOManager* psoManager_ = nullptr;
 	// カメラのポインタ
 	Camera* defaultCamera_ = nullptr;
-
-	// ルートシグネチャ
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignatureForAnimation_ = nullptr;
-	// PSO
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState_ = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineStateForAnimation_ = nullptr;
-
-	
-	std::array<D3D12_INPUT_ELEMENT_DESC, 5> inputElementDescsForAnimation_;
-	D3D12_INPUT_LAYOUT_DESC inputLayoutDescForAnimation_{};
-	
-	// BlendState
-	D3D12_BLEND_DESC blendDesc_{};
-	D3D12_RASTERIZER_DESC rasterizerDesc_{};
-
-	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob_ = nullptr;
-	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlobForAnimation_ = nullptr;
-	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob_ = nullptr;
-
-	ID3DBlob* signatureBlob = nullptr;
-	ID3DBlob* signatureBlobForAnimation_ = nullptr;
-	ID3DBlob* errorBlob = nullptr;
-	ID3DBlob* errorBlobForAnimation_ = nullptr;
 
 public: // ゲッター // セッター //
 	DirectXManager* GetDxManager() const { return dxManager_; }

@@ -75,6 +75,9 @@ private: // メンバ変数
 	uint32_t srvIndex_;
 	std::pair<D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_GPU_DESCRIPTOR_HANDLE> srvHandle_;
 
+	D3D12_CLEAR_VALUE clearValue{};
+
+
 private:
 	
 
@@ -92,7 +95,7 @@ public:
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 
 	// オフスクリーン用関数
-	Microsoft::WRL::ComPtr<ID3D12Resource> CreateRenderTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor);
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateRenderTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, D3D12_CLEAR_VALUE color);
 	void CreateRTVForOffScreen();
 	void CreateSRVForOffScreen(SrvManager* srvManager);
 	std::pair<D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_GPU_DESCRIPTOR_HANDLE> GetSrvHandle() const { return srvHandle_; }

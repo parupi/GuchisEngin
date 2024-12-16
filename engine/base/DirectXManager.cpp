@@ -268,7 +268,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXManager::CreateBufferResource(size
 	return resource;
 }
 
-Microsoft::WRL::ComPtr<ID3D12Resource> DirectXManager::CreateRenderTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor)
+Microsoft::WRL::ComPtr<ID3D12Resource> DirectXManager::CreateRenderTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, D3D12_CLEAR_VALUE color)
 {
 	D3D12_RESOURCE_DESC resourceDesc{};
 	resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
@@ -285,14 +285,6 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXManager::CreateRenderTextureResour
 	D3D12_HEAP_PROPERTIES heapProperties{};
 	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;         // VRAM上に作成
 
-	// クリア値（RenderTargetの場合の背景色）
-	D3D12_CLEAR_VALUE clearValue{};
-	clearValue.Format = format;                            // クリア値のフォーマット
-	clearValue.Color[0] = clearColor.x;                    // R
-	clearValue.Color[1] = clearColor.y;                    // G
-	clearValue.Color[2] = clearColor.z;                    // B
-	clearValue.Color[3] = clearColor.w;                    // A
-
 	// リソース生成
 	ComPtr<ID3D12Resource> renderTexture;
 	HRESULT hr = device_->CreateCommittedResource(
@@ -300,7 +292,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXManager::CreateRenderTextureResour
 		D3D12_HEAP_FLAG_NONE,
 		&resourceDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ, // 初期状態
-		&clearValue,
+		&color,
 		IID_PPV_ARGS(&renderTexture)
 	);
 
@@ -351,8 +343,13 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXManager::CreateRenderTextureResour
 
 void DirectXManager::CreateRTVForOffScreen()
 {
-	const Vector4 kRenderTargetClearValue = { 0.8f, 1.0f, 0.4f, 1.0f };
-	offScreenResource_ = CreateRenderTextureResource(WindowManager::kClientWidth, WindowManager::kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTargetClearValue);
+	//const Vector4 kRenderTargetClearValue = { 0.8f, 1.0f, 0.4f, 1.0f };
+	clearValue.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	clearValue.Color[0] = 0.1f;
+	clearValue.Color[1] = 0.25f;
+	clearValue.Color[2] = 0.5f;
+	clearValue.Color[3] = 1.0f;
+	offScreenResource_ = CreateRenderTextureResource(WindowManager::kClientWidth, WindowManager::kClientHeight, clearValue.Format, clearValue);
 }
 
 void DirectXManager::CreateSRVForOffScreen(SrvManager* srvManager)
@@ -523,7 +520,7 @@ void DirectXManager::CreateRenderTargetView()
 
 	rtvHandles_[0] = rtvStartHandle;
 	device_->CreateRenderTargetView(backBuffers_[0].Get(), &rtvDesc_, rtvHandles_[0]);
-	
+
 	rtvHandles_[1].ptr = rtvHandles_[0].ptr + device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	device_->CreateRenderTargetView(backBuffers_[1].Get(), &rtvDesc_, rtvHandles_[1]);
 
@@ -786,7 +783,7 @@ void DirectXManager::ClearDepthStencilView()
 
 void DirectXManager::ClearRenderTarget(D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle)
 {
-	float clearColor[] = { 0.8f, 1.0f, 0.4f, 1.0f };
+	float clearColor[] = { 0.1f, 0.25f, 0.5f, 1.0f };
 	//D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = rtvHeap_->GetCPUDescriptorHandleForHeapStart();
 	//rtvHandle.ptr += backBufferIndex * descriptorSizeRTV_;
 

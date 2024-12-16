@@ -15,7 +15,7 @@ void GameScene::Initialize()
 	cameraManager_.AddCamera(normalCamera_);
 	cameraManager_.AddCamera(bossCamera_);
 	cameraManager_.SetActiveCamera(0);
-	normalCamera_->SetTranslate(Vector3{ 0.0f, 0.0f, -30.0f });
+	normalCamera_->SetTranslate(Vector3{ 0.0f, 0.0f, -10.0f });
 	normalCamera_->SetRotate(Vector3{ 0.0f, 0.0f, 0.0f });
 	bossCamera_->SetTranslate(Vector3{ 0.0f, 0.0f, -100.0f });
 
@@ -30,8 +30,8 @@ void GameScene::Initialize()
 	TextureManager::GetInstance()->LoadTexture("resource/uvChecker.png");
 
 	object_ = new Object3d();
-	//object_->Initialize("plane.obj");
-	object_->Initialize("walk.gltf");
+	object_->Initialize("plane.obj");
+	//object_->Initialize("walk.gltf");
 	//object_->Initialize("terrain.gltf");
 	//object_->Initialize("uvChecker.gltf");
 	//object_->Initialize("AnimatedCube.gltf");
@@ -46,7 +46,7 @@ void GameScene::Initialize()
 	lightManager_ = std::make_unique<LightManager>();
 	lightManager_->Initialize();
 
-	lightManager_->SetDirLightActive(0, true);
+	lightManager_->SetDirLightActive(0, false);
 	lightManager_->SetDirLightIntensity(0, 1.0f);
 
 	particleManager_ = std::make_unique<ParticleManager>();
@@ -113,16 +113,16 @@ void GameScene::Update()
 void GameScene::Draw()
 {
 	// 3Dオブジェクト描画前処理
-	Object3dManager::GetInstance()->DrawSet();
 	Object3dManager::GetInstance()->DrawSetForAnimation();
+	lightManager_->BindLightsToShader();
+	Object3dManager::GetInstance()->DrawSet();
 	lightManager_->BindLightsToShader();
 	object_->Draw(transform_);
 
-	lightManager_->BindLightsToShader();
 	
 	//SpriteManager::GetInstance()->DrawSet();
 	//sprite->Draw();
 
-	ParticleResources::GetInstance()->DrawSet();
-	particleManager_->Draw();
+	//ParticleResources::GetInstance()->DrawSet();
+	//particleManager_->Draw();
 }

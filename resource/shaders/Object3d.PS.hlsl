@@ -239,6 +239,7 @@ PixelShaderOutput main(VertexShaderOutput input)
         // 拡散反射 + 鏡面反射
         output.color.rgb = finalDiffuse + finalSpecular;
         output.color.a = gMaterial.color.a * textureColor.a;
+
     }
     else
     {
