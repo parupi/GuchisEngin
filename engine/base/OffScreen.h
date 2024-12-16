@@ -15,8 +15,5 @@ public:
 private:
 	DirectXManager* dxManager_ = nullptr;
 	PSOManager* psoManager_ = nullptr;
-
-	//Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;
-	//Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState_ = nullptr;
 };
 

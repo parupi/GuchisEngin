@@ -313,9 +313,45 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXManager::CreateRenderTextureResour
 	return renderTexture;
 }
 
+//ComPtr<ID3D12Resource> DirectXManager::CreateRenderTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor)
+//{
+//	D3D12_RESOURCE_DESC resourceDesc{};
+//	resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+//	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+//	resourceDesc.Width = width;
+//	resourceDesc.Height = height;
+//	resourceDesc.DepthOrArraySize = 1;
+//	resourceDesc.MipLevels = 1;
+//	resourceDesc.Format = format;
+//	resourceDesc.SampleDesc.Count = 1;
+//
+//	D3D12_HEAP_PROPERTIES heapProperties{};
+//	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
+//
+//	D3D12_CLEAR_VALUE clearValue{};
+//	clearValue.Format = format;
+//	clearValue.Color[0] = clearColor.x;
+//	clearValue.Color[1] = clearColor.y;
+//	clearValue.Color[2] = clearColor.z;
+//	clearValue.Color[3] = clearColor.w;
+//
+//	ComPtr<ID3D12Resource> renderTexture;
+//	HRESULT hr = device_->CreateCommittedResource(
+//		&heapProperties,
+//		D3D12_HEAP_FLAG_NONE,
+//		&resourceDesc,
+//		D3D12_RESOURCE_STATE_RENDER_TARGET, // 初期状態をRenderTargetに設定
+//		&clearValue,
+//		IID_PPV_ARGS(&renderTexture)
+//	);
+//
+//	assert(SUCCEEDED(hr) && "Failed to create RenderTextureResource.");
+//	return renderTexture;
+//}
+
 void DirectXManager::CreateRTVForOffScreen()
 {
-	const Vector4 kRenderTargetClearValue = { 1.0f, 1.0f, 0.5f, 1.0f };
+	const Vector4 kRenderTargetClearValue = { 0.8f, 1.0f, 0.4f, 1.0f };
 	offScreenResource_ = CreateRenderTextureResource(WindowManager::kClientWidth, WindowManager::kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTargetClearValue);
 }
 
@@ -665,6 +701,53 @@ void DirectXManager::EndDraw()
 	assert(SUCCEEDED(hr));
 }
 
+//void DirectXManager::EndDraw()
+//{
+//	HRESULT hr{};
+//	UINT backBufferIndex = swapChain_->GetCurrentBackBufferIndex();
+//
+//	// 画面に移す前に offScreenResource_ の状態を戻す
+//	TransitionResource(
+//		offScreenResource_.Get(),
+//		D3D12_RESOURCE_STATE_RENDER_TARGET,
+//		D3D12_RESOURCE_STATE_GENERIC_READ
+//	);
+//
+//	// バックバッファの遷移
+//	TransitionResource(
+//		backBuffers_[backBufferIndex].Get(),
+//		D3D12_RESOURCE_STATE_RENDER_TARGET,
+//		D3D12_RESOURCE_STATE_PRESENT
+//	);
+//
+//	// コマンドリストを確定
+//	hr = commandList_->Close();
+//	assert(SUCCEEDED(hr));
+//
+//	// コマンド実行
+//	ID3D12CommandList* commandLists[] = { commandList_.Get() };
+//	commandQueue_->ExecuteCommandLists(1, commandLists);
+//
+//	// フェンスのシグナル
+//	fenceValue_++;
+//	commandQueue_->Signal(fence_.Get(), fenceValue_);
+//
+//	if (fence_->GetCompletedValue() < fenceValue_) {
+//		fence_->SetEventOnCompletion(fenceValue_, fenceEvent_);
+//		WaitForSingleObject(fenceEvent_, INFINITE);
+//	}
+//
+//	// FPS固定
+//	UpdateFixFPS();
+//
+//	// コマンドリストリセット
+//	hr = commandAllocator_->Reset();
+//	assert(SUCCEEDED(hr));
+//	hr = commandList_->Reset(commandAllocator_.Get(), nullptr);
+//	assert(SUCCEEDED(hr));
+//}
+
+
 void DirectXManager::TransitionResource(ID3D12Resource* resource, D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter)
 {
 	//D3D12_RESOURCE_BARRIER barrier = {};
@@ -703,7 +786,7 @@ void DirectXManager::ClearDepthStencilView()
 
 void DirectXManager::ClearRenderTarget(D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle)
 {
-	float clearColor[] = { 1.0f, 1.0f, 0.5f, 1.0f };
+	float clearColor[] = { 0.8f, 1.0f, 0.4f, 1.0f };
 	//D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = rtvHeap_->GetCPUDescriptorHandleForHeapStart();
 	//rtvHandle.ptr += backBufferIndex * descriptorSizeRTV_;
 

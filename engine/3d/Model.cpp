@@ -28,11 +28,11 @@ void Model::Initialize(ModelLoader* modelManager, const std::string& directoryPa
 	CreateIndexResource();
 
 	// .objの参照しているテクスチャファイルの読み込み
-	//TextureManager::GetInstance()->LoadTexture(modelData_.material.textureFilePath);
-	TextureManager::GetInstance()->LoadTexture("resource/white.png");
+	TextureManager::GetInstance()->LoadTexture(modelData_.material.textureFilePath);
+	//TextureManager::GetInstance()->LoadTexture("resource/white.png");
 	// 読み込んだテクスチャの番号を取得
-	//modelData_.material.textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(modelData_.material.textureFilePath);
-	modelData_.material.textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath("resource/white.png");
+	modelData_.material.textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(modelData_.material.textureFilePath);
+	//modelData_.material.textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath("resource/white.png");
 }
 
 void Model::Draw(WorldTransform& transform)
@@ -51,8 +51,8 @@ void Model::Draw(WorldTransform& transform)
 		modelLoader_->GetDxManager()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transform.GetConstBuffer()->GetGPUVirtualAddress());
 		modelLoader_->GetDxManager()->GetCommandList()->SetGraphicsRootDescriptorTable(13, skinCluster_.paletteSrvHandle.second);
 		// SRVのDescriptorTableの先頭を設定。
-		//modelLoader_->GetSrvManager()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetTextureIndexByFilePath(modelData_.material.textureFilePath));
-		modelLoader_->GetSrvManager()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetTextureIndexByFilePath("resource/white.png"));
+		modelLoader_->GetSrvManager()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetTextureIndexByFilePath(modelData_.material.textureFilePath));
+		//modelLoader_->GetSrvManager()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetTextureIndexByFilePath("resource/white.png"));
 		// ドローコール
 		//modelLoader_->GetDxManager()->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
 		modelLoader_->GetDxManager()->GetCommandList()->DrawIndexedInstanced(UINT(modelData_.indices.size()), 1, 0, 0, 0);

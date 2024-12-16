@@ -31,10 +31,9 @@ void Object3d::Initialize(const std::string& fileName)
 
 void Object3d::AnimationUpdate()
 {
-	model_->Update();
-	//if (model_->GetModelData().isAnimation) {
-	//	animator_->Update();
-	//}
+	if (model_->GetModelData().isAnimation) {
+		model_->Update();
+	}
 }
 
 void Object3d::Draw(WorldTransform& worldTransform)

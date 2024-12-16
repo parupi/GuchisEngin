@@ -15,23 +15,27 @@ void GameScene::Initialize()
 	cameraManager_.AddCamera(normalCamera_);
 	cameraManager_.AddCamera(bossCamera_);
 	cameraManager_.SetActiveCamera(0);
-	normalCamera_->SetTranslate(Vector3{ 0.0f, 35.0f, -44.0f });
-	normalCamera_->SetRotate(Vector3{ 0.68f, 0.0f, 0.0f });
+	normalCamera_->SetTranslate(Vector3{ 0.0f, 0.0f, -30.0f });
+	normalCamera_->SetRotate(Vector3{ 0.0f, 0.0f, 0.0f });
 	bossCamera_->SetTranslate(Vector3{ 0.0f, 0.0f, -100.0f });
 
 	// .objファイルからモデルを読み込む
 	ModelManager::GetInstance()->LoadModel("resource", "walk.gltf");
 	ModelManager::GetInstance()->LoadModel("resource", "simpleSkin.gltf");
 	ModelManager::GetInstance()->LoadModel("resource", "sneakWalk.gltf");
-	ModelManager::GetInstance()->LoadModel("resource", "test.gltf");
+	//ModelManager::GetInstance()->LoadModel("resource", "test.gltf");
 	ModelManager::GetInstance()->LoadModel("resource", "AnimatedCube.gltf");
+	ModelManager::GetInstance()->LoadModel("resource", "plane.obj");
+	//ModelManager::GetInstance()->LoadModel("resource/terrain", "terrain.obj");
 	TextureManager::GetInstance()->LoadTexture("resource/uvChecker.png");
 
 	object_ = new Object3d();
 	//object_->Initialize("plane.obj");
 	object_->Initialize("walk.gltf");
+	//object_->Initialize("terrain.gltf");
 	//object_->Initialize("uvChecker.gltf");
 	//object_->Initialize("AnimatedCube.gltf");
+	object_->SetIsLighting(false);
 
 	transform_.Initialize();
 
@@ -94,30 +98,30 @@ void GameScene::Update()
 
 	transform_.TransferMatrix();
 
-	ImGui::Begin("SetModel");
-	if (ImGui::Button("Set Work"))
-	{
-		object_->SetModel("walk.gltf");
-	}
-	if (ImGui::Button("Set sneakWalk"))
-	{
-		object_->SetModel("sneakWalk.gltf");
-	}
-	ImGui::End();
+	//ImGui::Begin("SetModel");
+	//if (ImGui::Button("Set Work"))
+	//{
+	//	object_->SetModel("walk.gltf");
+	//}
+	//if (ImGui::Button("Set sneakWalk"))
+	//{
+	//	object_->SetModel("sneakWalk.gltf");
+	//}
+	//ImGui::End();
 }
 
 void GameScene::Draw()
 {
 	// 3Dオブジェクト描画前処理
+	Object3dManager::GetInstance()->DrawSet();
 	Object3dManager::GetInstance()->DrawSetForAnimation();
 	lightManager_->BindLightsToShader();
 	object_->Draw(transform_);
 
-	Object3dManager::GetInstance()->DrawSet();
 	lightManager_->BindLightsToShader();
 	
-	SpriteManager::GetInstance()->DrawSet();
-	sprite->Draw();
+	//SpriteManager::GetInstance()->DrawSet();
+	//sprite->Draw();
 
 	ParticleResources::GetInstance()->DrawSet();
 	particleManager_->Draw();

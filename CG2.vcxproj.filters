@@ -236,6 +236,8 @@
     <FxCompile Include="resource\shaders\Sprite.VS.hlsl" />
     <FxCompile Include="resource\shaders\Sprite.PS.hlsl" />
     <FxCompile Include="resource\shaders\GrayScale.PS.hlsl" />
+    <FxCompile Include="resource\shaders\Vignette.PS.hlsl" />
+    <FxCompile Include="resource\shaders\Smoothing.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">

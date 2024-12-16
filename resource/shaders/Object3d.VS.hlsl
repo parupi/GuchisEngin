@@ -24,5 +24,7 @@ VertexShaderOutput main(VertexShaderInput input)
     output.normal = normalize(mul(input.normal, (float3x3)gTransformationMatrix.WorldInverseTranspose));
     output.worldPosition = mul(input.position, gTransformationMatrix.World).xyz;
     
+    output.normal = float3(0.0f, 0.0f, 1.0f); // 法線をZ軸方向に固定
+    
     return output;
 }
