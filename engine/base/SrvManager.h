@@ -2,7 +2,7 @@
 #include <DirectXManager.h>
 class SrvManager
 {
-public: // メンバ関数
+public:
 	// 初期化
 	void Initialize(DirectXManager* dxManager);
 	// 確保
@@ -36,7 +36,7 @@ private:
 	// 次に使用するSRVインデックス
 	uint32_t useIndex = 0;
 
-public: // ゲッター // セッター //
+public: // アクセッサ
 
 
 };

@@ -11,6 +11,8 @@ void GuchisFramework::Initialize()
 	// SRVマネージャーの初期化
 	srvManager = std::make_unique<SrvManager>();
 	srvManager->Initialize(dxManager.get());
+
+	dxManager->CreateSRVForOffScreen(srvManager.get());
 	// 入力の初期化
 	Input::GetInstance()->Initialize();
 	// Audioの初期化

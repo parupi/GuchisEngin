@@ -18,6 +18,9 @@ void MyGameTitle::Initialize()
 	// オブジェクト共通部
 	Object3dManager::GetInstance()->Initialize(dxManager.get());
 
+	offScreen_ = std::make_unique<OffScreen>();
+	offScreen_->Initialize(dxManager.get());
+
 	// 最初のシーンを生成
 	sceneFactory_ = std::make_unique<SceneFactory>();
 	// シーンマネージャーに最初のシーンをセット
@@ -51,10 +54,14 @@ void MyGameTitle::Update()
 
 void MyGameTitle::Draw()
 {
-	dxManager->BeginDraw();
+	dxManager->BeginDrawForRenderTarget();
 	srvManager->BeginDraw();
-
 	SceneManager::GetInstance()->Draw();
+
+
+	dxManager->BeginDraw();
+
+	offScreen_->Draw();
 
 	ImGuiManager::GetInstance()->Draw();
 

@@ -11,6 +11,7 @@
 #include <SceneFactory.h>
 #include <AbstractSceneFactory.h>
 #include <Audio.h>
+#include "OffScreen.h"
 
 class GuchisFramework
 {
@@ -42,5 +43,7 @@ protected:
 	std::unique_ptr<DirectXManager> dxManager = nullptr;
 	std::unique_ptr<SrvManager> srvManager = nullptr;
 	std::unique_ptr<AbstractSceneFactory> sceneFactory_ = nullptr;
+	std::unique_ptr<OffScreen> offScreen_ = nullptr;
+
 };
 

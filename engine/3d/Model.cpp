@@ -190,16 +190,6 @@ Model::ModelData Model::LoadModelFile(const std::string& directoryPath, const st
 		}
 	}
 
-	//// materialの解析を行う
-	//for (uint32_t materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex) {
-	//	aiMaterial* material = scene->mMaterials[materialIndex];
-	//	if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0) {
-	//		aiString textureFilePath;
-	//		material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
-	//		modelData.material.textureFilePath = directoryPath + "/" + textureFilePath.C_Str();
-	//	}
-	//}
-
 	return modelData;
 }
 
@@ -461,24 +451,6 @@ Model::SkinCluster Model::CreateSkinCluster(const SkeletonData& skeleton, const 
 			}
 		}
 	}
-
-	// 重みの正規化を行う
-for (size_t vertexIndex = 0; vertexIndex < skinCluster.mappedInfluence.size(); ++vertexIndex) {
-    auto& currentInfluence = skinCluster.mappedInfluence[vertexIndex];
-
-    // 重みの合計を計算
-    float totalWeight = 0.0f;
-    for (uint32_t index = 0; index < kNumMaxInfluence; ++index) {
-        totalWeight += currentInfluence.weights[index];
-    }
-
-    // 重みの正規化
-    if (totalWeight > 0.0f) {
-        for (uint32_t index = 0; index < kNumMaxInfluence; ++index) {
-            currentInfluence.weights[index] /= totalWeight;
-        }
-    }
-}
 
 	return skinCluster;
 }
