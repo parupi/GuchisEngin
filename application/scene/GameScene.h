@@ -28,20 +28,21 @@ public:
 private:
 	CameraManager cameraManager_;
 	std::shared_ptr<Camera> normalCamera_;
-	std::shared_ptr<Camera> bossCamera_;
 
-	Object3d* object_;
-	std::vector<Sprite*> sprites;
+	std::unique_ptr<Object3d> object_;
+	std::unique_ptr<Object3d> animationObject_;
+	std::unique_ptr<Sprite> sprite;
 
-	Vector4 color1 = { 1.0f, 1.0f, 1.0f, 1.0f };
-	Vector4 color2 = { 1.0f, 1.0f, 1.0f, 1.0f };
+	//Vector4 color1 = { 1.0f, 1.0f, 1.0f, 1.0f };
+	//Vector4 color2 = { 1.0f, 1.0f, 1.0f, 1.0f };
 	uint32_t soundHandle = 0u;
 
 	WorldTransform transform_;
+	WorldTransform animationTransform_;
 	std::unique_ptr<LightManager> lightManager_;
 
 	std::unique_ptr<ParticleManager> particleManager_ = nullptr;
-	std::unique_ptr<ParticleEmitter> snowEmitter_ = nullptr;
+	std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
 
 };
 
