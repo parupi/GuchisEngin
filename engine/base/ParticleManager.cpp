@@ -7,16 +7,28 @@
 std::random_device seedGenerator;
 std::mt19937 randomEngine(seedGenerator());
 
+ParticleManager* ParticleManager::instance = nullptr;
+
+ParticleManager* ParticleManager::GetInstance()
+{
+	if (instance == nullptr) {
+		instance = new ParticleManager();
+	}
+	return instance;
+}
+
 void ParticleManager::Finalize()
 {
 
 }
 
-void ParticleManager::Initialize()
+void ParticleManager::Initialize(DirectXManager* dxManager, SrvManager* srvManager, PSOManager* psoManager)
 {
-	dxManager_ = ParticleResources::GetInstance()->GetDxManager();
-	srvManager_ = ParticleResources::GetInstance()->GetSrvManager();
-	camera_ = ParticleResources::GetInstance()->GetCamera();
+	dxManager_ = dxManager;
+	srvManager_ = srvManager;
+	psoManager_ = psoManager;
+
+	//camera_ = ParticleResources::GetInstance()->GetCamera();
 
 	// リソースの生成と値の設定
 	CreateParticleResource();
@@ -103,6 +115,8 @@ void ParticleManager::Draw()
 	auto commandList = dxManager_->GetCommandList();
 	commandList->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
+
+
 	// すべてのパーティクルグループを描画
 	for (auto& [groupName, particleGroup] : particleGroups_) {
 		if (particleGroup.instanceCount > 0) {
@@ -175,6 +189,13 @@ void ParticleManager::CreateParticleGroup(const std::string name, const std::str
 	global_->AddItem(name, "minAlpha", float{});
 	global_->AddItem(name, "maxAlpha", float{});
 
+}
+
+void ParticleManager::DrawSet(BlendMode blendMode)
+{
+	dxManager_->GetCommandList()->SetPipelineState(psoManager_->GetParticlePSO(blendMode).Get());
+	dxManager_->GetCommandList()->SetGraphicsRootSignature(psoManager_->GetParticleSignature().Get());
+	dxManager_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 void ParticleManager::CreateParticleResource()
