@@ -1,6 +1,6 @@
 #include "MyGameTitle.h"
 #include <SceneFactory.h>
-#include <ParticleResources.h>
+#include <ParticleManager.h>
 
 void MyGameTitle::Initialize()
 {
@@ -12,7 +12,7 @@ void MyGameTitle::Initialize()
 	// 3Dテクスチャマネージャーの初期化
 	ModelManager::GetInstance()->Initialize(dxManager.get(), srvManager.get());
 	// パーティクルマネージャーの初期化
-	ParticleResources::GetInstance()->Initialize(dxManager.get(), srvManager.get(), psoManager.get());
+	ParticleManager::GetInstance()->Initialize(dxManager.get(), srvManager.get(), psoManager.get());
 	// スプライト共通部の初期化
 	SpriteManager::GetInstance()->Initialize(dxManager.get(), psoManager.get());
 	// オブジェクト共通部
@@ -34,7 +34,7 @@ void MyGameTitle::Initialize()
 
 void MyGameTitle::Finalize()
 {
-	ParticleResources::GetInstance()->Finalize();
+	ParticleManager::GetInstance()->Finalize();
 	SpriteManager::GetInstance()->Finalize();
 	Object3dManager::GetInstance()->Finalize();
 	ModelManager::GetInstance()->Finalize();

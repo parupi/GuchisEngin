@@ -7,24 +7,32 @@
 #include <Matrix4x4.h>
 #include <Camera.h>
 #include <Vector2.h>
-#include "ParticleResources.h"
 #include "GlobalVariables.h"
+#include "PSOManager.h"
 class ParticleManager
 {
+private:
+	static ParticleManager* instance;
+
+	ParticleManager() = default;
+	~ParticleManager() = default;
+	ParticleManager(ParticleManager&) = default;
+	ParticleManager& operator=(ParticleManager&) = default;
 public:
+	// シングルトンインスタンスの取得
+	static ParticleManager* GetInstance();
 	// 終了
 	void Finalize();
 	// 初期化
-	void Initialize();
+	void Initialize(DirectXManager* dxManager, SrvManager* srvManager, PSOManager* psoManager);
 	// 更新
 	void Update();
 	// 描画
 	void Draw();
 	// パーティクルグループを登録する
 	void CreateParticleGroup(const std::string name, const std::string textureFilePath);
-
-	// カメラをセットする
-	void SetCamera(Camera* camera) { camera_ = camera; }
+	// 描画前処理
+	void DrawSet(BlendMode blendMode = BlendMode::kAdd);
 
 private: // 構造体
 
@@ -130,6 +138,7 @@ private:
 private:
 	DirectXManager* dxManager_ = nullptr;
 	SrvManager* srvManager_ = nullptr;
+	PSOManager* psoManager_ = nullptr;
 	Camera* camera_ = nullptr;
 
 	// グローバルバリアース
@@ -158,6 +167,10 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource;
 
-	public:
+public:
 	void SetAlpha(const std::string name, float alpha) { alpha_[name] = alpha; }
+	DirectXManager* GetDxManager() { return dxManager_; }
+	SrvManager* GetSrvManager() { return srvManager_; }
+	Camera* GetCamera() { return camera_; }
+	void SetCamera(Camera* camera) { camera_ = camera; }
 };

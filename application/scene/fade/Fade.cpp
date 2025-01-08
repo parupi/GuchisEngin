@@ -12,19 +12,19 @@ void Fade::Initialize()
 	sprite_->SetSize(Vector2{ 1280.0f,720.0f });
 	sprite_->SetTextureSize(Vector2{ 1280,720 });
 
-	particleManager_ = std::make_unique<ParticleManager>();
-	particleManager_->Initialize();
-	particleManager_->CreateParticleGroup("sceneChangeParticle", "resource/snow.png");
-	emitter_ = std::make_unique<ParticleEmitter>();
-	emitter_->Initialize(particleManager_.get(), "sceneChangeParticle");
+	//particleManager_ = std::make_unique<ParticleManager>();
+	//particleManager_->Initialize();
+	//particleManager_->CreateParticleGroup("sceneChangeParticle", "resource/snow.png");
+	//emitter_ = std::make_unique<ParticleEmitter>();
+	//emitter_->Initialize(particleManager_.get(), "sceneChangeParticle");
 
-	particleManager_->Emit("sceneChangeParticle", { 0.0f, 10.0f, 0.0f }, 10);
+	//particleManager_->Emit("sceneChangeParticle", { 0.0f, 10.0f, 0.0f }, 10);
 }
 
 void Fade::Update()
 {
-	emitter_->Update({ 0.0f, 10.0f, 0.0f }, 64);
-	particleManager_->Update();
+	//emitter_->Update({ 0.0f, 10.0f, 0.0f }, 64);
+	//particleManager_->Update();
 
 	switch (status_) {
 	case Status::None:
@@ -40,8 +40,8 @@ void Fade::Update()
 
 void Fade::Draw()
 {
-	ParticleResources::GetInstance()->DrawSet();
-	particleManager_->Draw();
+	//ParticleResources::GetInstance()->DrawSet();
+	//particleManager_->Draw();
 }
 
 void Fade::DrawSprite()
@@ -96,7 +96,7 @@ void Fade::FadeOutUpdate()
 	float progressParticle = alphaCounter_ / 0.5f;
 	alpha_ = easeOutCubic(progress);
 
-	particleManager_->SetAlpha("sceneChangeParticle", alphaCounter_);
+	//particleManager_->SetAlpha("sceneChangeParticle", alphaCounter_);
 }
 
 void Fade::FadeInUpdate()
@@ -115,6 +115,6 @@ void Fade::FadeInUpdate()
 	alphaCounter_ -= 1.0f / 60.0f;
 	alphaCounter_ = std::clamp(alphaCounter_, 0.0f, 1.0f);
 
-	particleManager_->SetAlpha("sceneChangeParticle", alphaCounter_);
+	//particleManager_->SetAlpha("sceneChangeParticle", alphaCounter_);
 
 }

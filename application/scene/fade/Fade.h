@@ -57,8 +57,8 @@ private: // メンバ変数（非公開）
 	float duration_ = 0.0f;
 	float counter_ = 0.0f;
 
-	std::unique_ptr<ParticleManager> particleManager_;
-	std::unique_ptr<ParticleEmitter> emitter_;
+	//std::unique_ptr<ParticleManager> particleManager_;
+	//std::unique_ptr<ParticleEmitter> emitter_;
 
 	// パーティクル変数
 	Vector3 minTranslate{};

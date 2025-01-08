@@ -46,12 +46,11 @@ void GameScene::Initialize()
 	lightManager_->SetDirLightActive(0, true);
 	lightManager_->SetDirLightIntensity(0, 1.0f);
 
-	particleManager_ = std::make_unique<ParticleManager>();
-	particleManager_->Initialize();
-	particleManager_->CreateParticleGroup("test", "resource/uvChecker.png");
+
+	ParticleManager::GetInstance()->CreateParticleGroup("test", "resource/uvChecker.png");
 
 	particleEmitter_ = std::make_unique<ParticleEmitter>();
-	particleEmitter_->Initialize(particleManager_.get(), "test");
+	particleEmitter_->Initialize("test");
 
 }
 
@@ -63,7 +62,7 @@ void GameScene::Finalize()
 void GameScene::Update()
 {
 	particleEmitter_->Update({0.0f, 0.0f, 0.0f}, 8);
-	particleManager_->Update();
+	ParticleManager::GetInstance()->Update();
 
 	object_->AnimationUpdate();
 	animationObject_->AnimationUpdate();
@@ -111,8 +110,8 @@ void GameScene::Update()
 
 void GameScene::Draw()
 {
-	ParticleResources::GetInstance()->DrawSet();
-	particleManager_->Draw();
+	ParticleManager::GetInstance()->DrawSet();
+	ParticleManager::GetInstance()->Draw();
 
 	// 3Dオブジェクト描画前処理
 	Object3dManager::GetInstance()->DrawSetForAnimation();
