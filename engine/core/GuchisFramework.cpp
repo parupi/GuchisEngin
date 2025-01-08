@@ -11,6 +11,9 @@ void GuchisFramework::Initialize()
 	// SRVマネージャーの初期化
 	srvManager = std::make_unique<SrvManager>();
 	srvManager->Initialize(dxManager.get());
+	// PSOマネージャーの初期化
+	psoManager = std::make_unique<PSOManager>();
+	psoManager->Initialize(dxManager.get());
 
 	dxManager->CreateSRVForOffScreen(srvManager.get());
 	// 入力の初期化

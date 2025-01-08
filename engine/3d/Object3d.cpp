@@ -19,22 +19,15 @@ void Object3d::Initialize(const std::string& fileName)
 
 	objectManager_ = Object3dManager::GetInstance();
 
-	//if (model_->GetModelData().isAnimation) {
-	//	animator_ = new Animator();
-	//	animator_->Initialize(model_, fileName);
-	//	//model_->SetSkeleton(animator_->GetSkeleton());
-	//}
-
 	CreateMaterialResource();
 	CreateCameraResource();
 }
 
 void Object3d::AnimationUpdate()
 {
-	model_->Update();
-	//if (model_->GetModelData().isAnimation) {
-	//	animator_->Update();
-	//}
+	if (model_->GetModelData().isAnimation) {
+		model_->Update();
+	}
 }
 
 void Object3d::Draw(WorldTransform& worldTransform)
