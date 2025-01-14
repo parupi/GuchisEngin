@@ -143,7 +143,7 @@ float Dot(const Quaternion& q0, const Quaternion& q1)
 
 // ImGuiを使ったクォータニオンの描画
 void PrintOnImGui(const Quaternion& q, const char* label) {
-    ImGui::Begin(label);
-    ImGui::Text("%s: (x: %.2f, y: %.2f, z: %.2f, w: %.2f)", "Quaternion", q.x, q.y, q.z, q.w);
+    ImGui::Begin("Quaternion");
+    ImGui::Text("%s: (x: %.2f, y: %.2f, z: %.2f, w: %.2f)", label, q.x, q.y, q.z, q.w);
     ImGui::End();
 }
