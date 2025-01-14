@@ -17,7 +17,7 @@ enum class BlendMode {
 enum class OffScreenEffectType {
 	kNone,
 	kGray,
-	kVigneet,
+	kVignette,
 	kSmooth,
 	kGauss,
 	kOutLine,
@@ -80,5 +80,5 @@ private: // データ格納用変数
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> animationGraphicsPipelineState_;
 	// オフスクリーン
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> offScreenSignature_;
-	std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, 1> offScreenGraphicsPipelineState_;
+	std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, 7> offScreenGraphicsPipelineState_;
 };
