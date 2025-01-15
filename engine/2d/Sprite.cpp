@@ -39,6 +39,17 @@ void Sprite::Update()
 	Matrix4x4 worldViewProjectionMatrix = worldMatrix * viewMatrix * projectionMatrix;
 	transformationMatrixData_->World = worldViewProjectionMatrix;
 	transformationMatrixData_->WVP = worldViewProjectionMatrix;
+
+	uvTransform_.translate = { uvPosition_.x, uvPosition_.y, 0.0f };
+	uvTransform_.rotate = { 0.0f, 0.0f, uvRotation_ };
+	uvTransform_.scale = { uvSize_.x, uvSize_.y, 1.0f };
+
+	// Transform情報を作る
+	Matrix4x4 uvTransformMatrix = MakeIdentity4x4();
+	uvTransformMatrix *= MakeScaleMatrix(uvTransform_.scale);
+	uvTransformMatrix *= MakeRotateZMatrix(uvTransform_.rotate.z);
+	uvTransformMatrix *= MakeTranslateMatrix(uvTransform_.translate);
+	materialData_->uvTransform = uvTransformMatrix;
 }
 
 void Sprite::Draw()
@@ -88,7 +99,6 @@ void Sprite::CreateMaterialResource()
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	// 今回は白を書き込んで置く
 	materialData_->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-	// SpriteはLightingしないのでfalseを設定する
 	materialData_->uvTransform = MakeIdentity4x4();
 }
 

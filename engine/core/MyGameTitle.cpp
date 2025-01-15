@@ -38,6 +38,7 @@ void MyGameTitle::Finalize()
 	SpriteManager::GetInstance()->Finalize();
 	Object3dManager::GetInstance()->Finalize();
 	ModelManager::GetInstance()->Finalize();
+	TextureManager::GetInstance()->Finalize();
 	ImGuiManager::GetInstance()->Finalize();
 	GuchisFramework::Finalize();
 }
@@ -61,7 +62,7 @@ void MyGameTitle::Draw()
 
 	dxManager->BeginDraw();
 
-	offScreen_->Draw(OffScreenEffectType::kOutLine);
+	offScreen_->Draw(OffScreenEffectType::kNone);
 
 	ImGuiManager::GetInstance()->Draw();
 

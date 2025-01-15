@@ -32,6 +32,17 @@ void Object3d::AnimationUpdate()
 
 void Object3d::Draw(WorldTransform& worldTransform)
 {
+	// uvTransformに値を適用
+	uvTransform_.translate = { uvPosition_.x, uvPosition_.y, 0.0f };
+	uvTransform_.rotate = { 0.0f, 0.0f, uvRotation_ };
+	uvTransform_.scale = { uvSize_.x, uvSize_.y, 1.0f };
+	// Transform情報を作る
+	Matrix4x4 uvTransformMatrix = MakeIdentity4x4();
+	uvTransformMatrix *= MakeScaleMatrix(uvTransform_.scale);
+	uvTransformMatrix *= MakeRotateZMatrix(uvTransform_.rotate.z);
+	uvTransformMatrix *= MakeTranslateMatrix(uvTransform_.translate);
+	materialData_->uvTransform = uvTransformMatrix;
+
 	camera_ = objectManager_->GetDefaultCamera();
 	cameraData_->worldPosition = camera_->GetTranslate();
 

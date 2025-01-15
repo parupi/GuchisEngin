@@ -81,11 +81,23 @@ void GameScene::Update()
 	normalCamera_->SetTranslate(normalCameraPos);
 	normalCamera_->SetRotate(cameraRotate);
 
+
+	Vector2 uvObjectPos = object_->GetUVPosition();
+	Vector2 uvObjectSize = object_->GetUVSize();
+	float uvObjectRotate = object_->GetUVRotation();
+
 	ImGui::Begin("Transform");
 	ImGui::DragFloat3("translate", &transform_.translation_.x, 0.01f);
 	ImGui::DragFloat3("rotation", &transform_.rotation_.x, 0.01f);
 	ImGui::DragFloat3("scale", &transform_.scale_.x, 0.01f);
+	ImGui::DragFloat2("UVTranslate", &uvObjectPos.x, 0.01f, -10.0f, 10.0f);
+	ImGui::DragFloat2("UVScale", &uvObjectSize.x, 0.01f, -10.0f, 10.0f);
+	ImGui::SliderAngle("UVRotate", &uvObjectRotate);
 	ImGui::End();
+
+	object_->SetUVPosition(uvObjectPos);
+	object_->SetUVSize(uvObjectSize);
+	object_->SetUVRotation(uvObjectRotate);
 
 	transform_.TransferMatrix();
 
@@ -107,6 +119,31 @@ void GameScene::Update()
 		animationObject_->SetModel("sneakWalk.gltf");
 	}
 	ImGui::End();
+
+	Vector2 spritePos = sprite->GetPosition();
+	Vector2 spriteSize = sprite->GetSize();
+	float spriteRotate = sprite->GetRotation();
+
+	Vector2 uvSpritePos = sprite->GetUVPosition();
+	Vector2 uvSpriteSize = sprite->GetUVSize();
+	float uvSpriteRotate = sprite->GetUVRotation();
+
+	ImGui::Begin("Sprite");
+	ImGui::DragFloat2("position", &spritePos.x);
+	ImGui::DragFloat("rotate", &spriteRotate);
+	ImGui::DragFloat2("size", &spriteSize.x);
+	ImGui::DragFloat2("UVTranslate", &uvSpritePos.x, 0.01f, -10.0f, 10.0f);
+	ImGui::DragFloat2("UVScale", &uvSpriteSize.x, 0.01f, -10.0f, 10.0f);
+	ImGui::SliderAngle("UVRotate", &uvSpriteRotate);
+	ImGui::End();
+
+	sprite->SetPosition(spritePos);
+	sprite->SetSize(spriteSize);
+	sprite->SetRotation(spriteRotate);
+
+	sprite->SetUVPosition(uvSpritePos);
+	sprite->SetUVSize(uvSpriteSize);
+	sprite->SetUVRotation(uvSpriteRotate);
 }
 
 void GameScene::Draw()

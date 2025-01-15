@@ -54,6 +54,10 @@ private: // メンバ変数
 	Material* materialData_ = nullptr;
 	CameraForGPU* cameraData_ = nullptr;
 
+	EulerTransform uvTransform_{ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} };
+	Vector2 uvPosition_ = { 0.0f, 0.0f };
+	float uvRotation_ = 0.0f;
+	Vector2 uvSize_ = { 1.0f, 1.0f };
 
 	// コピー禁止
 	Object3d(const Object3d&) = delete;
@@ -72,6 +76,13 @@ public: // ゲッター // セッター //
 	// Lighting
 	const bool& GetIsLighting() const { return materialData_->enableLighting; }
 	void SetIsLighting(const bool isLighting) { materialData_->enableLighting = isLighting; }
+	// uv平行移動
+	const Vector2& GetUVPosition() const { return uvPosition_; }
+	void SetUVPosition(const Vector2& position) { uvPosition_ = position; }
+	// 回転
+	float GetUVRotation() const { return uvRotation_; }
+	void SetUVRotation(float rotation) { uvRotation_ = rotation; }
+	// 拡縮
+	const Vector2& GetUVSize() const { return uvSize_; }
+	void SetUVSize(const Vector2& size) { uvSize_ = size; }
 };
-
-//static_assert(!std::is_copy_assignable_v<Object3d>);

@@ -75,12 +75,19 @@ private: // 実用化用変数
 	float rotation_ = 0.0f;
 	Vector2 size_ = { 80.0f, 80.0f };
 
-	Vector2 anchorPoint_ = { 0.0f, 0.0f };
+	EulerTransform uvTransform_{ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} };
+	Vector2 uvPosition_ = { 0.0f, 0.0f };
+	float uvRotation_ = 0.0f;
+	Vector2 uvSize_ = { 1.0f, 1.0f };
 
+	// 中心点
+	Vector2 anchorPoint_ = { 0.0f, 0.0f };
 	// テクスチャ左上座標
 	Vector2 textureLeftTop_ = { 0.0f, 0.0f };
 	// テクスチャ切り出しサイズ
 	Vector2 textureSize_ = { 100.0f, 100.0f };
+
+
 
 public: // ゲッター//セッター //
 	// 平行移動
@@ -110,4 +117,14 @@ public: // ゲッター//セッター //
 	// 切り出しサイズ
 	const Vector2& GetTextureSize() const { return textureSize_; }
 	void SetTextureSize(Vector2 textureSize) { textureSize_ = textureSize; }
+	// uv平行移動
+	const Vector2& GetUVPosition() const { return uvPosition_; }
+	void SetUVPosition(const Vector2& position) { uvPosition_ = position; }
+	// 回転
+	float GetUVRotation() const { return uvRotation_; }
+	void SetUVRotation(float rotation) { uvRotation_ = rotation; }
+	// 拡縮
+	const Vector2& GetUVSize() const { return uvSize_; }
+	void SetUVSize(const Vector2& size) { uvSize_ = size; }
+
 }; 

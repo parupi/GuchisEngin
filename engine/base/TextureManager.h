@@ -10,19 +10,20 @@
 class TextureManager
 {
 private:
-	static std::unique_ptr<TextureManager> instance;
+	static TextureManager* instance;
 	static std::once_flag initInstanceFlag;
 
+	TextureManager() = default;
+	~TextureManager() = default;
 	TextureManager(TextureManager&) = default;
 	TextureManager& operator=(TextureManager&) = default;
 public:
-	TextureManager() = default;
-	~TextureManager() = default;
 	// シングルトンインスタンスの取得
 	static TextureManager* GetInstance();
 	// 初期化
 	void Initialize(DirectXManager* dxManager, SrvManager* srvManager);
-
+	// 終了
+	void Finalize();
 public:
 	void LoadTexture(const std::string& filePath);
 
@@ -43,7 +44,6 @@ private:
 	};
 
 	// テクスチャデータ
-	//std::vector<TextureData> textureData_;
 	std::unordered_map<std::string, TextureData> textureData_;
 
 	DirectXManager* dxManager_ = nullptr;

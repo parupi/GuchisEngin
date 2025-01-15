@@ -19,7 +19,8 @@ ParticleManager* ParticleManager::GetInstance()
 
 void ParticleManager::Finalize()
 {
-
+	delete instance;
+	instance = nullptr;
 }
 
 void ParticleManager::Initialize(DirectXManager* dxManager, SrvManager* srvManager, PSOManager* psoManager)
