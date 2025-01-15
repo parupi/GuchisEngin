@@ -34,8 +34,6 @@ void DirectXManager::Initialize(WindowManager* winManager)
 	SetViewPort();
 	SetScissor();
 	InitializeDXCCompiler();
-	InitializeImGui();
-
 }
 
 void DirectXManager::Finalize()
@@ -268,7 +266,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXManager::CreateBufferResource(size
 	return resource;
 }
 
-Microsoft::WRL::ComPtr<ID3D12Resource> DirectXManager::CreateRenderTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor)
+Microsoft::WRL::ComPtr<ID3D12Resource> DirectXManager::CreateRenderTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, D3D12_CLEAR_VALUE color)
 {
 	D3D12_RESOURCE_DESC resourceDesc{};
 	resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
@@ -285,14 +283,6 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXManager::CreateRenderTextureResour
 	D3D12_HEAP_PROPERTIES heapProperties{};
 	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;         // VRAM上に作成
 
-	// クリア値（RenderTargetの場合の背景色）
-	D3D12_CLEAR_VALUE clearValue{};
-	clearValue.Format = format;                            // クリア値のフォーマット
-	clearValue.Color[0] = clearColor.x;                    // R
-	clearValue.Color[1] = clearColor.y;                    // G
-	clearValue.Color[2] = clearColor.z;                    // B
-	clearValue.Color[3] = clearColor.w;                    // A
-
 	// リソース生成
 	ComPtr<ID3D12Resource> renderTexture;
 	HRESULT hr = device_->CreateCommittedResource(
@@ -300,7 +290,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXManager::CreateRenderTextureResour
 		D3D12_HEAP_FLAG_NONE,
 		&resourceDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ, // 初期状態
-		&clearValue,
+		&color,
 		IID_PPV_ARGS(&renderTexture)
 	);
 
@@ -315,8 +305,13 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXManager::CreateRenderTextureResour
 
 void DirectXManager::CreateRTVForOffScreen()
 {
-	const Vector4 kRenderTargetClearValue = { 1.0f, 0.0f, 0.0f, 1.0f };
-	offScreenResource_ = CreateRenderTextureResource(WindowManager::kClientWidth, WindowManager::kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTargetClearValue);
+	//const Vector4 kRenderTargetClearValue = { 0.8f, 1.0f, 0.4f, 1.0f };
+	clearValue.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	clearValue.Color[0] = 0.6f;
+	clearValue.Color[1] = 0.5f;
+	clearValue.Color[2] = 0.1f;
+	clearValue.Color[3] = 1.0f;
+	offScreenResource_ = CreateRenderTextureResource(WindowManager::kClientWidth, WindowManager::kClientHeight, clearValue.Format, clearValue);
 }
 
 void DirectXManager::CreateSRVForOffScreen(SrvManager* srvManager)
@@ -437,13 +432,13 @@ void DirectXManager::CreateSwapChain()
 {
 	HRESULT hr{};
 	// スワップチェーンを生成する
-	swapChainDesc.Width = WindowManager::kClientWidth;								//画面の幅。ウィンドウンおクライアント領域を同じものにしておく
-	swapChainDesc.Height = WindowManager::kClientHeight;							//画面の高さ。ウィンドウのクライアント領域を同じものにしておく
-	swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;				//色の形式
-	swapChainDesc.SampleDesc.Count = 1;								//マルチサンプルしない
-	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;	//描画のターゲットとして利用する
-	swapChainDesc.BufferCount = 2;									//ダブルバッファ
-	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;		//モニタに移したら、中身を破棄
+	swapChainDesc.Width = WindowManager::kClientWidth; //画面の幅。ウィンドウンおクライアント領域を同じものにしておく
+	swapChainDesc.Height = WindowManager::kClientHeight; //画面の高さ。ウィンドウのクライアント領域を同じものにしておく
+	swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; //色の形式
+	swapChainDesc.SampleDesc.Count = 1; //マルチサンプルしない
+	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; //描画のターゲットとして利用する
+	swapChainDesc.BufferCount = 2; //ダブルバッファ
+	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; //モニタに移したら、中身を破棄
 	// コマンドキュー、ウィンドウハンドル、設定を渡して生成する
 	hr = dxgiFactory_->CreateSwapChainForHwnd(commandQueue_.Get(), winManager_->GetHwnd(), &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(swapChain_.GetAddressOf()));
 	assert(SUCCEEDED(hr));
@@ -458,7 +453,6 @@ void DirectXManager::CreateDepthBuffer()
 
 void DirectXManager::CreateHeap()
 {
-
 	descriptorSizeRTV_ = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	descriptorSizeDSV_ = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 
@@ -487,7 +481,7 @@ void DirectXManager::CreateRenderTargetView()
 
 	rtvHandles_[0] = rtvStartHandle;
 	device_->CreateRenderTargetView(backBuffers_[0].Get(), &rtvDesc_, rtvHandles_[0]);
-	
+
 	rtvHandles_[1].ptr = rtvHandles_[0].ptr + device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	device_->CreateRenderTargetView(backBuffers_[1].Get(), &rtvDesc_, rtvHandles_[1]);
 
@@ -540,34 +534,17 @@ void DirectXManager::InitializeDXCCompiler()
 {
 	HRESULT hr{};
 	// dxcCompilerを初期化
-
 	hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(dxcUtils_.GetAddressOf()));
 	assert(SUCCEEDED(hr));
 	hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(dxcCompiler_.GetAddressOf()));
 	assert(SUCCEEDED(hr));
-
 	// 現時点でincludeはしないが、includeに対応するための設定を行っておく
-
 	hr = dxcUtils_->CreateDefaultIncludeHandler(&includeHandler_);
 	assert(SUCCEEDED(hr));
 }
 
-void DirectXManager::InitializeImGui()
-{
-	//// --- ImGuiの初期化 ---
-	//IMGUI_CHECKVERSION();
-	//ImGui::CreateContext();
-	//ImGui::StyleColorsDark();
-	//ImGui_ImplWin32_Init(winManager_->GetHwnd());
-	//ImGui_ImplDX12_Init(
-	//	device_.Get(), swapChainDesc.BufferCount, rtvDesc_.Format, srvHeap_.Get(), srvHeap_->GetCPUDescriptorHandleForHeapStart(),
-	//	srvHeap_->GetGPUDescriptorHandleForHeapStart());
-}
-
 void DirectXManager::BeginDraw()
 {
-	// ImGuiフレームの開始
-	//StartImGuiFrame();
 	// バックバッファのインデックスを取得
 	UINT backBufferIndex = swapChain_->GetCurrentBackBufferIndex();
 
@@ -576,7 +553,6 @@ void DirectXManager::BeginDraw()
 		D3D12_RESOURCE_STATE_RENDER_TARGET,
 		D3D12_RESOURCE_STATE_GENERIC_READ
 	);
-
 
 	// バックバッファのリソースバリアを設定
 	TransitionResource(
@@ -616,7 +592,6 @@ void DirectXManager::BeginDrawForRenderTarget()
 
 	// ビューポートとシザーレクトの設定
 	SetViewportAndScissorRect();
-
 }
 
 void DirectXManager::EndDraw()
@@ -667,7 +642,6 @@ void DirectXManager::EndDraw()
 
 void DirectXManager::TransitionResource(ID3D12Resource* resource, D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter)
 {
-	//D3D12_RESOURCE_BARRIER barrier = {};
 	barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 	barrier_.Transition.pResource = resource;
@@ -678,18 +652,8 @@ void DirectXManager::TransitionResource(ID3D12Resource* resource, D3D12_RESOURCE
 	commandList_->ResourceBarrier(1, &barrier_);
 }
 
-void DirectXManager::StartImGuiFrame()
-{
-	//ImGui_ImplDX12_NewFrame();
-	//ImGui_ImplWin32_NewFrame();
-	//ImGui::NewFrame();
-}
-
 void DirectXManager::SetRenderTargets(D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle)
 {
-	//D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = rtvHeap_->GetCPUDescriptorHandleForHeapStart();
-	//rtvHandle.ptr += backBufferIndex * descriptorSizeRTV_;
-
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap_->GetCPUDescriptorHandleForHeapStart();
 
 	commandList_->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
@@ -703,17 +667,7 @@ void DirectXManager::ClearDepthStencilView()
 
 void DirectXManager::ClearRenderTarget(D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle)
 {
-	float clearColor[] = { 1.0f, 0.0f, 0.0f, 1.0f };
-	//D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = rtvHeap_->GetCPUDescriptorHandleForHeapStart();
-	//rtvHandle.ptr += backBufferIndex * descriptorSizeRTV_;
-
-	commandList_->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
-}
-
-void DirectXManager::RenderImGui()
-{
-	//ImGui::Render();
-	//ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList_.Get());
+	commandList_->ClearRenderTargetView(rtvHandle, clearValue.Color, 0, nullptr);
 }
 
 void DirectXManager::SetViewportAndScissorRect()
@@ -721,4 +675,3 @@ void DirectXManager::SetViewportAndScissorRect()
 	commandList_->RSSetViewports(1, &viewport_);
 	commandList_->RSSetScissorRects(1, &scissorRect_);
 }
-

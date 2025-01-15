@@ -39,10 +39,10 @@ private: // メンバ変数
 	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffers_;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> depthBuffer_;
-	
+
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvHeap_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> dsvHeap_ = nullptr;
-	
+
 
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc_{};
 
@@ -75,8 +75,11 @@ private: // メンバ変数
 	uint32_t srvIndex_;
 	std::pair<D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_GPU_DESCRIPTOR_HANDLE> srvHandle_;
 
+	D3D12_CLEAR_VALUE clearValue{};
+
+
 private:
-	
+
 
 	void InitializeFixFPS();
 	void UpdateFixFPS();
@@ -88,11 +91,11 @@ public:
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(Microsoft::WRL::ComPtr<ID3D12Device> device, int32_t width, int32_t height);
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata& metadata);
 	void UploadTextureData(Microsoft::WRL::ComPtr<ID3D12Resource> texture, const DirectX::ScratchImage& mipImages);
-	
+
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 
 	// オフスクリーン用関数
-	Microsoft::WRL::ComPtr<ID3D12Resource> CreateRenderTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor);
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateRenderTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, D3D12_CLEAR_VALUE color);
 	void CreateRTVForOffScreen();
 	void CreateSRVForOffScreen(SrvManager* srvManager);
 	std::pair<D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_GPU_DESCRIPTOR_HANDLE> GetSrvHandle() const { return srvHandle_; }
@@ -119,7 +122,6 @@ private:
 
 	void InitializeDXCCompiler();
 
-	void InitializeImGui();
 
 public:
 	/// <summary>
@@ -149,16 +151,11 @@ public:
 		D3D12_RESOURCE_STATES stateBefore,
 		D3D12_RESOURCE_STATES stateAfter);
 
-	void StartImGuiFrame();
-
 	void SetRenderTargets(D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle);
 
 	void ClearDepthStencilView();
 
 	void ClearRenderTarget(D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle);
 
-	void RenderImGui();
-
 	void SetViewportAndScissorRect();
 };
-
