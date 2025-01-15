@@ -89,7 +89,6 @@ void Sprite::CreateMaterialResource()
 	// 今回は白を書き込んで置く
 	materialData_->color = { 1.0f, 1.0f, 1.0f, 1.0f };
 	// SpriteはLightingしないのでfalseを設定する
-	materialData_->enableLighting = false;
 	materialData_->uvTransform = MakeIdentity4x4();
 }
 
@@ -102,7 +101,6 @@ void Sprite::CreateTransformationResource()
 	// 単位行列を書き込んでおく
 	transformationMatrixData_->World = MakeIdentity4x4();
 	transformationMatrixData_->WVP = MakeIdentity4x4();
-	transformationMatrixData_->WorldInverseTranspose = MakeIdentity4x4();
 }
 
 void Sprite::SetSpriteData()
@@ -134,19 +132,15 @@ void Sprite::SetSpriteData()
 	// 左下
 	vertexData_[0].position = { left, bottom, 0.0f, 1.0f };
 	vertexData_[0].texcoord = { tex_left, tex_bottom };
-	vertexData_[0].normal = { 0.0f, 0.0f, -1.0f };
 	// 左上
 	vertexData_[1].position = { left, top, 0.0f, 1.0f };
 	vertexData_[1].texcoord = { tex_left, tex_top };
-	vertexData_[1].normal = { 0.0f, 0.0f, -1.0f };
 	// 右下
 	vertexData_[2].position = { right, bottom, 0.0f, 1.0f };
 	vertexData_[2].texcoord = { tex_right, tex_bottom };
-	vertexData_[2].normal = { 0.0f, 0.0f, -1.0f };
 	// 右上
 	vertexData_[3].position = { right, top, 0.0f, 1.0f };
 	vertexData_[3].texcoord = { tex_right, tex_top };
-	vertexData_[3].normal = { 0.0f, 0.0f, -1.0f };
 
 	// 書き込むためのアドレスを取得
 	indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&indexData_));

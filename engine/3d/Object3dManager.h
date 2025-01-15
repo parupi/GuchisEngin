@@ -3,6 +3,7 @@
 #include <Camera.h>
 #include <memory>
 #include <mutex>
+#include "PSOManager.h"
 class Object3dManager
 {
 private:
@@ -17,7 +18,7 @@ public:
 	// シングルトンインスタンスの取得
 	static Object3dManager* GetInstance();
 	// 初期化
-	void Initialize(DirectXManager* directXManager);
+	void Initialize(DirectXManager* directXManager, PSOManager* psoManager);
 	// 終了
 	void Finalize();
 	// 描画前処理
@@ -40,6 +41,7 @@ private:
 private:
 	// DirectXのポインタ
 	DirectXManager* dxManager_ = nullptr;
+	PSOManager* psoManager_ = nullptr;
 	// カメラのポインタ
 	Camera* defaultCamera_ = nullptr;
 

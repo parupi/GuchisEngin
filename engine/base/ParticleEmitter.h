@@ -5,7 +5,7 @@ class ParticleEmitter
 {
 public:
 	// 初期化
-	void Initialize(ParticleManager* manager, std::string name);
+	void Initialize(std::string name);
 	// 更新
 	void Update(Vector3 Position, uint32_t count);
 	// 発生
@@ -22,7 +22,7 @@ private:
 	};
 
 private:
-	ParticleManager* particleManager_;
+	//ParticleManager* particleManager_;
 	Emitter emitter{};
 	float kDeltaTime = 1.0f / 60.0f;
 
