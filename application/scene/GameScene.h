@@ -44,5 +44,8 @@ private:
 	//ParticleManager* particleManager_ = nullptr;
 	std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
 
+	Vector3 axis = { 1.0f, 0.4f, -0.2f };
+	float angle = 0.45f;
+	Vector3 pointY = { 2.1f, -0.9f, 1.3f };
 };
 

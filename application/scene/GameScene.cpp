@@ -17,8 +17,13 @@ void GameScene::Finalize()
 
 void GameScene::Update()
 {
-    Quaternion rotation = MakeRotateAxisAngleQuaternion(Normalize(Vector3{ 1.0f, 0.4f, -0.2f }), 0.45);
-    Vector3 pointY = { 2.1f, -0.9f, 1.3f };
+    ImGui::Begin("QuaternionTest");
+    ImGui::DragFloat3("pointX", &axis.x, 0.01f);
+    ImGui::DragFloat3("pointY", &pointY.x, 0.01f);
+    ImGui::DragFloat("angle", &angle, 0.01f);
+    ImGui::End();
+
+    Quaternion rotation = MakeRotateAxisAngleQuaternion(Normalize(axis), angle);
     Matrix4x4 rotateMatrix = MakeRotateMatrix(rotation);
     Vector3 rotateByQuaternion = RotateVector(pointY, rotation);
     Vector3 rotateByMatrix = Transform(pointY, rotateMatrix);
