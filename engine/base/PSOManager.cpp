@@ -823,8 +823,34 @@ void PSOManager::CreateOffScreenPSO(OffScreenEffectType effectType)
 
 	IDxcBlob* vertexShaderBlob{};
 	IDxcBlob* pixelShaderBlob{};
-	vertexShaderBlob = dxManager_->CompileShader(L"./resource/shaders/CopyImage.VS.hlsl", L"vs_6_0");
-	pixelShaderBlob = dxManager_->CompileShader(L"./resource/shaders/CopyImage.PS.hlsl", L"ps_6_0");
+
+	switch (effectType) {
+	case OffScreenEffectType::kNone:
+		vertexShaderBlob = dxManager_->CompileShader(L"./resource/shaders/Fullscreen.VS.hlsl", L"vs_6_0");
+		pixelShaderBlob = dxManager_->CompileShader(L"./resource/shaders/CopyImage.PS.hlsl", L"ps_6_0");
+		break;
+	case OffScreenEffectType::kGray:
+		vertexShaderBlob = dxManager_->CompileShader(L"./resource/shaders/Fullscreen.VS.hlsl", L"vs_6_0");
+		pixelShaderBlob = dxManager_->CompileShader(L"./resource/shaders/Grayscale.PS.hlsl", L"ps_6_0");
+		break;
+	case OffScreenEffectType::kVignette:
+		vertexShaderBlob = dxManager_->CompileShader(L"./resource/shaders/Fullscreen.VS.hlsl", L"vs_6_0");
+		pixelShaderBlob = dxManager_->CompileShader(L"./resource/shaders/Vignette.PS.hlsl", L"ps_6_0");
+		break;
+	case OffScreenEffectType::kSmooth:
+		vertexShaderBlob = dxManager_->CompileShader(L"./resource/shaders/Fullscreen.VS.hlsl", L"vs_6_0");
+		pixelShaderBlob = dxManager_->CompileShader(L"./resource/shaders/BoxFilter.PS.hlsl", L"ps_6_0");
+		break;
+	case OffScreenEffectType::kGauss:
+		vertexShaderBlob = dxManager_->CompileShader(L"./resource/shaders/Fullscreen.VS.hlsl", L"vs_6_0");
+		pixelShaderBlob = dxManager_->CompileShader(L"./resource/shaders/GaussianFilter.PS.hlsl", L"ps_6_0");
+		break;
+	case OffScreenEffectType::kOutLine:
+		vertexShaderBlob = dxManager_->CompileShader(L"./resource/shaders/Fullscreen.VS.hlsl", L"vs_6_0");
+		pixelShaderBlob = dxManager_->CompileShader(L"./resource/shaders/OutLine.PS.hlsl", L"ps_6_0");
+		break;
+	}
+
 	assert(pixelShaderBlob != nullptr);
 
 	// DepthStencilStateの設定

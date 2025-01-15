@@ -24,10 +24,11 @@ void GameScene::Initialize()
 	ModelManager::GetInstance()->LoadModel("resource", "sneakWalk.gltf");
 	ModelManager::GetInstance()->LoadModel("resource", "plane.obj");
 	ModelManager::GetInstance()->LoadModel("resource", "AnimatedCube.gltf");
+	ModelManager::GetInstance()->LoadModel("resource", "terrain/terrain.obj");
 	TextureManager::GetInstance()->LoadTexture("resource/uvChecker.png");
 
 	object_ = std::make_unique<Object3d>();
-	object_->Initialize("plane.obj");
+	object_->Initialize("terrain/terrain.obj");
 
 	animationObject_ = std::make_unique<Object3d>();
 	animationObject_->Initialize("walk.gltf");
