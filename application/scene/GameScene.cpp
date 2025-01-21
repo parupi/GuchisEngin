@@ -3,56 +3,37 @@
 #include <ModelManager.h>
 #include <ParticleManager.h>
 #include <imgui.h>
-#include <Quaternion.h>
-#include <Vector3.h>
-#include <Matrix4x4.h>
+#include "SceneManager.h"
 
 void GameScene::Initialize()
 {
-	// カメラの生成
-	normalCamera_ = std::make_shared<Camera>();
-	cameraManager_.AddCamera(normalCamera_);
-	cameraManager_.SetActiveCamera(0);
-	normalCamera_->SetTranslate(Vector3{ 0.0f, 35.0f, -44.0f });
-	normalCamera_->SetRotate(Vector3{ 0.68f, 0.0f, 0.0f });
-	//normalCamera_->SetTranslate(Vector3{ 0.0f, 0.0f, -10.0f });
-	//normalCamera_->SetRotate(Vector3{ 0.0f, 0.0f, 0.0f });
+	gameCamera_ = std::make_unique<GameCamera>();
+	gameCamera_->Initialize();
 
-	// .objファイルからモデルを読み込む
-	ModelManager::GetInstance()->LoadModel("resource", "walk.gltf");
-	ModelManager::GetInstance()->LoadModel("resource", "simpleSkin.gltf");
-	ModelManager::GetInstance()->LoadModel("resource", "sneakWalk.gltf");
-	ModelManager::GetInstance()->LoadModel("resource", "plane.obj");
-	ModelManager::GetInstance()->LoadModel("resource", "AnimatedCube.gltf");
-	ModelManager::GetInstance()->LoadModel("resource", "terrain/terrain.obj");
-	TextureManager::GetInstance()->LoadTexture("resource/uvChecker.png");
+	player_ = std::make_unique<Player>();
+	player_->Initialize();
 
-	object_ = std::make_unique<Object3d>();
-	object_->Initialize("terrain/terrain.obj");
+	gameCamera_->SetPlayer(player_.get());
+	player_->SetCamera(gameCamera_->GetGameCamera());
 
-	animationObject_ = std::make_unique<Object3d>();
-	animationObject_->Initialize("walk.gltf");
+	enemyManager_ = std::make_unique<EnemyManager>();
+	enemyManager_->Initialize(player_.get());
 
-	transform_.Initialize();
-	animationTransform_.Initialize();
+	ground_ = std::make_unique<Ground>();
+	ground_->Initialize();
 
-	sprite = std::make_unique<Sprite>();
-	sprite->Initialize("resource/uvChecker.png");
-	sprite->SetSize({ 32.0f,32.0f });
+	sphere_ = std::make_unique<Skydome>();
+	sphere_->Initialize();
 
-	// ============ライト=================//
-	lightManager_ = std::make_unique<LightManager>();
-	lightManager_->Initialize();
+	collisionManager_ = std::make_unique<CollisionManager>();
+	collisionManager_->Initialize();
 
 	lightManager_->SetDirLightActive(0, true);
 	lightManager_->SetDirLightIntensity(0, 1.0f);
 
-
-	ParticleManager::GetInstance()->CreateParticleGroup("test", "resource/uvChecker.png");
-
-	particleEmitter_ = std::make_unique<ParticleEmitter>();
-	particleEmitter_->Initialize("test");
-
+	TextureManager::GetInstance()->LoadTexture("resource/UI/tutorialUI.png");
+	titleUI_ = std::make_unique<Sprite>();
+	titleUI_->Initialize("resource/UI/tutorialUI.png");
 }
 
 void GameScene::Finalize()
@@ -62,105 +43,62 @@ void GameScene::Finalize()
 
 void GameScene::Update()
 {
-	particleEmitter_->Update({0.0f, 0.0f, 0.0f}, 8);
 	ParticleManager::GetInstance()->Update();
+	gameCamera_->Update();
 
-	object_->AnimationUpdate();
-	animationObject_->AnimationUpdate();
-	cameraManager_.Update();
-	sprite->Update();
+	player_->Update();
 
-	Vector3 normalCameraPos = normalCamera_->GetTranslate();
-	Vector3 cameraRotate = normalCamera_->GetRotate();
+	enemyManager_->Update();
 
-	ImGui::Begin("Camera Manager");
-	ImGui::DragFloat3("Translate", &normalCameraPos.x, 0.01f);
-	ImGui::DragFloat3("Rotate", &cameraRotate.x, 0.01f);
-	ImGui::End();
+	sphere_->Update();
+	ground_->Update();
 
-	normalCamera_->SetTranslate(normalCameraPos);
-	normalCamera_->SetRotate(cameraRotate);
+	titleUI_->Update();
+
+	CheckAllCollisions();
 
 
-	Vector2 uvObjectPos = object_->GetUVPosition();
-	Vector2 uvObjectSize = object_->GetUVSize();
-	float uvObjectRotate = object_->GetUVRotation();
-
-	ImGui::Begin("Transform");
-	ImGui::DragFloat3("translate", &transform_.translation_.x, 0.01f);
-	ImGui::DragFloat3("rotation", &transform_.rotation_.x, 0.01f);
-	ImGui::DragFloat3("scale", &transform_.scale_.x, 0.01f);
-	ImGui::DragFloat2("UVTranslate", &uvObjectPos.x, 0.01f, -10.0f, 10.0f);
-	ImGui::DragFloat2("UVScale", &uvObjectSize.x, 0.01f, -10.0f, 10.0f);
-	ImGui::SliderAngle("UVRotate", &uvObjectRotate);
-	ImGui::End();
-
-	object_->SetUVPosition(uvObjectPos);
-	object_->SetUVSize(uvObjectSize);
-	object_->SetUVRotation(uvObjectRotate);
-
-	transform_.TransferMatrix();
-
-	ImGui::Begin("AnimationTransform");
-	ImGui::DragFloat3("translate", &animationTransform_.translation_.x, 0.01f);
-	ImGui::DragFloat3("rotation", &animationTransform_.rotation_.x, 0.01f);
-	ImGui::DragFloat3("scale", &animationTransform_.scale_.x, 0.01f);
-	ImGui::End();
-
-	animationTransform_.TransferMatrix();
-
-	ImGui::Begin("SetModel");
-	if (ImGui::Button("Set Work"))
-	{
-		animationObject_->SetModel("walk.gltf");
+	if (enemyManager_->GetDeadNum() == 10) {
+		// シーンの切り替え依頼
+		SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
-	if (ImGui::Button("Set sneakWalk"))
-	{
-		animationObject_->SetModel("sneakWalk.gltf");
-	}
-	ImGui::End();
-
-	Vector2 spritePos = sprite->GetPosition();
-	Vector2 spriteSize = sprite->GetSize();
-	float spriteRotate = sprite->GetRotation();
-
-	Vector2 uvSpritePos = sprite->GetUVPosition();
-	Vector2 uvSpriteSize = sprite->GetUVSize();
-	float uvSpriteRotate = sprite->GetUVRotation();
-
-	ImGui::Begin("Sprite");
-	ImGui::DragFloat2("position", &spritePos.x);
-	ImGui::DragFloat("rotate", &spriteRotate);
-	ImGui::DragFloat2("size", &spriteSize.x);
-	ImGui::DragFloat2("UVTranslate", &uvSpritePos.x, 0.01f, -10.0f, 10.0f);
-	ImGui::DragFloat2("UVScale", &uvSpriteSize.x, 0.01f, -10.0f, 10.0f);
-	ImGui::SliderAngle("UVRotate", &uvSpriteRotate);
-	ImGui::End();
-
-	sprite->SetPosition(spritePos);
-	sprite->SetSize(spriteSize);
-	sprite->SetRotation(spriteRotate);
-
-	sprite->SetUVPosition(uvSpritePos);
-	sprite->SetUVSize(uvSpriteSize);
-	sprite->SetUVRotation(uvSpriteRotate);
 }
 
 void GameScene::Draw()
 {
-	ParticleManager::GetInstance()->DrawSet();
-	ParticleManager::GetInstance()->Draw();
-
 	// 3Dオブジェクト描画前処理
-	Object3dManager::GetInstance()->DrawSetForAnimation();
-	lightManager_->BindLightsToShader();
-	animationObject_->Draw(animationTransform_);
-
 	Object3dManager::GetInstance()->DrawSet();
-	lightManager_->BindLightsToShader();
-	object_->Draw(transform_);
+	ground_->Draw();
+	sphere_->Draw();
+	enemyManager_->Draw();
+	player_->Draw();
 
 	SpriteManager::GetInstance()->DrawSet();
-	sprite->Draw();
-	
+	titleUI_->Draw();
+
+	ParticleManager::GetInstance()->DrawSet(BlendMode::kAdd);
+	ParticleManager::GetInstance()->Draw();
+
+	Object3dManager::GetInstance()->DrawSet();
+
+}
+
+void GameScene::CheckAllCollisions()
+{
+	// 衝突マネージャーのリセット
+	collisionManager_->Reset();
+
+	// コライダーリストに登録
+	collisionManager_->AddCollider(player_->GetWeapon());
+
+	// 敵全てについて
+	 // 敵全てのコライダーをリストに登録
+	//auto enemyColliders = enemyGroup_->GetColliders();
+	for (int i = 0; i < 10; i++) {
+		collisionManager_->AddCollider(enemyManager_->GetEnemy(i));
+	}
+
+
+	// 衝突判定と応答
+	collisionManager_->CheckAllCollisions();
 }

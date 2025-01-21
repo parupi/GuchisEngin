@@ -62,7 +62,7 @@
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir)engine\base;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\input;$(ProjectDir)engine\audio;$(ProjectDir)engine\scene;$(ProjectDir)engine\math;$(ProjectDir)externals\DirectXTex;$(ProjectDir)externals\imgui;$(ProjectDir)externals\nlohmann;$(ProjectDir)engine\debuger;$(ProjectDir)application\scene;$(ProjectDir)engine\core;$(ProjectDir)application\player;$(ProjectDir)application\Enemy;$(ProjectDir)externals\assimp\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)engine\base;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\input;$(ProjectDir)engine\audio;$(ProjectDir)engine\scene;$(ProjectDir)engine\math;$(ProjectDir)externals\DirectXTex;$(ProjectDir)externals\imgui;$(ProjectDir)externals\nlohmann;$(ProjectDir)engine\debuger;$(ProjectDir)application\scene;$(ProjectDir)engine\core;$(ProjectDir)application\player;$(ProjectDir)application\Enemy;$(ProjectDir)externals\assimp\include;$(ProjectDir)application</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -89,7 +89,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)engine\base;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\input;$(ProjectDir)engine\audio;$(ProjectDir)engine\scene;$(ProjectDir)engine\math;$(ProjectDir)externals\DirectXTex;$(ProjectDir)externals\imgui;$(ProjectDir)externals\nlohmann;$(ProjectDir)engine\debuger;$(ProjectDir)engine\debug;$(ProjectDir)application\scene;$(ProjectDir)engine\core;$(ProjectDir)application\player;$(ProjectDir)application\Enemy;$(ProjectDir)externals\assimp\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)engine\base;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\input;$(ProjectDir)engine\audio;$(ProjectDir)engine\scene;$(ProjectDir)engine\math;$(ProjectDir)externals\DirectXTex;$(ProjectDir)externals\imgui;$(ProjectDir)externals\nlohmann;$(ProjectDir)engine\debuger;$(ProjectDir)engine\debug;$(ProjectDir)application\scene;$(ProjectDir)engine\core;$(ProjectDir)application\player;$(ProjectDir)application\Enemy;$(ProjectDir)externals\assimp\include;$(ProjectDir)application</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -108,6 +108,24 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="application\camera\GameCamera.cpp" />
+    <ClCompile Include="application\charcter\Collision\Collider.cpp" />
+    <ClCompile Include="application\charcter\Collision\CollisionManager.cpp" />
+    <ClCompile Include="application\charcter\enemy\Enemy.cpp" />
+    <ClCompile Include="application\charcter\enemy\EnemyManager.cpp" />
+    <ClCompile Include="application\charcter\player\attack\FifthAttackState.cpp" />
+    <ClCompile Include="application\charcter\player\attack\FirstAttackState.cpp" />
+    <ClCompile Include="application\charcter\player\attack\FourthAttackState.cpp" />
+    <ClCompile Include="application\charcter\player\attack\SecondAttackState.cpp" />
+    <ClCompile Include="application\charcter\player\attack\SixthAttackState.cpp" />
+    <ClCompile Include="application\charcter\player\attack\ThirdAttackState.cpp" />
+    <ClCompile Include="application\charcter\player\IdleState.cpp" />
+    <ClCompile Include="application\charcter\player\MoveState.cpp" />
+    <ClCompile Include="application\charcter\player\Player.cpp" />
+    <ClCompile Include="application\charcter\player\PlayerState.cpp" />
+    <ClCompile Include="application\charcter\player\Weapon.cpp" />
+    <ClCompile Include="application\object\Ground.cpp" />
+    <ClCompile Include="application\object\Skydome.cpp" />
     <ClCompile Include="engine\debuger\DebugSphere.cpp" />
     <ClCompile Include="engine\3d\Animator.cpp" />
     <ClCompile Include="engine\3d\CameraManager.cpp" />
@@ -116,6 +134,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\3d\WorldTransform.cpp" />
     <ClCompile Include="engine\audio\Audio.cpp" />
     <ClCompile Include="engine\debuger\GlobalVariables.cpp" />
+    <ClCompile Include="engine\math\Quaternion.cpp" />
     <ClCompile Include="engine\scene\BaseScene.cpp" />
     <ClCompile Include="engine\3d\Camera.cpp" />
     <ClCompile Include="engine\base\DirectXManager.cpp" />
@@ -132,7 +151,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\debuger\LeakChecker.cpp" />
     <ClCompile Include="engine\core\GuchisFramework.cpp" />
     <ClCompile Include="application\scene\GameScene.cpp" />
-    <ClCompile Include="application\scene\fade\Fade.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\math\Easing.cpp" />
     <ClCompile Include="engine\math\function.cpp" />
@@ -153,7 +171,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\scene\SceneManager.cpp" />
     <ClCompile Include="application\scene\SceneFactory.cpp" />
     <ClCompile Include="engine\base\ParticleEmitter.cpp" />
-    <ClCompile Include="engine\math\Quaternion.cpp" />
     <ClCompile Include="engine\math\Vector3.cpp" />
     <ClCompile Include="engine\math\Matrix4x4.cpp" />
     <ClCompile Include="engine\base\OffScreen.cpp" />
@@ -232,6 +249,25 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="application\camera\GameCamera.h" />
+    <ClInclude Include="application\charcter\Collision\Collider.h" />
+    <ClInclude Include="application\charcter\Collision\CollisionManager.h" />
+    <ClInclude Include="application\charcter\Collision\CollisionTypeIdDef.h" />
+    <ClInclude Include="application\charcter\enemy\Enemy.h" />
+    <ClInclude Include="application\charcter\enemy\EnemyManager.h" />
+    <ClInclude Include="application\charcter\player\attack\FifthAttackState.h" />
+    <ClInclude Include="application\charcter\player\attack\FirstAttackState.h" />
+    <ClInclude Include="application\charcter\player\attack\FourthAttackState.h" />
+    <ClInclude Include="application\charcter\player\attack\SecondAttackState.h" />
+    <ClInclude Include="application\charcter\player\attack\SixthAttackState.h" />
+    <ClInclude Include="application\charcter\player\attack\ThirdAttackState.h" />
+    <ClInclude Include="application\charcter\player\IdleState.h" />
+    <ClInclude Include="application\charcter\player\MoveState.h" />
+    <ClInclude Include="application\charcter\player\Player.h" />
+    <ClInclude Include="application\charcter\player\PlayerState.h" />
+    <ClInclude Include="application\charcter\player\Weapon.h" />
+    <ClInclude Include="application\object\Ground.h" />
+    <ClInclude Include="application\object\Skydome.h" />
     <ClInclude Include="engine\debuger\DebugSphere.h" />
     <ClInclude Include="engine\3d\Animator.h" />
     <ClInclude Include="engine\3d\CameraManager.h" />
@@ -240,6 +276,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\3d\WorldTransform.h" />
     <ClInclude Include="engine\audio\Audio.h" />
     <ClInclude Include="engine\debuger\GlobalVariables.h" />
+    <ClInclude Include="engine\math\Quaternion.h" />
     <ClInclude Include="engine\scene\AbstractSceneFactory.h" />
     <ClInclude Include="engine\scene\BaseScene.h" />
     <ClInclude Include="engine\3d\Camera.h" />
@@ -281,8 +318,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\scene\SceneManager.h" />
     <ClInclude Include="application\scene\SceneFactory.h" />
     <ClInclude Include="engine\base\ParticleEmitter.h" />
-    <ClInclude Include="engine\math\Quaternion.h" />
-    <ClInclude Include="application\scene\fade\Fade.h" />
     <ClInclude Include="engine\base\OffScreen.h" />
     <ClInclude Include="engine\base\PSOManager.h" />
   </ItemGroup>

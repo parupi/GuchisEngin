@@ -1,6 +1,7 @@
 #include "MyGameTitle.h"
 #include <SceneFactory.h>
 #include <ParticleManager.h>
+#include "LightManager.h"
 
 void MyGameTitle::Initialize()
 {
@@ -17,6 +18,8 @@ void MyGameTitle::Initialize()
 	SpriteManager::GetInstance()->Initialize(dxManager.get(), psoManager.get());
 	// オブジェクト共通部
 	Object3dManager::GetInstance()->Initialize(dxManager.get(), psoManager.get());
+	// ライトの生成
+	LightManager::GetInstance()->Initialize(dxManager.get());
 
 	offScreen_ = std::make_unique<OffScreen>();
 	offScreen_->Initialize(dxManager.get(), psoManager.get());
@@ -30,6 +33,10 @@ void MyGameTitle::Initialize()
 
 	// インスタンス生成
 	GlobalVariables::GetInstance();
+
+	LoadFile();
+
+	CreateParticleGroup();
 }
 
 void MyGameTitle::Finalize()
@@ -67,5 +74,22 @@ void MyGameTitle::Draw()
 	ImGuiManager::GetInstance()->Draw();
 
 	dxManager->EndDraw();
+}
+
+void MyGameTitle::LoadFile()
+{
+	ModelManager::GetInstance()->LoadModel("resource", "plane.obj");
+	ModelManager::GetInstance()->LoadModel("resource", "float_body.obj");
+	ModelManager::GetInstance()->LoadModel("resource", "float_head.obj");
+	ModelManager::GetInstance()->LoadModel("resource", "ICO.obj");
+	ModelManager::GetInstance()->LoadModel("resource", "sord/sord.obj");
+	ModelManager::GetInstance()->LoadModel("resource", "models/player/player.obj");
+}
+
+void MyGameTitle::CreateParticleGroup()
+{
+	ParticleManager::GetInstance()->CreateParticleGroup("Dust", "resource/circle.png");
+	ParticleManager::GetInstance()->CreateParticleGroup("Attack", "resource/circle.png");
+
 }
 

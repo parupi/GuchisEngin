@@ -5,13 +5,9 @@
 
 void TitleScene::Initialize()
 {
-	TextureManager::GetInstance()->LoadTexture("resource/fade1x1.png");
-
-	// カメラの生成
-	camera_ = std::make_shared<Camera>();
-	cameraManager_.AddCamera(camera_);
-	cameraManager_.SetActiveCamera(0);
-
+	TextureManager::GetInstance()->LoadTexture("resource/UI/TitleUI.png");
+	titleUI_ = std::make_unique<Sprite>();
+	titleUI_->Initialize("resource/UI/TitleUI.png");
 }
 
 void TitleScene::Finalize()
@@ -20,43 +16,16 @@ void TitleScene::Finalize()
 
 void TitleScene::Update()
 {
-	cameraManager_.Update();
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+		// シーンの切り替え依頼
+		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
+	}
 
-	fade_->Update();
-
-	ChangePhase();
+	titleUI_->Update();
 }
 
 void TitleScene::Draw()
 {
-	//Object3dManager::GetInstance()->DrawSet();
-	//fade_->Draw();
-
 	SpriteManager::GetInstance()->DrawSet();
-	fade_->DrawSprite();
-}
-
-void TitleScene::ChangePhase()
-{
-	switch (phase_) {
-	case TitlePhase::kTitle:
-		// キーボードの処理
-		if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
-			phase_ = TitlePhase::kFadeOut;
-			fade_->Start(Status::FadeOut, 2.0f);
-		}
-		break;
-	case TitlePhase::kFadeIn:
-		if (fade_->IsFinished()) {
-			phase_ = TitlePhase::kTitle;
-		}
-		break;
-	case TitlePhase::kFadeOut:
-		if (fade_->IsFinished()) {
-			// シーンの切り替え依頼
-			SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
-		}
-		break;
-	}
-
+	titleUI_->Draw();
 }
