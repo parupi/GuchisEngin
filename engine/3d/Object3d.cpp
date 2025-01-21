@@ -9,13 +9,14 @@
 #include "ModelManager.h"
 Object3d::~Object3d()
 {
-	//delete animator_;
 }
 
 void Object3d::Initialize(const std::string& fileName)
 {
 	// モデルを検索してセットする
-	model_ = ModelManager::GetInstance()->FindModel(fileName);
+	if (fileName != "") {
+		model_ = ModelManager::GetInstance()->FindModel(fileName);
+	}
 
 	objectManager_ = Object3dManager::GetInstance();
 
@@ -25,24 +26,11 @@ void Object3d::Initialize(const std::string& fileName)
 
 void Object3d::AnimationUpdate()
 {
-	if (model_->GetModelData().isAnimation) {
-		model_->Update();
-	}
+	model_->Update();
 }
 
 void Object3d::Draw(WorldTransform& worldTransform)
 {
-	// uvTransformに値を適用
-	uvTransform_.translate = { uvPosition_.x, uvPosition_.y, 0.0f };
-	uvTransform_.rotate = { 0.0f, 0.0f, uvRotation_ };
-	uvTransform_.scale = { uvSize_.x, uvSize_.y, 1.0f };
-	// Transform情報を作る
-	Matrix4x4 uvTransformMatrix = MakeIdentity4x4();
-	uvTransformMatrix *= MakeScaleMatrix(uvTransform_.scale);
-	uvTransformMatrix *= MakeRotateZMatrix(uvTransform_.rotate.z);
-	uvTransformMatrix *= MakeTranslateMatrix(uvTransform_.translate);
-	materialData_->uvTransform = uvTransformMatrix;
-
 	camera_ = objectManager_->GetDefaultCamera();
 	cameraData_->worldPosition = camera_->GetTranslate();
 
@@ -57,8 +45,8 @@ void Object3d::Draw(WorldTransform& worldTransform)
 
 	if (model_->GetModelData().isAnimation) {
 		if (model_->GetModelData().isHasBones) {
-			worldTransform.SetMapWVP(/*model_->GetModelData().rootNode.localMatrix * */worldViewProjectionMatrix);
-			worldTransform.SetMapWorld(/*model_->GetModelData().rootNode.localMatrix * */worldTransform.GetMatWorld());
+			worldTransform.SetMapWVP(worldViewProjectionMatrix);
+			worldTransform.SetMapWorld(worldTransform.GetMatWorld());
 		}
 		else {
 			worldTransform.SetMapWVP(model_->GetModelData().rootNode.localMatrix * worldViewProjectionMatrix);
@@ -66,8 +54,8 @@ void Object3d::Draw(WorldTransform& worldTransform)
 		}
 	}
 	else {
-		worldTransform.SetMapWVP(/*model_->GetModelData().rootNode.localMatrix * */worldViewProjectionMatrix);
-		worldTransform.SetMapWorld(/*model_->GetModelData().rootNode.localMatrix * */worldTransform.GetMatWorld());
+		worldTransform.SetMapWVP(worldViewProjectionMatrix);
+		worldTransform.SetMapWorld(worldTransform.GetMatWorld());
 	}
 
 	// cameraの場所を指定

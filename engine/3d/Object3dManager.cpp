@@ -1,4 +1,5 @@
 #include "Object3dManager.h"
+#include "LightManager.h"
 
 Object3dManager* Object3dManager::instance = nullptr;
 std::once_flag Object3dManager::initInstanceFlag;
@@ -29,6 +30,8 @@ void Object3dManager::DrawSet()
 	dxManager_->GetCommandList()->SetPipelineState(psoManager_->GetObjectPSO().Get());			// PSOを設定
 	dxManager_->GetCommandList()->SetGraphicsRootSignature(psoManager_->GetObjectSignature().Get());
 	dxManager_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	// ライトのセット
+	LightManager::GetInstance()->BindLightsToShader();
 }
 
 void Object3dManager::DrawSetForAnimation()
@@ -36,4 +39,6 @@ void Object3dManager::DrawSetForAnimation()
 	dxManager_->GetCommandList()->SetPipelineState(psoManager_->GetAnimationPSO().Get());			// PSOを設定
 	dxManager_->GetCommandList()->SetGraphicsRootSignature(psoManager_->GetAnimationSignature().Get());
 	dxManager_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	// ライトのセット
+	LightManager::GetInstance()->BindLightsToShader();
 }

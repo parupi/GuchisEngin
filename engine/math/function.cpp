@@ -1,4 +1,6 @@
 #include "function.h"
+#include <Vector4.h>
+#include <vector>
 
 float Normalize(float value) {
 	// 値が0でない場合、絶対値が1になるように正規化
@@ -41,7 +43,7 @@ Matrix4x4 MakeOrthographicMatrix(float left, float top, float right, float botto
 Matrix4x4 MakeViewPortMatrix(float left, float top, float width, float height, float minDepth, float maxDepth) {
 	return {width / 2.0f, 0, 0, 0, 0, -height / 2.0f, 0, 0, 0, 0, maxDepth - minDepth, 0, left + width / 2.0f, top + height / 2.0f, minDepth, 1.0f};
 }
-Vector3 Cross(const Vector3& v1, const Vector3& v2) { return {v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x}; };
+
 
 Matrix4x4 LookAt(const Vector3& eye, const Vector3& target, const Vector3& up) {
 	Vector3 zaxis = Normalize(target - eye);     // forward
@@ -140,4 +142,69 @@ Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to)
 	rotationMatrix.m[3][3] = 1.0f;
 
 	return rotationMatrix;
+}
+
+//void DrawAABB(const Vector3& min, const Vector3& max, const Vector4& color)
+//{
+//	// AABBの頂点リスト
+//	Vector3 corners[8] = {
+//		{min.x, min.y, min.z}, {max.x, min.y, min.z},
+//		{min.x, max.y, min.z}, {max.x, max.y, min.z},
+//		{min.x, min.y, max.z}, {max.x, min.y, max.z},
+//		{min.x, max.y, max.z}, {max.x, max.y, max.z}
+//	};
+//
+//	// エッジを表す線リスト (12本)
+//	int edges[24] = {
+//		0, 1, 1, 3, 3, 2, 2, 0, // 下の面
+//		4, 5, 5, 7, 7, 6, 6, 4, // 上の面
+//		0, 4, 1, 5, 2, 6, 3, 7  // 側面
+//	};
+//
+//	// 頂点データを構築
+//	std::vector<Vertex> vertices;
+//	for (int i = 0; i < 24; i += 2) {
+//		vertices.push_back({ corners[edges[i]], color });
+//		vertices.push_back({ corners[edges[i + 1]], color });
+//	}
+//
+//	// 頂点バッファを作成して描画
+//	DrawLines(vertices.data(), vertices.size());
+//}
+
+
+Quaternion FromToRotation(const Vector3& from, const Vector3& to)
+{
+	Vector3 fromNorm = Normalize(from);
+	Vector3 toNorm = Normalize(to);
+
+	// ベクトルの内積と外積を計算
+	Vector3 cross = Cross(fromNorm, toNorm);
+	float dot = Dot(fromNorm, toNorm);
+
+	// 回転角が180度に近い場合
+	if (dot < -0.9999f) {
+		// 任意の垂直ベクトルを選択して回転軸とする
+		Vector3 perpendicular = std::abs(fromNorm.x) > 0.1f
+			? Vector3(-fromNorm.y, fromNorm.x, 0.0f)
+			: Vector3(0.0f, -fromNorm.z, fromNorm.y);
+		perpendicular = Normalize(perpendicular);
+		return Quaternion(
+			perpendicular.x,
+			perpendicular.y,
+			perpendicular.z,
+			0.0f
+		);
+	}
+
+	// クォータニオンを計算
+	float w = std::sqrt((1.0f + dot) * 2.0f) * 0.5f;
+	float scale = 0.5f / w;
+
+	return Normalize(Quaternion(
+		cross.x * scale,
+		cross.y * scale,
+		cross.z * scale,
+		w
+	));
 }

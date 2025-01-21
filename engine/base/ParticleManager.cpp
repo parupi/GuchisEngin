@@ -73,6 +73,7 @@ void ParticleManager::Update()
 			(*particleIterator).transform.translate += (*particleIterator).velocity * kDeltaTime;
 			(*particleIterator).currentTime += kDeltaTime;
 			alpha = 1.0f - ((*particleIterator).currentTime / (*particleIterator).lifeTime);
+			//alpha = 1.0f;
 
 			// ワールド行列の計算
 			scaleMatrix = MakeScaleMatrix((*particleIterator).transform.scale);
@@ -153,14 +154,12 @@ void ParticleManager::CreateParticleGroup(const std::string name, const std::str
 	// インスタンシング用リソースの生成
 	particleGroup.instancingResource = dxManager_->CreateBufferResource(sizeof(ParticleForGPU) * kNumMaxInstance);
 
-	// インスタンシング用にSRVを確保してSRVインデックスを記録
-	//particleGroup.srvIndex = srvManager_->Allocate();
-
 	// インスタンシングデータを書き込むためのポインタを取得
 	particleGroup.instancingResource->Map(0, nullptr, reinterpret_cast<void**>(&particleGroup.instancingDataPtr));
 
 	// SRVを作成するDescriptorの場所を決める
-	particleGroup.srvIndex = srvManager_->Allocate() + 1;
+	particleGroup.srvIndex = srvManager_->Allocate();
+	//particleGroup.srvIndex = srvManager_->Allocate() + 1;
 
 	// SRVの生成
 	srvManager_->CreateSRVforStructuredBuffer(particleGroup.srvIndex, particleGroup.instancingResource.Get(), kNumMaxInstance, sizeof(ParticleForGPU));
