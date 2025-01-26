@@ -59,7 +59,6 @@ void MyGameTitle::Draw()
 	srvManager->BeginDraw();
 	SceneManager::GetInstance()->Draw();
 
-
 	dxManager->BeginDraw();
 
 	offScreen_->Draw(OffScreenEffectType::kNone);
