@@ -13,7 +13,8 @@ public:
     void Finalize();
     void Update();
     void Draw();
-    //void DrawParticle();
+    
+  
 
     void ChangeState(std::unique_ptr<PlayerState> newState);
     void GlobalInitialize(const std::string cameraName);
@@ -37,12 +38,12 @@ public: // アクセッサ
    
     void SetKnockBack(const Vector2& knockBack) { attackData_.knockBack = knockBack; }
     void SetAttackFlag(bool isAttack) { attackData_.isAttack = isAttack; }
-    Vector2 GetKnockBack() { return attackData_.knockBack; }
-    bool GetAttackFlag() { return attackData_.isAttack; }
-    bool GetIsChangeState() { return isChangeState_; }
+    Vector2 GetKnockBack() const { return attackData_.knockBack; }
+    bool GetAttackFlag() const { return attackData_.isAttack; }
+    bool GetIsChangeState() const { return isChangeState_; }
 
     void SetDamage(float damage) { attackData_.damage = damage; }
-    float GetDamage() { return attackData_.damage; }
+    float GetDamage() const { return attackData_.damage; }
 
     Vector3 GetTranslateWeapon() const { return weapon_->GetTranslate(); }
     void SetTranslateWeapon(const Vector3& translate) { weapon_->SetTranslate(translate); }
@@ -60,6 +61,9 @@ public: // アクセッサ
 
     void SetParticleFlag(bool isMove) { isDustParticle = isMove; }
 
+    bool GetIsHit();
+    bool SetIsHit(bool isHit) { return isHit; }
+
 private:
     GlobalVariables* global_ = GlobalVariables::GetInstance();
 
@@ -68,6 +72,7 @@ private:
     // オブジェクトの生成
     std::unique_ptr<Object3d> object_;
     WorldTransform transform_;
+
     Input* input_ = nullptr;
     Camera* camera_ = nullptr;
     bool isChangeState_ = false;

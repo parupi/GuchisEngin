@@ -41,5 +41,8 @@ private:
 	LightManager* lightManager_ = LightManager::GetInstance();
 
 	std::unique_ptr<Sprite> titleUI_;
+
+	// ヒットストップ用のフラグ
+	bool isHitStopActive = false;
 };
 

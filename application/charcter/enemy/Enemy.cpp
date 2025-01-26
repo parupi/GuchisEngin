@@ -19,6 +19,11 @@ void Enemy::Initialize(const Vector3& pos)
 	shadeTransform_.Initialize();
 	shadeTransform_.scale_ = { 1.0f, 0.01f, 1.0f };
 
+	sprite_ = std::make_unique<Sprite>();
+	sprite_->Initialize("resource/uvChecker.png");
+	sprite_->SetAnchorPoint({ 0.5f, 0.5f });
+	sprite_->SetSize({ 64.0f, 64.0f });
+
 	Collider::Initialize();
 	// 種別のIDの設定
 	Collider::SetTypeID(static_cast<uint32_t>(CollisionTypeIdDef::kEnemy));
@@ -56,10 +61,20 @@ void Enemy::Update()
 		if (fabs(vel_.y) < 0.01f) vel_.y = 0.0f;
 	}
 
+	// 敵のスクリーン座標を計算
+	int screenWidth = 1280;
+	int screenHeight = 720;
+
+	Vector2 screenPosition = camera_->WorldToScreen(transform_.translation_, screenWidth, screenHeight);
+	
+	sprite_->SetPosition(screenPosition);
+	sprite_->Update();
+
 	BehaviorInitialize();
 
 	BehaviorUpdate();
 
+	shadeTransform_.rotation_ = transform_.rotation_;
 	shadeTransform_.translation_ = transform_.translation_;
 	shadeTransform_.translation_.y = 0.0f;
 	shadeTransform_.TransferMatrix();
@@ -77,6 +92,11 @@ void Enemy::Draw()
 
 	object_->Draw(transform_);
 	shadeObject_->Draw(shadeTransform_);
+}
+
+void Enemy::DrawSprite()
+{
+	sprite_->Draw();
 }
 
 void Enemy::Move()
@@ -198,6 +218,9 @@ Vector3 Enemy::GetCenterPosition() const
 
 void Enemy::OnCollision(Collider* other)
 {
+	if (!isAlive) {
+		return;
+	}
 	// 衝突相手の種別IDを取得
 	uint32_t typeID = other->GetTypeID();
 	// 衝突相手が敵なら
@@ -208,12 +231,12 @@ void Enemy::OnCollision(Collider* other)
 			hp_ -= player_->GetDamage();
 			object_->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
 
-			ParticleManager::GetInstance()->Emit("Attack", transform_.translation_, 10);
+			ParticleManager::GetInstance()->Emit("Attack", transform_.translation_, 5);
 		}
 	}
 }
 
-bool Enemy::IsDeadTriger()
+bool Enemy::IsDeadTriger() const
 {
 	if (!isAlive) {
 		if (preIsAlive) {

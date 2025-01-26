@@ -9,11 +9,12 @@ public:
 	void Update();
 
 	void Draw();
+	void DrawSprite();
 
-
+	bool GetIsHit();
 private:
 	std::array<std::unique_ptr<Enemy>, 10> enemy_;
-
+	Camera* camera_ = nullptr;
 	Player* player_;
 
 	uint32_t deadNum_ = 0;
@@ -23,5 +24,7 @@ public:
 
 	uint32_t GetDeadNum() { return deadNum_; }
 	void SetDeadNum(uint32_t deadNum) { deadNum_ = deadNum; }
+
+	void SetCamera(Camera* camera);
 };
 

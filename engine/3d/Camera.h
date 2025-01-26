@@ -2,6 +2,8 @@
 #include <function.h>
 #include <WindowManager.h>
 #include "GlobalVariables.h"
+#include <Vector2.h>
+#include "Vector4.h"
 class Camera
 {
 public: // メンバ関数
@@ -12,6 +14,9 @@ public: // メンバ関数
 
 	// フォローカメラ
 	void FollowCamera(const Vector3& target);
+	// ワールド座標からスクリーン座標に変換
+	Vector2 WorldToScreen(const Vector3& worldPos, int screenWidth, int screenHeight) const;
+
 
 private:
 	GlobalVariables* global_ = GlobalVariables::GetInstance();

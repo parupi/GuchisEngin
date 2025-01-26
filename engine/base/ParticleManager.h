@@ -62,7 +62,7 @@ private: // 構造体
 	struct Particle {
 		EulerTransform transform;
 		Vector3 velocity;
-		Vector3 acc;
+		Vector3 acceleration;
 		Vector4 color;
 		float lifeTime;
 		float currentTime;
@@ -107,6 +107,9 @@ private: // 構造体
 		Vector2 velocityX;
 		Vector2 velocityY;
 		Vector2 velocityZ;
+		Vector2 accelerationX;
+		Vector2 accelerationY;
+		Vector2 accelerationZ;
 		Vector2 lifeTime;
 		Vector3 colorMin;
 		Vector3 colorMax;

@@ -16,8 +16,10 @@ void GameScene::Initialize()
 	gameCamera_->SetPlayer(player_.get());
 	player_->SetCamera(gameCamera_->GetGameCamera());
 
+
 	enemyManager_ = std::make_unique<EnemyManager>();
 	enemyManager_->Initialize(player_.get());
+	enemyManager_->SetCamera(gameCamera_->GetGameCamera());
 
 	ground_ = std::make_unique<Ground>();
 	ground_->Initialize();
@@ -43,10 +45,16 @@ void GameScene::Finalize()
 
 void GameScene::Update()
 {
+	if (isHitStopActive) {
+		isHitStopActive = false;
+		return;
+	}
+
 	ParticleManager::GetInstance()->Update();
 	gameCamera_->Update();
 
 	player_->Update();
+	isHitStopActive = player_->GetIsHit();
 
 	enemyManager_->Update();
 
@@ -75,12 +83,10 @@ void GameScene::Draw()
 
 	SpriteManager::GetInstance()->DrawSet();
 	titleUI_->Draw();
+	enemyManager_->DrawSprite();
 
 	ParticleManager::GetInstance()->DrawSet(BlendMode::kAdd);
 	ParticleManager::GetInstance()->Draw();
-
-	Object3dManager::GetInstance()->DrawSet();
-
 }
 
 void GameScene::CheckAllCollisions()

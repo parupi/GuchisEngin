@@ -2,6 +2,7 @@
 #include <WorldTransform.h>
 #include <Object3d.h>
 #include "charcter/Collision/Collider.h"
+#include <Sprite.h>
 class Player;
 
 class Enemy : public Collider
@@ -15,6 +16,8 @@ public:
 	void Update();
 	// 描画
 	void Draw();
+	// スプライト用
+	void DrawSprite();
 
 	void Move();
 
@@ -61,14 +64,22 @@ public: // アクセッサ
 	void OnCollision([[maybe_unused]] Collider* other) override;
 	void SetPlayer(Player* player) { player_ = player; }
 
-	bool IsDeadTriger();
+	bool IsDeadTriger() const;
+
+	void SetCamera(Camera* camera) { camera_ = camera; }
+	bool GetIsHit() const { return onCollision_; }
 private:
+	Camera* camera_ = nullptr;
+
 	std::unique_ptr<Object3d> object_ = nullptr;
 	WorldTransform transform_;
 
 	// 影用のオブジェクト
 	std::unique_ptr<Object3d> shadeObject_;
 	WorldTransform shadeTransform_;
+
+	// ダメージエフェクト用のスプライト
+	std::unique_ptr<Sprite> sprite_;
 
 	Vector3 vel_;
 	float speed_;

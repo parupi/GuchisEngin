@@ -67,6 +67,15 @@ void Player::Draw() {
 	shadeObject_->Draw(shadeTransform_);
 }
 
+bool Player::GetIsHit()
+{
+	bool isHit = weapon_->GetIsHit();
+	if (isHit && attackData_.isAttack) {
+		return true;
+	}
+	return false;
+}
+
 void Player::ChangeState(std::unique_ptr<PlayerState> newState) {
 	isChangeState_ = true;
 	currentState_->Exit(this);
