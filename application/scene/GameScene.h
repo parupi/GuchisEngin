@@ -13,6 +13,7 @@
 #include "object/Skydome.h"
 #include <LightManager.h>
 #include <charcter/enemy/EnemyManager.h>
+#include "effect/HitStopManager.h"
 
 class GameScene : public BaseScene
 {
@@ -37,14 +38,10 @@ private:
 	std::unique_ptr<EnemyManager> enemyManager_;
 	std::unique_ptr<Ground> ground_;
 	std::unique_ptr<Skydome> sphere_;
+	std::unique_ptr<HitStopManager> hitStop_;
 
 	LightManager* lightManager_ = LightManager::GetInstance();
 
 	std::unique_ptr<Sprite> titleUI_;
-
-	// ヒットストップ用のフラグ
-	bool isHitStopActive = false;
-	// ヒットストップの時間
-	int hitStopTimer = 0;
 };
 

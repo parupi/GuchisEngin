@@ -10,6 +10,7 @@ void ThirdAttackState::Enter(Player* player) {
     player->SetAttackFlag(true);
     player->SetKnockBack(kKnockBack_);
     player->SetDamage(3.0f);
+    //player->SetHitTimer(3);
 }
 
 void ThirdAttackState::Update(Player* player) {

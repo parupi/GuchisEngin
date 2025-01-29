@@ -6,11 +6,12 @@ public:
 	// 更新
 	void Update();
 	bool IsHitStopActive() const { return isActive; }
-	void Trigger(int duration);
+	void Trigger();
+	void SetTimer(int duration) { startTime = duration; }
 
 private:
 	bool isActive = false;
 	int timer = 0;
-
+	int startTime = 3;
 };
 

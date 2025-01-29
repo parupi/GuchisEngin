@@ -12,8 +12,8 @@ void HitStopManager::Update()
     }
 }
 
-void HitStopManager::Trigger(int duration)
+void HitStopManager::Trigger()
 {
     isActive = true;
-    timer = duration;
+    timer = startTime;
 }

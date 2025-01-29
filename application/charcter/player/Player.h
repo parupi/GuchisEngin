@@ -6,15 +6,14 @@
 #include <memory>
 #include "Weapon.h"
 #include "ParticleEmitter.h"
+#include "effect/HitStopManager.h"
 
 class Player {
 public:
-    void Initialize();
+    void Initialize(HitStopManager* hitStop);
     void Finalize();
     void Update();
     void Draw();
-    
-  
 
     void ChangeState(std::unique_ptr<PlayerState> newState);
     void GlobalInitialize(const std::string cameraName);
@@ -64,6 +63,8 @@ public: // アクセッサ
     bool GetIsHit();
     bool SetIsHit(bool isHit) { return isHit; }
 
+    void SetHitTimer(int time) { hitStop_->SetTimer(time); }
+
 private:
     GlobalVariables* global_ = GlobalVariables::GetInstance();
 
@@ -72,6 +73,8 @@ private:
     // オブジェクトの生成
     std::unique_ptr<Object3d> object_;
     WorldTransform transform_;
+
+    HitStopManager* hitStop_;
 
     Input* input_ = nullptr;
     Camera* camera_ = nullptr;

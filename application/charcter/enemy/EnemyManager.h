@@ -1,21 +1,23 @@
 #pragma once
 #include <memory>
-#include <charcter/enemy/Enemy.h>
+#include "charcter/enemy/Enemy.h"
+#include "effect/HitStopManager.h"
 class EnemyManager
 {
 public:
-	void Initialize(Player* player);
+	void Initialize(Player* player, HitStopManager* hitStop);
 
 	void Update();
 
 	void Draw();
 	void DrawSprite();
 
-	bool GetIsHit();
+	void SetHitStop();
 private:
 	std::array<std::unique_ptr<Enemy>, 10> enemy_;
 	Camera* camera_ = nullptr;
 	Player* player_;
+	HitStopManager* hitStop_;
 
 	uint32_t deadNum_ = 0;
 

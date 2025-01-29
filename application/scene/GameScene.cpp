@@ -7,18 +7,20 @@
 
 void GameScene::Initialize()
 {
+	hitStop_ = std::make_unique<HitStopManager>();
+
 	gameCamera_ = std::make_unique<GameCamera>();
 	gameCamera_->Initialize();
 
 	player_ = std::make_unique<Player>();
-	player_->Initialize();
+	player_->Initialize(hitStop_.get());
 
 	gameCamera_->SetPlayer(player_.get());
 	player_->SetCamera(gameCamera_->GetGameCamera());
 
 
 	enemyManager_ = std::make_unique<EnemyManager>();
-	enemyManager_->Initialize(player_.get());
+	enemyManager_->Initialize(player_.get(), hitStop_.get());
 	enemyManager_->SetCamera(gameCamera_->GetGameCamera());
 
 	ground_ = std::make_unique<Ground>();
@@ -45,15 +47,10 @@ void GameScene::Finalize()
 
 void GameScene::Update()
 {
-	if (isHitStopActive) {
-		if (hitStopTimer > 0) {
-			hitStopTimer -= 1;
-			return;
-		}
-		else {
-			hitStopTimer = 0;
-			isHitStopActive = false;
-		}
+	hitStop_->Update();
+
+	if (hitStop_->IsHitStopActive()) {
+		return;
 	}
 
 	ParticleManager::GetInstance()->Update();
@@ -62,7 +59,7 @@ void GameScene::Update()
 	player_->Update();
 
 	enemyManager_->Update();
-	isHitStopActive = enemyManager_->GetIsHit();
+	enemyManager_->SetHitStop();
 
 	sphere_->Update();
 	ground_->Update();

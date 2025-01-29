@@ -1,7 +1,8 @@
 #include "Player.h"
 #include "IdleState.h"
 
-void Player::Initialize() {
+
+void Player::Initialize(HitStopManager* hitStop) {
 	GlobalInitialize("firstAttack");
 	GlobalInitialize("secondAttack");
 	GlobalInitialize("thirdAttack");
@@ -35,6 +36,8 @@ void Player::Initialize() {
 	input_ = Input::GetInstance();
 	currentState_ = std::make_unique<IdleState>();
 	currentState_->Enter(this);
+
+	hitStop_ = hitStop;
 
 	// jsonファイルの読み込み
 	global_->LoadFiles();
