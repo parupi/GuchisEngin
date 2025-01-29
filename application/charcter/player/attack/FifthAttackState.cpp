@@ -9,6 +9,7 @@ void FifthAttackState::Enter(Player* player) {
     player->SetAttackFlag(true);
     player->SetKnockBack(kKnockBack_);
     player->SetDamage(5.0f);
+    //player->SetHitTimer(5);
 }
 
 void FifthAttackState::Update(Player* player) {

@@ -84,12 +84,16 @@ void MyGameTitle::LoadFile()
 	ModelManager::GetInstance()->LoadModel("resource", "ICO.obj");
 	ModelManager::GetInstance()->LoadModel("resource", "sord/sord.obj");
 	ModelManager::GetInstance()->LoadModel("resource", "models/player/player.obj");
+
+	TextureManager::GetInstance()->LoadTexture("resource/UI/TitleUI.png");
+	TextureManager::GetInstance()->LoadTexture("resource/uvChecker.png");
+	TextureManager::GetInstance()->LoadTexture("resource/damageSprite.png");
 }
 
 void MyGameTitle::CreateParticleGroup()
 {
 	ParticleManager::GetInstance()->CreateParticleGroup("Dust", "resource/circle.png");
-	ParticleManager::GetInstance()->CreateParticleGroup("Attack", "resource/circle.png");
+	ParticleManager::GetInstance()->CreateParticleGroup("Attack", "resource/fire.png");
 
 }
 

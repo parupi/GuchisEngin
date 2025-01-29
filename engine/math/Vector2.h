@@ -1,4 +1,5 @@
 #pragma once
+#include <Vector3.h>
 
 /// <summary>
 /// 2次元ベクトル
@@ -65,3 +66,4 @@ struct Vector2 final {
         return !(*this == other);
     }
 };
+

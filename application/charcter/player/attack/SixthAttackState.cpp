@@ -8,6 +8,7 @@ void SixthAttackState::Enter(Player* player) {
 	player->SetAttackFlag(true);
 	player->SetKnockBack(kKnockBack_);
 	player->SetDamage(10.0f);
+	player->SetHitTimer(15);
 }
 
 void SixthAttackState::Update(Player* player) {

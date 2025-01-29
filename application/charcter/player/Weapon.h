@@ -21,10 +21,15 @@ public:
 	Vector3 GetRotate() const { return transform_.rotation_; }
 	void SetRotate(const Vector3& rotate) { transform_.rotation_ = rotate; }
 
+	bool GetIsHit() { return isHit; }
+
 private:
 
 	std::unique_ptr<Object3d> object_ = nullptr;
 	WorldTransform transform_;
+
+	bool isHit = false;
+	bool preIsHit = false;
 
 public: // アクセッサ
 	void SetParent(const WorldTransform& worldTransform) { transform_.parent_ = &worldTransform; }

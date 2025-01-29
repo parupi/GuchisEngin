@@ -60,9 +60,23 @@ void Enemy::Update()
 
 	BehaviorUpdate();
 
+	shadeTransform_.rotation_ = transform_.rotation_;
 	shadeTransform_.translation_ = transform_.translation_;
 	shadeTransform_.translation_.y = 0.0f;
 	shadeTransform_.TransferMatrix();
+
+	// エフェクトの更新＆寿命が尽きたものを削除
+	for (auto it = hitEffect_.begin(); it != hitEffect_.end(); ) {
+		(*it)->Update(transform_.translation_);
+
+		if (!(*it)->GetIsAlive()) {
+			// 寿命が尽きたら削除
+			it = hitEffect_.erase(it); // erase() は次の要素のイテレータを返す
+		}
+		else {
+			++it; // 次の要素へ
+		}
+	}
 
 	if (isAlive) {
 		DeadUpdate();
@@ -77,6 +91,14 @@ void Enemy::Draw()
 
 	object_->Draw(transform_);
 	shadeObject_->Draw(shadeTransform_);
+}
+
+void Enemy::DrawSprite()
+{
+	// エフェクトの描画
+	for (auto& effect : hitEffect_) {
+		effect->Draw();
+	}
 }
 
 void Enemy::Move()
@@ -198,6 +220,9 @@ Vector3 Enemy::GetCenterPosition() const
 
 void Enemy::OnCollision(Collider* other)
 {
+	if (!isAlive) {
+		return;
+	}
 	// 衝突相手の種別IDを取得
 	uint32_t typeID = other->GetTypeID();
 	// 衝突相手が敵なら
@@ -208,15 +233,23 @@ void Enemy::OnCollision(Collider* other)
 			hp_ -= player_->GetDamage();
 			object_->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
 
-			ParticleManager::GetInstance()->Emit("Attack", transform_.translation_, 10);
+			for (int i = 0; i < 1; i++) {
+				std::unique_ptr<HitEffect> newEffect = std::make_unique<HitEffect>();
+				newEffect->Initialize(camera_);
+				hitEffect_.push_back(std::move(newEffect));
+			}
+			ParticleManager::GetInstance()->Emit("Attack", transform_.translation_, 5);
 		}
 	}
 }
 
-bool Enemy::IsDeadTriger()
+bool Enemy::IsDeadTriger() const
 {
+	// 死んだ瞬間を取得
 	if (!isAlive) {
 		if (preIsAlive) {
+			// 死んだなら死亡エフェクトを出す
+			ParticleManager::GetInstance()->Emit("Attack", transform_.translation_, 8);
 			return true;
 		}
 	}

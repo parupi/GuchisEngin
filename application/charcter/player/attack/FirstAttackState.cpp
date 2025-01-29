@@ -9,6 +9,7 @@ void FirstAttackState::Enter(Player* player) {
 	player->SetAttackFlag(true);
 	player->SetKnockBack(kKnockBack_);
 	player->SetDamage(1.0f);
+	player->SetHitTimer(1);
 }
 
 void FirstAttackState::Update(Player* player) {

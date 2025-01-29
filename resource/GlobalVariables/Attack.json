@@ -1,0 +1,60 @@
+{
+    "Attack": {
+        "maxAcceleration": [
+            0.0,
+            -20.0,
+            0.0
+        ],
+        "maxAlpha": 1.0,
+        "maxColor": [
+            1.0,
+            1.0,
+            1.0
+        ],
+        "maxLifeTime": 1.0,
+        "maxRotate": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "maxScale": 0.20000000298023224,
+        "maxTranslate": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "maxVelocity": [
+            8.0,
+            8.0,
+            8.0
+        ],
+        "minAcceleration": [
+            0.0,
+            -25.0,
+            0.0
+        ],
+        "minAlpha": 1.0,
+        "minColor": [
+            1.0,
+            1.0,
+            1.0
+        ],
+        "minLifeTime": 0.75,
+        "minRotate": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "minScale": 0.10000000149011612,
+        "minTranslate": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "minVelocity": [
+            -8.0,
+            -8.0,
+            -8.0
+        ]
+    }
+}
