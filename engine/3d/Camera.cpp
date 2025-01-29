@@ -39,3 +39,23 @@ void Camera::FollowCamera(const Vector3& target)
 	viewMatrix_ = Inverse(worldMatrix_);
 
 }
+
+Vector2 Camera::WorldToScreen(const Vector3& worldPos, int screenWidth, int screenHeight) const
+{
+	// 1. ワールド座標をビュー空間に変換
+	Vector4 clipPos = Vector4(worldPos.x, worldPos.y, worldPos.z, 1.0f) * viewMatrix_ * projectionMatrix_;
+
+	// 2. NDCに変換 (透視投影のため、wで割る)
+	if (clipPos.w != 0.0f) {
+		clipPos.x /= clipPos.w;
+		clipPos.y /= clipPos.w;
+		clipPos.z /= clipPos.w;
+	}
+
+	// 3. スクリーン座標に変換
+	Vector2 screenPos;
+	screenPos.x = (clipPos.x * 0.5f + 0.5f) * screenWidth;
+	screenPos.y = (1.0f - (clipPos.y * 0.5f + 0.5f)) * screenHeight; // Y軸を反転
+
+	return screenPos;
+}

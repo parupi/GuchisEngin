@@ -21,7 +21,10 @@ void Weapon::Update()
 	//ImGui::DragFloat3("rotation", &transform_.rotation_.x, 0.01f);
 	//ImGui::DragFloat3("scale", &transform_.scale_.x, 0.01f);
 	//ImGui::End();
-
+	if (preIsHit) {
+		isHit = false;
+	}
+	preIsHit = isHit;
 
 	transform_.TransferMatrix();
 }
@@ -42,5 +45,12 @@ Vector3 Weapon::GetCenterPosition() const
 
 void Weapon::OnCollision(Collider* other)
 {
+	// 衝突相手の種別IDを取得
+	uint32_t typeID = other->GetTypeID();
+	// 衝突相手が敵なら
+	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kEnemy)) {
 
+
+		isHit = true;
+	}
 }

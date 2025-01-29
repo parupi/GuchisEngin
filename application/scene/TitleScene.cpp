@@ -5,7 +5,7 @@
 
 void TitleScene::Initialize()
 {
-	TextureManager::GetInstance()->LoadTexture("resource/UI/TitleUI.png");
+
 	titleUI_ = std::make_unique<Sprite>();
 	titleUI_->Initialize("resource/UI/TitleUI.png");
 }

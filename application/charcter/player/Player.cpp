@@ -1,7 +1,8 @@
 #include "Player.h"
 #include "IdleState.h"
 
-void Player::Initialize() {
+
+void Player::Initialize(HitStopManager* hitStop) {
 	GlobalInitialize("firstAttack");
 	GlobalInitialize("secondAttack");
 	GlobalInitialize("thirdAttack");
@@ -36,6 +37,8 @@ void Player::Initialize() {
 	currentState_ = std::make_unique<IdleState>();
 	currentState_->Enter(this);
 
+	hitStop_ = hitStop;
+
 	// jsonファイルの読み込み
 	global_->LoadFiles();
 }
@@ -65,6 +68,15 @@ void Player::Draw() {
 	object_->Draw(transform_);
 	weapon_->Draw();
 	shadeObject_->Draw(shadeTransform_);
+}
+
+bool Player::GetIsHit()
+{
+	bool isHit = weapon_->GetIsHit();
+	if (isHit && attackData_.isAttack) {
+		return true;
+	}
+	return false;
 }
 
 void Player::ChangeState(std::unique_ptr<PlayerState> newState) {

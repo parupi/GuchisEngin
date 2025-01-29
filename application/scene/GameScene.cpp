@@ -7,17 +7,21 @@
 
 void GameScene::Initialize()
 {
+	hitStop_ = std::make_unique<HitStopManager>();
+
 	gameCamera_ = std::make_unique<GameCamera>();
 	gameCamera_->Initialize();
 
 	player_ = std::make_unique<Player>();
-	player_->Initialize();
+	player_->Initialize(hitStop_.get());
 
 	gameCamera_->SetPlayer(player_.get());
 	player_->SetCamera(gameCamera_->GetGameCamera());
 
+
 	enemyManager_ = std::make_unique<EnemyManager>();
-	enemyManager_->Initialize(player_.get());
+	enemyManager_->Initialize(player_.get(), hitStop_.get());
+	enemyManager_->SetCamera(gameCamera_->GetGameCamera());
 
 	ground_ = std::make_unique<Ground>();
 	ground_->Initialize();
@@ -43,12 +47,19 @@ void GameScene::Finalize()
 
 void GameScene::Update()
 {
+	hitStop_->Update();
+
+	if (hitStop_->IsHitStopActive()) {
+		return;
+	}
+
 	ParticleManager::GetInstance()->Update();
 	gameCamera_->Update();
 
 	player_->Update();
 
 	enemyManager_->Update();
+	enemyManager_->SetHitStop();
 
 	sphere_->Update();
 	ground_->Update();
@@ -73,14 +84,12 @@ void GameScene::Draw()
 	enemyManager_->Draw();
 	player_->Draw();
 
-	SpriteManager::GetInstance()->DrawSet();
+	SpriteManager::GetInstance()->DrawSet(BlendMode::kAdd);
 	titleUI_->Draw();
+	enemyManager_->DrawSprite();
 
 	ParticleManager::GetInstance()->DrawSet(BlendMode::kAdd);
 	ParticleManager::GetInstance()->Draw();
-
-	Object3dManager::GetInstance()->DrawSet();
-
 }
 
 void GameScene::CheckAllCollisions()
