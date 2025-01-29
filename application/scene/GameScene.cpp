@@ -17,21 +17,20 @@ void GameScene::Finalize()
 
 void GameScene::Update()
 {
-    ImGui::Begin("QuaternionTest");
-    ImGui::DragFloat3("pointX", &axis.x, 0.01f);
-    ImGui::DragFloat3("pointY", &pointY.x, 0.01f);
-    ImGui::DragFloat("angle", &angle, 0.01f);
-    ImGui::End();
+    Quaternion rotation0 = MakeRotateAxisAngleQuaternion({ 0.71f, 0.71f, 0.0f }, 0.3f);
+    Quaternion rotation1 = MakeRotateAxisAngleQuaternion({ 0.71f, 0.0f, 0.71f }, 3.141592f);
 
-    Quaternion rotation = MakeRotateAxisAngleQuaternion(Normalize(axis), angle);
-    Matrix4x4 rotateMatrix = MakeRotateMatrix(rotation);
-    Vector3 rotateByQuaternion = RotateVector(pointY, rotation);
-    Vector3 rotateByMatrix = Transform(pointY, rotateMatrix);
+    Quaternion interpolate0 = Slerp(rotation0, rotation1, 0.0f);
+    Quaternion interpolate1 = Slerp(rotation0, rotation1, 0.3f);
+    Quaternion interpolate2 = Slerp(rotation0, rotation1, 0.5f);
+    Quaternion interpolate3 = Slerp(rotation0, rotation1, 0.7f);
+    Quaternion interpolate4 = Slerp(rotation0, rotation1, 1.0f);
 
-    PrintOnImGui(rotation, "rotation");
-    PrintOnImGui(rotateMatrix, "rotateMatrix");
-    PrintOnImGui(rotateByQuaternion), "rotateByQuaternion";
-    PrintOnImGui(rotateByMatrix, "rotateByMatrix");
+    PrintOnImGui(interpolate0, "interpolate0 : ");
+    PrintOnImGui(interpolate1, "interpolate1 : ");
+    PrintOnImGui(interpolate2, "interpolate2 : ");
+    PrintOnImGui(interpolate3, "interpolate3 : ");
+    PrintOnImGui(interpolate4, "interpolate4 : ");
 }
 
 void GameScene::Draw()
