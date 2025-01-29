@@ -53,6 +53,35 @@ void ParticleManager::Update()
 	billboardMatrix.m[3][1] = 0.0f;
 	billboardMatrix.m[3][2] = 0.0f;
 
+	//uvPosition_ += {0.01f, 0.01f};
+	//uvRotation_ += 0.11f;
+
+	//float left = 0.0f - 0.5f;
+	//float right = 1.0f - 0.5f;
+	//float top = 0.0f - 0.5f;
+	//float bottom = 1.0f - 0.5f;
+
+	//const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureFilePath_);
+	//float tex_left = textureLeftTop_.x / metadata.width;
+	//float tex_right = (textureLeftTop_.x + textureSize_.x) / metadata.width;
+	//float tex_top = textureLeftTop_.y / metadata.height;
+	//float tex_bottom = (textureLeftTop_.y + textureSize_.y) / metadata.height;
+
+	//vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
+	// スプライトの描画
+	// 左下
+	//vertexData_[0].position = { left, bottom, 0.0f, 1.0f };
+	//vertexData_[0].texcoord = { tex_left, tex_bottom };
+	// 左上
+	//vertexData_[1].position = { left, top, 0.0f, 1.0f };
+	//vertexData_[1].texcoord = { tex_left, tex_top };
+	// 右下
+	//vertexData_[2].position = { right, bottom, 0.0f, 1.0f };
+	//vertexData_[2].texcoord = { tex_right, tex_bottom };
+	// 右上
+	//vertexData_[3].position = { right, top, 0.0f, 1.0f };
+	//vertexData_[3].texcoord = { tex_right, tex_top };
+
 	for (auto& [groupName, particleGroup] : particleGroups_) {
 		uint32_t numInstance = 0;
 
@@ -70,6 +99,7 @@ void ParticleManager::Update()
 			// パーティクルの更新処理
 			float alpha{};
 
+
 			(*particleIterator).velocity += (*particleIterator).acceleration * kDeltaTime;
 			(*particleIterator).transform.translate += (*particleIterator).velocity * kDeltaTime;
 
@@ -81,12 +111,14 @@ void ParticleManager::Update()
 			scaleMatrix = MakeScaleMatrix((*particleIterator).transform.scale);
 			translateMatrix = MakeTranslateMatrix((*particleIterator).transform.translate);
 			Matrix4x4 worldMatrix{};
+			// ビルボードしていれば計算する
 			if (isBillboard) {
 				worldMatrix = scaleMatrix * billboardMatrix * translateMatrix;
 			}
 			else {
 				worldMatrix = MakeAffineMatrix((*particleIterator).transform.scale, (*particleIterator).transform.rotate, (*particleIterator).transform.translate);
 			}
+
 			Matrix4x4 worldViewProjectionMatrix = worldMatrix * viewProjectionMatrix;
 
 			// インスタンシングデータの設定
@@ -115,11 +147,20 @@ void ParticleManager::Update()
 
 void ParticleManager::Draw()
 {
+	uvTransform_.translate = { uvPosition_.x, uvPosition_.y, 0.0f };
+	uvTransform_.rotate = { 0.0f, 0.0f, uvRotation_ };
+	uvTransform_.scale = { uvSize_.x, uvSize_.y, 1.0f };
+
+	// Transform情報を作る
+	Matrix4x4 uvTransformMatrix = MakeIdentity4x4();
+	uvTransformMatrix *= MakeScaleMatrix(uvTransform_.scale);
+	uvTransformMatrix *= MakeRotateZMatrix(uvTransform_.rotate.z);
+	uvTransformMatrix *= MakeTranslateMatrix(uvTransform_.translate);
+	materialData_->uvTransform = uvTransformMatrix;
+
 	// グラフィックスパイプラインの設定
 	auto commandList = dxManager_->GetCommandList();
 	commandList->IASetVertexBuffers(0, 1, &vertexBufferView_);
-
-
 
 	// すべてのパーティクルグループを描画
 	for (auto& [groupName, particleGroup] : particleGroups_) {

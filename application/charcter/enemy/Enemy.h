@@ -3,6 +3,8 @@
 #include <Object3d.h>
 #include "charcter/Collision/Collider.h"
 #include <Sprite.h>
+#include "HitEffect.h"
+#include <list>
 class Player;
 
 class Enemy : public Collider
@@ -78,8 +80,7 @@ private:
 	std::unique_ptr<Object3d> shadeObject_;
 	WorldTransform shadeTransform_;
 
-	// ダメージエフェクト用のスプライト
-	std::unique_ptr<Sprite> sprite_;
+	std::list<std::unique_ptr<HitEffect>> hitEffect_;
 
 	Vector3 vel_;
 	float speed_;

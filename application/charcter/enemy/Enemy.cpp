@@ -19,11 +19,6 @@ void Enemy::Initialize(const Vector3& pos)
 	shadeTransform_.Initialize();
 	shadeTransform_.scale_ = { 1.0f, 0.01f, 1.0f };
 
-	sprite_ = std::make_unique<Sprite>();
-	sprite_->Initialize("resource/uvChecker.png");
-	sprite_->SetAnchorPoint({ 0.5f, 0.5f });
-	sprite_->SetSize({ 64.0f, 64.0f });
-
 	Collider::Initialize();
 	// 種別のIDの設定
 	Collider::SetTypeID(static_cast<uint32_t>(CollisionTypeIdDef::kEnemy));
@@ -61,15 +56,6 @@ void Enemy::Update()
 		if (fabs(vel_.y) < 0.01f) vel_.y = 0.0f;
 	}
 
-	// 敵のスクリーン座標を計算
-	int screenWidth = 1280;
-	int screenHeight = 720;
-
-	Vector2 screenPosition = camera_->WorldToScreen(transform_.translation_, screenWidth, screenHeight);
-	
-	sprite_->SetPosition(screenPosition);
-	sprite_->Update();
-
 	BehaviorInitialize();
 
 	BehaviorUpdate();
@@ -78,6 +64,19 @@ void Enemy::Update()
 	shadeTransform_.translation_ = transform_.translation_;
 	shadeTransform_.translation_.y = 0.0f;
 	shadeTransform_.TransferMatrix();
+
+	// エフェクトの更新＆寿命が尽きたものを削除
+	for (auto it = hitEffect_.begin(); it != hitEffect_.end(); ) {
+		(*it)->Update(transform_.translation_);
+
+		if (!(*it)->GetIsAlive()) {
+			// 寿命が尽きたら削除
+			it = hitEffect_.erase(it); // erase() は次の要素のイテレータを返す
+		}
+		else {
+			++it; // 次の要素へ
+		}
+	}
 
 	if (isAlive) {
 		DeadUpdate();
@@ -96,7 +95,10 @@ void Enemy::Draw()
 
 void Enemy::DrawSprite()
 {
-	sprite_->Draw();
+	// エフェクトの描画
+	for (auto& effect : hitEffect_) {
+		effect->Draw();
+	}
 }
 
 void Enemy::Move()
@@ -231,6 +233,11 @@ void Enemy::OnCollision(Collider* other)
 			hp_ -= player_->GetDamage();
 			object_->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
 
+			for (int i = 0; i < 1; i++) {
+				std::unique_ptr<HitEffect> newEffect = std::make_unique<HitEffect>();
+				newEffect->Initialize(camera_);
+				hitEffect_.push_back(std::move(newEffect));
+			}
 			ParticleManager::GetInstance()->Emit("Attack", transform_.translation_, 5);
 		}
 	}
@@ -238,8 +245,11 @@ void Enemy::OnCollision(Collider* other)
 
 bool Enemy::IsDeadTriger() const
 {
+	// 死んだ瞬間を取得
 	if (!isAlive) {
 		if (preIsAlive) {
+			// 死んだなら死亡エフェクトを出す
+			ParticleManager::GetInstance()->Emit("Attack", transform_.translation_, 8);
 			return true;
 		}
 	}

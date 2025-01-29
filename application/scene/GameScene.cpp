@@ -46,17 +46,23 @@ void GameScene::Finalize()
 void GameScene::Update()
 {
 	if (isHitStopActive) {
-		isHitStopActive = false;
-		return;
+		if (hitStopTimer > 0) {
+			hitStopTimer -= 1;
+			return;
+		}
+		else {
+			hitStopTimer = 0;
+			isHitStopActive = false;
+		}
 	}
 
 	ParticleManager::GetInstance()->Update();
 	gameCamera_->Update();
 
 	player_->Update();
-	isHitStopActive = player_->GetIsHit();
 
 	enemyManager_->Update();
+	isHitStopActive = enemyManager_->GetIsHit();
 
 	sphere_->Update();
 	ground_->Update();
@@ -81,7 +87,7 @@ void GameScene::Draw()
 	enemyManager_->Draw();
 	player_->Draw();
 
-	SpriteManager::GetInstance()->DrawSet();
+	SpriteManager::GetInstance()->DrawSet(BlendMode::kAdd);
 	titleUI_->Draw();
 	enemyManager_->DrawSprite();
 

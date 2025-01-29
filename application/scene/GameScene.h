@@ -44,5 +44,7 @@ private:
 
 	// ヒットストップ用のフラグ
 	bool isHitStopActive = false;
+	// ヒットストップの時間
+	int hitStopTimer = 0;
 };
 

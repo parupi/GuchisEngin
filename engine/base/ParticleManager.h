@@ -133,6 +133,7 @@ private:
 	// パーティクル用リソースの宣言
 	Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource_;
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;
+	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
 
 	ParticleForGPU* instancingData_ = nullptr;
@@ -157,6 +158,11 @@ private:
 	// アルファ値だけグループごとに変えれるようにしとく
 	std::unordered_map<std::string, float> alpha_;
 
+	// uvの値を変えるための変数(仮)
+	EulerTransform uvTransform_{ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} };
+	Vector2 uvPosition_ = { 0.0f, 0.0f };
+	float uvRotation_ = 0.0f;
+	Vector2 uvSize_ = { 1.0f, 1.0f };
 
 	bool isBillboard = true;
 	const float kDeltaTime = 1.0f / 60.0f;
@@ -168,7 +174,7 @@ private:
 	std::list<Particle> particles;
 	uint32_t numInstance = 0;
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource;
+	
 
 public:
 	void SetAlpha(const std::string name, float alpha) { alpha_[name] = alpha; }

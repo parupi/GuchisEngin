@@ -87,6 +87,7 @@ void MyGameTitle::LoadFile()
 
 	TextureManager::GetInstance()->LoadTexture("resource/UI/TitleUI.png");
 	TextureManager::GetInstance()->LoadTexture("resource/uvChecker.png");
+	TextureManager::GetInstance()->LoadTexture("resource/damageSprite.png");
 }
 
 void MyGameTitle::CreateParticleGroup()
