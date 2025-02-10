@@ -11,9 +11,6 @@
 class Object3dManager;
 class WorldTransform;
 
-//class Animator;
-//class Skeleton;
-
 class Object3d
 {
 public: // メンバ関数
@@ -23,7 +20,14 @@ public: // メンバ関数
 	void Initialize(const std::string& filePath);
 	// アニメーション用アップデート
 	void AnimationUpdate();
-	void Draw(WorldTransform& worldTransform);
+	void Update();
+	void Draw();
+
+#ifdef _DEBUG
+	void DebugGui();
+#endif // _DEBUG
+
+
 private:
 	void CreateMaterialResource();
 	void CreateCameraResource();
@@ -59,9 +63,7 @@ private: // メンバ変数
 	float uvRotation_ = 0.0f;
 	Vector2 uvSize_ = { 1.0f, 1.0f };
 
-	// コピー禁止
-	Object3d(const Object3d&) = delete;
-	Object3d& operator=(const Object3d&) = delete;
+	std::unique_ptr<WorldTransform> transform_;
 public: // ゲッター // セッター // 
 	// モデル
 	void SetModel(Model* model) { model_ = model; }
@@ -85,4 +87,6 @@ public: // ゲッター // セッター //
 	// 拡縮
 	const Vector2& GetUVSize() const { return uvSize_; }
 	void SetUVSize(const Vector2& size) { uvSize_ = size; }
+	// ワールドトランスフォームの取得
+	WorldTransform* GetWorldTransform() { return transform_.get(); }
 };

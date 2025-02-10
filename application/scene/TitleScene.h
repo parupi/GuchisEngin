@@ -20,6 +20,10 @@ public:
 	// 描画
 	void Draw() override;
 
+#ifdef _DEBUG
+	void DebugUpdate() override;
+#endif // _DEBUG
+
 private:
 
 	void ChangePhase();

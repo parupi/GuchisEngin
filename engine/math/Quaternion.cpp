@@ -4,6 +4,7 @@
 #include <imgui.h>
 #include <Matrix4x4.h>
 #include <Vector3.h>
+#include <numbers>
 // コンストラクタ
 Quaternion::Quaternion(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
 
@@ -140,6 +141,28 @@ float Dot(const Quaternion& q0, const Quaternion& q1)
 {
     return q0.x * q1.x + q0.y * q1.y + q0.z * q1.z + q0.w * q1.w;
 }
+
+
+const Quaternion EulerDegree(const Vector3& rotate) noexcept {
+    // ラジアン変換して定義
+    return EulerRadian(rotate.x * float(std::numbers::pi) / 180.0f, rotate.y * float(std::numbers::pi) / 180.0f, rotate.z * float(std::numbers::pi) / 180.0f);
+}
+
+const Quaternion EulerRadian(float pitch, float yaw, float roll) noexcept {
+    float cosPitch = std::cos(pitch / 2);
+    float cos_yaw = std::cos(yaw / 2);
+    float cos_roll = std::cos(roll / 2);
+    float sin_pitch = std::sin(pitch / 2);
+    float sin_yaw = std::sin(yaw / 2);
+    float sin_roll = std::sin(roll / 2);
+    Quaternion result;
+    result.x = sin_pitch * cos_yaw * cos_roll - cosPitch * sin_yaw * sin_roll;
+    result.y = cosPitch * sin_yaw * cos_roll + sin_pitch * cos_yaw * sin_roll;
+    result.z = cosPitch * cos_yaw * sin_roll - sin_pitch * sin_yaw * cos_roll;
+    result.w = cosPitch * cos_yaw * cos_roll + sin_pitch * sin_yaw * sin_roll;
+    return result;
+}
+
 
 // ImGuiを使ったクォータニオンの描画
 void PrintOnImGui(const Quaternion& q, const char* label) {

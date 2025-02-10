@@ -33,7 +33,7 @@ void Model::Initialize(ModelLoader* modelManager, const std::string& directoryPa
 	modelData_.material.textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(modelData_.material.textureFilePath);
 }
 
-void Model::Draw(WorldTransform& transform)
+void Model::Draw(WorldTransform* transform)
 {
 	if (modelData_.isHasBones) {
 
@@ -46,17 +46,16 @@ void Model::Draw(WorldTransform& transform)
 		modelLoader_->GetDxManager()->GetCommandList()->IASetVertexBuffers(0, 2, vbvs);
 		modelLoader_->GetDxManager()->GetCommandList()->IASetIndexBuffer(&indexBufferView_);
 		// wvp用のCBufferの場所を設定
-		modelLoader_->GetDxManager()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transform.GetConstBuffer()->GetGPUVirtualAddress());
+		modelLoader_->GetDxManager()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transform->GetConstBuffer()->GetGPUVirtualAddress());
 		modelLoader_->GetDxManager()->GetCommandList()->SetGraphicsRootDescriptorTable(13, skinCluster_.paletteSrvHandle.second);
 		// SRVのDescriptorTableの先頭を設定。
 		modelLoader_->GetSrvManager()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetTextureIndexByFilePath(modelData_.material.textureFilePath));
 		// ドローコール
 		//modelLoader_->GetDxManager()->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
 		modelLoader_->GetDxManager()->GetCommandList()->DrawIndexedInstanced(UINT(modelData_.indices.size()), 1, 0, 0, 0);
-	}
-	else {
+	} else {
 		// wvp用のCBufferの場所を設定
-		modelLoader_->GetDxManager()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transform.GetConstBuffer()->GetGPUVirtualAddress());
+		modelLoader_->GetDxManager()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transform->GetConstBuffer()->GetGPUVirtualAddress());
 		// VertexBufferViewを設定
 		modelLoader_->GetDxManager()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 		modelLoader_->GetDxManager()->GetCommandList()->IASetIndexBuffer(&indexBufferView_);
@@ -300,8 +299,7 @@ void Model::UpdateSkeleton(SkeletonData& skeleton)
 
 		if (joint.parent) {
 			joint.skeletonSpaceMatrix = joint.localMatrix * skeleton.joints[*joint.parent].skeletonSpaceMatrix;
-		}
-		else {
+		} else {
 			joint.skeletonSpaceMatrix = joint.localMatrix;
 		}
 	}
@@ -395,8 +393,7 @@ void Model::Update()
 		ApplyAnimation(skeleton_, animation_, animationTime);
 		UpdateSkeleton(skeleton_);
 		UpdateSkinCluster(skinCluster_, skeleton_);
-	}
-	else {
+	} else {
 		UpdateAnimation();
 	}
 }

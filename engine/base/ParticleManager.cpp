@@ -199,6 +199,16 @@ void ParticleManager::DrawSet(BlendMode blendMode)
 	dxManager_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
+
+#ifdef _DEBUG
+void ParticleManager::DebugGui()
+{
+	
+
+
+}
+#endif // DEBUG
+
 void ParticleManager::CreateParticleResource()
 {
 	// インスタンス用のTransformationMatrixリソースを作る

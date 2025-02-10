@@ -23,7 +23,7 @@ public: // メンバ関数
 	// 初期化
 	void Initialize(ModelLoader* modelLoader, const std::string& directoryPath, const std::string& fileName);
 	// 描画
-	void Draw(WorldTransform& transform);
+	void Draw(WorldTransform* transform);
 private:
 	// 頂点データの生成
 	void CreateVertexResource();

@@ -36,6 +36,14 @@ void TitleScene::Draw()
 	fade_->DrawSprite();
 }
 
+#ifdef _DEBUG
+void TitleScene::DebugUpdate()
+{
+}
+#endif // _DEBUG
+
+
+
 void TitleScene::ChangePhase()
 {
 	switch (phase_) {

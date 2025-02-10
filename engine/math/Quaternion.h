@@ -10,7 +10,7 @@ struct Quaternion final {
     float w;
 
     // コンストラクタ
-    Quaternion(float x = 0, float y = 0, float z = 0, float w = 1);
+    Quaternion(float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 1.0f);
 
     // クォータニオンの乗算
     Quaternion operator*(const Quaternion& q) const;
@@ -46,6 +46,10 @@ Quaternion MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle);
 Quaternion Slerp(Quaternion q0, Quaternion q1, float t);
 // 内積
 float Dot(const Quaternion& q0, const Quaternion& q1);
+
+const Quaternion EulerDegree(const Vector3& rotate) noexcept;
+const Quaternion EulerRadian(float pitch, float yaw, float roll) noexcept;
+
 
 // ImGuiを使ったクォータニオンの描画
 void PrintOnImGui(const Quaternion& q, const char* label = "Quaternion");
