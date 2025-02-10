@@ -2,6 +2,7 @@
 
 #include "Matrix4x4.h"
 #include "Vector3.h"
+#include "Quaternion.h"
 #include <d3d12.h>
 #include <type_traits>
 #include <wrl.h>
@@ -17,16 +18,6 @@ struct TransformationMatrix {
 /// </summary>
 class WorldTransform {
 public:
-	// ローカルスケール
-	Vector3 scale_ = { 1, 1, 1 };
-	// X,Y,Z軸回りのローカル回転角
-	Vector3 rotation_ = { 0, 0, 0 };
-	// ローカル座標
-	Vector3 translation_ = { 0, 0, 0 };
-	// ローカル → ワールド変換行列
-	Matrix4x4 matWorld_;
-	// 親となるワールド変換へのポインタ
-	const WorldTransform* parent_ = nullptr;
 
 	WorldTransform() = default;
 	~WorldTransform() = default;
@@ -48,6 +39,12 @@ public:
 	/// </summary>
 	/// <returns>定数バッファ</returns>
 	const Microsoft::WRL::ComPtr<ID3D12Resource>& GetConstBuffer() const { return constBuffer_; }
+
+#ifdef _DEBUG
+	/// デバッグ用の関数
+	void DebugGui();
+#endif // _DEBUG
+
 	/// <summary>
 	/// マップのセット
 	/// </summary>
@@ -56,11 +53,31 @@ public:
 	void SetMapWorld(const Matrix4x4& world) { constMap->World = world; }
 	const Matrix4x4& GetMatWorld() { return matWorld_; }
 
+	// アクセッサ	
+	Vector3 GetTranslation() const { return translation_; }
+	void SetTranslation(const Vector3& translation) { translation_ = translation; }
+	Quaternion GetRotation() const { return rotation_; }
+	void SetRotation(const Quaternion& rotation) { rotation_ = rotation; }
+	Vector3 GetScale() const { return scale_; }
+	void SetScale(const Vector3& scale) { scale_ = scale; }
+
 private:
 	// 定数バッファ
 	Microsoft::WRL::ComPtr<ID3D12Resource> constBuffer_;
 	// マッピング済みアドレス
 	TransformationMatrix* constMap = nullptr;
+
+	// ローカルスケール
+	Vector3 scale_ = { 1, 1, 1 };
+	// X,Y,Z軸回りのローカル回転角
+	Quaternion rotation_;
+	// ローカル座標
+	Vector3 translation_{};
+	// ローカル → ワールド変換行列
+	Matrix4x4 matWorld_;
+	// 親となるワールド変換へのポインタ
+	const WorldTransform* parent_ = nullptr;
+
 	// コピー禁止
 	WorldTransform(const WorldTransform&) = delete;
 	WorldTransform& operator=(const WorldTransform&) = delete;

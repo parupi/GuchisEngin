@@ -23,7 +23,7 @@ void ParticleEmitter::Update(Vector3 Position, uint32_t count)
 	}
 }
 
-void ParticleEmitter::Emit()
+void ParticleEmitter::Emit() const
 {
 	ParticleManager::GetInstance()->Emit(emitter.name, emitter.transform.translate, emitter.count);
 }

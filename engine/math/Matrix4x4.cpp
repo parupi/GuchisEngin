@@ -90,6 +90,37 @@ Matrix4x4& Matrix4x4::operator*=(float scalar) {
     return *this;
 }
 
+//Matrix4x4 MakeRotateMatrix(const Quaternion& quaternion) {
+//    Matrix4x4 rotationMatrix;
+//
+//    float x = quaternion.x;
+//    float y = quaternion.y;
+//    float z = quaternion.z;
+//    float w = quaternion.w;
+//
+//    rotationMatrix.m[0][0] = w * w + x * x - y * y -z * z;
+//    rotationMatrix.m[0][1] = 2.0f * (x * y + w * z);
+//    rotationMatrix.m[0][2] = 2.0f * (x * z - w * y);
+//    rotationMatrix.m[0][3] = 0.0f;
+//
+//    rotationMatrix.m[1][0] = 2.0f * (x * y - w * z);
+//    rotationMatrix.m[1][1] = w * w - x * x + y * y - z * z;
+//    rotationMatrix.m[1][2] = 2.0f * (y * z + w * x);
+//    rotationMatrix.m[1][3] = 0.0f;
+//
+//    rotationMatrix.m[2][0] = 2.0f * (x * z + w * y);
+//    rotationMatrix.m[2][1] = 2.0f * (y * z - w * x);
+//    rotationMatrix.m[2][2] = w * w - x * x - y * y + z * z;
+//    rotationMatrix.m[2][3] = 0.0f;
+//
+//    rotationMatrix.m[3][0] = 0.0f;
+//    rotationMatrix.m[3][1] = 0.0f;
+//    rotationMatrix.m[3][2] = 0.0f;
+//    rotationMatrix.m[3][3] = 1.0f;
+//
+//    return rotationMatrix;
+//}
+
 Matrix4x4 MakeRotateMatrix(const Quaternion& quaternion) {
     Matrix4x4 rotationMatrix;
 
@@ -98,19 +129,19 @@ Matrix4x4 MakeRotateMatrix(const Quaternion& quaternion) {
     float z = quaternion.z;
     float w = quaternion.w;
 
-    rotationMatrix.m[0][0] = w * w + x * x - y * y -z * z;
+    rotationMatrix.m[0][0] = 1.0f - 2.0f * (y * y + z * z);
     rotationMatrix.m[0][1] = 2.0f * (x * y + w * z);
     rotationMatrix.m[0][2] = 2.0f * (x * z - w * y);
     rotationMatrix.m[0][3] = 0.0f;
 
     rotationMatrix.m[1][0] = 2.0f * (x * y - w * z);
-    rotationMatrix.m[1][1] = w * w - x * x + y * y - z * z;
+    rotationMatrix.m[1][1] = 1.0f - 2.0f * (x * x + z * z);
     rotationMatrix.m[1][2] = 2.0f * (y * z + w * x);
     rotationMatrix.m[1][3] = 0.0f;
 
     rotationMatrix.m[2][0] = 2.0f * (x * z + w * y);
     rotationMatrix.m[2][1] = 2.0f * (y * z - w * x);
-    rotationMatrix.m[2][2] = w * w - x * x - y * y + z * z;
+    rotationMatrix.m[2][2] = 1.0f - 2.0f * (x * x + y * y);
     rotationMatrix.m[2][3] = 0.0f;
 
     rotationMatrix.m[3][0] = 0.0f;
@@ -298,7 +329,7 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Ve
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Quaternion& rotate, const Vector3& translate) {
     Matrix4x4 result;
     Matrix4x4 scaleMatrix = MakeScaleMatrix(scale);
-    Matrix4x4 rotateMatrix = MakeRotateMatrix(rotate);
+    Matrix4x4 rotateMatrix = MakeRotateMatrix(Normalize(rotate));
     Matrix4x4 translateMatrix = MakeTranslateMatrix(translate);
 
     result = scaleMatrix * rotateMatrix * translateMatrix;

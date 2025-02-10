@@ -17,12 +17,12 @@ void DebugSphere::Finalize()
 
 void DebugSphere::Update(const Vector3& position)
 {
-	transform_.scale_ = { 0.05f, 0.05f, 0.05f };
-	transform_.translation_ = position;
-	transform_.TransferMatrix();
+	//transform_.scale_ = { 0.05f, 0.05f, 0.05f };
+	//transform_.translation_ = position;
+	//transform_.TransferMatrix();
 }
 
 void DebugSphere::Draw()
 {
-	object_->Draw(transform_);
+	object_->Draw();
 }

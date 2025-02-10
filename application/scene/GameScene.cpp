@@ -25,6 +25,7 @@ void GameScene::Initialize()
 	ModelManager::GetInstance()->LoadModel("resource", "plane.obj");
 	ModelManager::GetInstance()->LoadModel("resource", "AnimatedCube.gltf");
 	ModelManager::GetInstance()->LoadModel("resource", "terrain/terrain.obj");
+	ModelManager::GetInstance()->LoadModel("resource", "multiMaterial.obj");
 	TextureManager::GetInstance()->LoadTexture("resource/uvChecker.png");
 
 	object_ = std::make_unique<Object3d>();
@@ -33,8 +34,8 @@ void GameScene::Initialize()
 	animationObject_ = std::make_unique<Object3d>();
 	animationObject_->Initialize("walk.gltf");
 
-	transform_.Initialize();
-	animationTransform_.Initialize();
+	//transform_.Initialize();
+	//animationTransform_.Initialize();
 
 	sprite = std::make_unique<Sprite>();
 	sprite->Initialize("resource/uvChecker.png");
@@ -81,33 +82,30 @@ void GameScene::Update()
 	normalCamera_->SetTranslate(normalCameraPos);
 	normalCamera_->SetRotate(cameraRotate);
 
+	
+	DebugUpdate();
 
 	Vector2 uvObjectPos = object_->GetUVPosition();
 	Vector2 uvObjectSize = object_->GetUVSize();
 	float uvObjectRotate = object_->GetUVRotation();
 
 	ImGui::Begin("Transform");
-	ImGui::DragFloat3("translate", &transform_.translation_.x, 0.01f);
-	ImGui::DragFloat3("rotation", &transform_.rotation_.x, 0.01f);
-	ImGui::DragFloat3("scale", &transform_.scale_.x, 0.01f);
 	ImGui::DragFloat2("UVTranslate", &uvObjectPos.x, 0.01f, -10.0f, 10.0f);
 	ImGui::DragFloat2("UVScale", &uvObjectSize.x, 0.01f, -10.0f, 10.0f);
 	ImGui::SliderAngle("UVRotate", &uvObjectRotate);
 	ImGui::End();
 
+	Quaternion rotate = MakeRotateAxisAngleQuaternion(axis, angle);
+
+	PrintOnImGui(object_->GetWorldTransform()->GetMatWorld());
+
 	object_->SetUVPosition(uvObjectPos);
 	object_->SetUVSize(uvObjectSize);
 	object_->SetUVRotation(uvObjectRotate);
 
-	transform_.TransferMatrix();
+	object_->Update();
 
-	ImGui::Begin("AnimationTransform");
-	ImGui::DragFloat3("translate", &animationTransform_.translation_.x, 0.01f);
-	ImGui::DragFloat3("rotation", &animationTransform_.rotation_.x, 0.01f);
-	ImGui::DragFloat3("scale", &animationTransform_.scale_.x, 0.01f);
-	ImGui::End();
-
-	animationTransform_.TransferMatrix();
+	animationObject_->Update();
 
 	ImGui::Begin("SetModel");
 	if (ImGui::Button("Set Work"))
@@ -154,13 +152,22 @@ void GameScene::Draw()
 	// 3Dオブジェクト描画前処理
 	Object3dManager::GetInstance()->DrawSetForAnimation();
 	lightManager_->BindLightsToShader();
-	animationObject_->Draw(animationTransform_);
+	animationObject_->Draw();
 
 	Object3dManager::GetInstance()->DrawSet();
 	lightManager_->BindLightsToShader();
-	object_->Draw(transform_);
+	object_->Draw();
 
 	SpriteManager::GetInstance()->DrawSet();
 	sprite->Draw();
 	
 }
+
+#ifdef _DEBUG
+void GameScene::DebugUpdate()
+{
+	ImGui::Begin("Object");
+	object_->DebugGui();
+	ImGui::End();
+}
+#endif // _DEBUG

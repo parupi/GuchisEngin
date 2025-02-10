@@ -9,7 +9,7 @@ public:
 	// 更新
 	void Update(Vector3 Position, uint32_t count);
 	// 発生
-	void Emit();
+	void Emit() const;
 private:
 
 	struct Emitter {

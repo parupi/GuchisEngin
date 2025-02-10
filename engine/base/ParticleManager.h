@@ -34,6 +34,10 @@ public:
 	// 描画前処理
 	void DrawSet(BlendMode blendMode = BlendMode::kAdd);
 
+#ifdef _DEBUG
+	void DebugGui();
+#endif // DEBUG
+
 private: // 構造体
 
 	struct Color {

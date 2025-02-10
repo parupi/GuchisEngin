@@ -24,6 +24,11 @@ public:
 	void Update() override;
 	// 描画
 	void Draw() override;
+	
+#ifdef _DEBUG
+	void DebugUpdate() override;
+#endif // _DEBUG
+
 
 private:
 	CameraManager cameraManager_;
@@ -37,12 +42,15 @@ private:
 	//Vector4 color2 = { 1.0f, 1.0f, 1.0f, 1.0f };
 	uint32_t soundHandle = 0u;
 
-	WorldTransform transform_;
-	WorldTransform animationTransform_;
+	//WorldTransform transform_;
+	//WorldTransform animationTransform_;
 	std::unique_ptr<LightManager> lightManager_;
 
 	//ParticleManager* particleManager_ = nullptr;
 	std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
 
+
+	Vector3 axis = { 0.0f, 0.0f, 0.0f };
+	float angle = 1.0f;
 };
 
