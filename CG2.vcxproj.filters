@@ -107,16 +107,16 @@
     <ClCompile Include="engine\input\Input.cpp">
       <Filter>ソース ファイル\engine\input</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\Model.cpp">
+    <ClCompile Include="engine\3d\Model\Model.cpp">
       <Filter>ソース ファイル\engine\3d</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\ModelLoader.cpp">
+    <ClCompile Include="engine\3d\Model\ModelLoader.cpp">
       <Filter>ソース ファイル\engine\3d</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\Object3dManager.cpp">
+    <ClCompile Include="engine\3d\Object\Object3dManager.cpp">
       <Filter>ソース ファイル\engine\3d</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\Object3d.cpp">
+    <ClCompile Include="engine\3d\Object\Object3d.cpp">
       <Filter>ソース ファイル\engine\3d</Filter>
     </ClCompile>
     <ClCompile Include="engine\2d\SpriteManager.cpp">
@@ -137,7 +137,7 @@
     <ClCompile Include="engine\base\ModelManager.cpp">
       <Filter>ソース ファイル\engine\base</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\Camera.cpp">
+    <ClCompile Include="engine\3d\Camera\Camera.cpp">
       <Filter>ソース ファイル\engine\3d</Filter>
     </ClCompile>
     <ClCompile Include="engine\base\SrvManager.cpp">
@@ -179,7 +179,7 @@
     <ClCompile Include="engine\base\ParticleEmitter.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\CameraManager.cpp">
+    <ClCompile Include="engine\3d\Camera\CameraManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="engine\debuger\GlobalVariables.cpp">
@@ -200,10 +200,10 @@
     <ClCompile Include="engine\math\Matrix4x4.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\Animator.cpp">
+    <ClCompile Include="engine\3d\Object\Animation\Animator.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\Skeleton.cpp">
+    <ClCompile Include="engine\3d\Object\Animation\Skeleton.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="application\scene\fade\Fade.cpp">
@@ -293,16 +293,16 @@
     <ClInclude Include="engine\base\Logger.h">
       <Filter>ヘッダー ファイル\base</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\Model.h">
+    <ClInclude Include="engine\3d\Model\Model.h">
       <Filter>ヘッダー ファイル\3d</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\ModelLoader.h">
+    <ClInclude Include="engine\3d\Model\ModelLoader.h">
       <Filter>ヘッダー ファイル\3d</Filter>
     </ClInclude>
     <ClInclude Include="engine\base\ModelManager.h">
       <Filter>ヘッダー ファイル\base</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\Object3d.h">
+    <ClInclude Include="engine\3d\Object\Object3d.h">
       <Filter>ヘッダー ファイル\3d</Filter>
     </ClInclude>
     <ClInclude Include="engine\2d\Sprite.h">
@@ -317,10 +317,10 @@
     <ClInclude Include="engine\base\TextureManager.h">
       <Filter>ヘッダー ファイル\base</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\Object3dManager.h">
+    <ClInclude Include="engine\3d\Object\Object3dManager.h">
       <Filter>ヘッダー ファイル\3d</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\Camera.h">
+    <ClInclude Include="engine\3d\Camera\Camera.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="engine\base\SrvManager.h">
@@ -365,7 +365,7 @@
     <ClInclude Include="engine\base\ParticleEmitter.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\CameraManager.h">
+    <ClInclude Include="engine\3d\Camera\CameraManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="engine\debuger\GlobalVariables.h">
@@ -380,10 +380,10 @@
     <ClInclude Include="engine\math\Quaternion.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\Animator.h">
+    <ClInclude Include="engine\3d\Object\Animation\Animator.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\Skeleton.h">
+    <ClInclude Include="engine\3d\Object\Animation\Skeleton.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="application\scene\fade\Fade.h">
