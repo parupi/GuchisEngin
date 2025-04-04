@@ -2,57 +2,34 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <cassert>
-//#include <Model.h>
+
 #include <Skeleton.h>
+#include <Model.h>
 
 void Animator::Initialize(Model* model, const std::string& filename)
 {
 	model_ = model;
-	LoadAnimationFile(model_->GetDirectoryPath(), filename);
-
-	skeleton_ = std::make_unique<Skeleton>();
-	skeleton_->Initialize(model_);
+	animation_ = LoadAnimationFile(model_->GetDirectoryPath(), filename);
 }
 
 void Animator::Update()
 {
 	animationTime += 1.0f / 60.0f;
-	animationTime = std::fmod(animationTime, animation.duration); // 最後までいったらリピート再生
-	
-	NodeAnimation& rootNodeAnimation = animation.nodeAnimations[model_->GetModelData().rootNode.name]; // ルートノードに入ってるアニメーションを取得
-	//NodeAnimation& rootNodeAnimation = animation.nodeAnimations["mixamorig:LeftArm"]; // ルートノードに入ってるアニメーションを取得
+	animationTime = std::fmod(animationTime, animation_.duration); // 最後までいったらリピート再生
+
+	NodeAnimation& rootNodeAnimation = animation_.nodeAnimations[model_->GetModelData().rootNode.name]; // ルートノードに入ってるアニメーションを取得
 	Vector3 scale, translate;
 	Quaternion rotate;
-	//if (!model_->GetModelData().isHasBones) {
-		translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime);
-		rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
-		scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime);
-	//}
-	//else {
-	//	translate = rootNodeAnimation.translate.keyframes.empty() ? Vector3(0, 0, 0) : CalculateValue(rootNodeAnimation.translate.keyframes, animationTime);
-	//	rotate = rootNodeAnimation.rotate.keyframes.empty() ? Identity() : CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
-	//	scale = rootNodeAnimation.scale.keyframes.empty() ? Vector3(1, 1, 1) : CalculateValue(rootNodeAnimation.scale.keyframes, animationTime);
-	//}
 
-	//translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime);
-	//rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
-	//scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime);
-
-	localMatrix = MakeAffineMatrix(scale, rotate, translate);
-
-	// 骨ごとの状態更新
-	//ApplySkeleton();
-
-	// Skeletonの更新（状態を確定）
-	if (skeleton_) {
-		skeleton_->ApplyAnimation(&animation, animationTime);
-		skeleton_->Update();
-	}
+	translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime);
+	rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
+	scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime);
+	model_->SetLocalMatrix(MakeAffineMatrix(scale, rotate, translate));
 }
 
 Animator::Animation Animator::LoadAnimationFile(const std::string& directoryPath, const std::string& filename)
 {
-	//animation; // 今回作るアニメーション
+	Animation animation; // 今回作るアニメーション
 	Assimp::Importer importer;
 	std::string filePath = directoryPath + "/" + filename;
 	const aiScene* scene = importer.ReadFile(filePath.c_str(), 0);
