@@ -1,4 +1,5 @@
 #include "Skeleton.h"
+#include <Model.h>
 
 void Skeleton::Initialize(Model* model)
 {
@@ -19,8 +20,6 @@ void Skeleton::Update()
 			joint.skeletonSpaceMatrix = joint.localMatrix;
 		}
 	}
-
-
 }
 
 void Skeleton::ApplyAnimation(const Animator::Animation& animation, float animationTime)
@@ -36,15 +35,15 @@ void Skeleton::ApplyAnimation(const Animator::Animation& animation, float animat
 	}
 }
 
-void Skeleton::CreateSkeleton(const Model::Node& rootNode) {
+void Skeleton::CreateSkeleton(const Node& rootNode) {
 	skeletonData_.root = CreateJoint(rootNode, {}, skeletonData_.joints);
 
 	for (const auto& joint : skeletonData_.joints) {
-		skeletonData_.jointMap[joint.name] = joint.index;
+		skeletonData_.jointMap.emplace(joint.name, joint.index);
 	}
 }
 
-int32_t Skeleton::CreateJoint(const Model::Node& node, const std::optional<int32_t>& parent, std::vector<Joint>& joints) {
+int32_t Skeleton::CreateJoint(const Node& node, const std::optional<int32_t>& parent, std::vector<Joint>& joints) {
 	Joint joint;
 	joint.name = node.name;
 	joint.localMatrix = node.localMatrix;

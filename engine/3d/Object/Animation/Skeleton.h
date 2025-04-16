@@ -1,12 +1,11 @@
 #pragma once
 #include "AnimationStructs.h"
-#include <Model.h>
 #include "Animator.h"
+
+class Model;
+
 class Skeleton
 {
-public:
-
-
 public:
 	// 初期化
 	void Initialize(Model* model);
@@ -18,9 +17,9 @@ public:
 	void ApplyAnimation(const Animator::Animation& animation, float animationTime);
 private:
 	// Nodeの階層からSkeletonを作る
-	void CreateSkeleton(const Model::Node& rootNode);
+	void CreateSkeleton(const Node& rootNode);
 	// NodeからJointを作る
-	int32_t CreateJoint(const Model::Node& node, const std::optional<int32_t>& parent, std::vector<Joint>& joints);
+	int32_t CreateJoint(const Node& node, const std::optional<int32_t>& parent, std::vector<Joint>& joints);
 
 private:
 	// スケルトンデータ

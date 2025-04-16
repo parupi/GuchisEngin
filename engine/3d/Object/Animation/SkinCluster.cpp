@@ -16,8 +16,9 @@ SkinClusterData SkinCluster::CreateSkinCluster(const SkeletonData& skeleton, Mod
 	WellForGPU* mappedPalette = nullptr;
 	skinCluster.paletteResource->Map(0, nullptr, reinterpret_cast<void**>(&mappedPalette));
 	skinCluster.mappedPalette = { mappedPalette, skeleton.joints.size() };
-	skinCluster.paletteSrvHandle.first = model->GetSrvManager()->GetCPUDescriptorHandle(4);
-	skinCluster.paletteSrvHandle.second = model->GetSrvManager()->GetGPUDescriptorHandle(4);
+	uint32_t srvIndex = model->GetSrvManager()->Allocate();
+	skinCluster.paletteSrvHandle.first = model->GetSrvManager()->GetCPUDescriptorHandle(srvIndex);
+	skinCluster.paletteSrvHandle.second = model->GetSrvManager()->GetGPUDescriptorHandle(srvIndex);
 
 	//palette用のSRVを生成
 	D3D12_SHADER_RESOURCE_VIEW_DESC paletteSrvDesc{};
@@ -74,7 +75,7 @@ void SkinCluster::UpdateSkinCluster(const SkeletonData& skeleton)
 	for (size_t jointIndex = 0; jointIndex < skeleton.joints.size(); ++jointIndex) {
 		assert(jointIndex < skinCluster_.inverseBindPoseMatrices.size());
 		skinCluster_.mappedPalette[jointIndex].skeletonSpaceMatrix =
-			skeleton.joints[jointIndex].skeletonSpaceMatrix * skinCluster_.inverseBindPoseMatrices[jointIndex];
+			skinCluster_.inverseBindPoseMatrices[jointIndex] * skeleton.joints[jointIndex].skeletonSpaceMatrix;
 		skinCluster_.mappedPalette[jointIndex].skeletonSpaceInverseTransposeMatrix =
 			Transpose(Inverse(skinCluster_.mappedPalette[jointIndex].skeletonSpaceMatrix));
 	}

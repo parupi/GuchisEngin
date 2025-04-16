@@ -11,13 +11,15 @@
 #include <Camera.h>
 #include <span>
 #include <map>
-
+#include "SkinCluster.h"
+#include "Skeleton.h"
+#include "Animation/AnimationStructs.h"
 //#include <DebugSphere.h>
 
 class WorldTransform;
 class Animator;
-class Skeleton;
-class SkinCluster;
+//class Skeleton;
+//class SkinCluster;
 
 class Model
 {
@@ -33,55 +35,9 @@ private:
 	void CreateIndexResource();
 
 public: // 構造体
-	struct VertexData {
-		Vector4 position;
-		Vector2 texcoord;
-		Vector3 normal;
-	};
 
-	struct Color {
-		float r, g, b;
-	};
 
-	struct MaterialData {
-		std::string name;
-		float Ns;
-		Color Ka;	// 環境光色
-		Color Kd;	// 拡散反射色
-		Color Ks;	// 鏡面反射光
-		float Ni;
-		float d;
-		uint32_t illum;
-		std::string textureFilePath;
-		uint32_t textureIndex = 0;
-	};
 
-	struct Node {
-		QuaternionTransform transform;
-		Matrix4x4 localMatrix;
-		std::string name;
-		std::vector<Node> children;
-	};
-
-	struct VertexWeightData {
-		float weight;
-		uint32_t vertexIndex;
-	};
-
-	struct JointWeightData {
-		Matrix4x4 inverseBindPoseMatrix;
-		std::vector<VertexWeightData> vertexWeights;
-	};
-
-	struct ModelData {
-		std::map<std::string, JointWeightData> skinClusterData;
-		std::vector<VertexData> vertices;
-		std::vector<uint32_t> indices;
-		MaterialData material;
-		Node rootNode;
-		bool isAnimation;
-		bool isHasBones;
-	};
 
 	///↓↓↓アニメーション用構造体(引っ越し予定)↓↓↓///
 	//template <typename tValue>

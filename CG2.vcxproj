@@ -108,6 +108,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\base\utility\DeltaTime.cpp" />
     <ClCompile Include="engine\debuger\DebugSphere.cpp" />
     <ClCompile Include="engine\3d\Object\Animation\Animator.cpp" />
     <ClCompile Include="engine\3d\Camera\CameraManager.cpp" />
@@ -233,6 +234,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\base\utility\DeltaTime.h" />
     <ClInclude Include="engine\3d\Object\Animation\AnimationStructs.h" />
     <ClInclude Include="engine\debuger\DebugSphere.h" />
     <ClInclude Include="engine\3d\Object\Animation\Animator.h" />
