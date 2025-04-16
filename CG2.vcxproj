@@ -108,6 +108,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\base\utility\DeltaTime.cpp" />
     <ClCompile Include="engine\debuger\DebugSphere.cpp" />
     <ClCompile Include="engine\3d\Object\Animation\Animator.cpp" />
     <ClCompile Include="engine\3d\Camera\CameraManager.cpp" />
@@ -158,6 +159,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\math\Matrix4x4.cpp" />
     <ClCompile Include="engine\base\OffScreen.cpp" />
     <ClCompile Include="engine\base\PSOManager.cpp" />
+    <ClCompile Include="engine\3d\Object\Animation\SkinCluster.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\BoxFilter.PS.hlsl">
@@ -232,6 +234,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\base\utility\DeltaTime.h" />
+    <ClInclude Include="engine\3d\Object\Animation\AnimationStructs.h" />
     <ClInclude Include="engine\debuger\DebugSphere.h" />
     <ClInclude Include="engine\3d\Object\Animation\Animator.h" />
     <ClInclude Include="engine\3d\Camera\CameraManager.h" />
@@ -285,6 +289,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="application\scene\fade\Fade.h" />
     <ClInclude Include="engine\base\OffScreen.h" />
     <ClInclude Include="engine\base\PSOManager.h" />
+    <ClInclude Include="engine\3d\Object\Animation\SkinCluster.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

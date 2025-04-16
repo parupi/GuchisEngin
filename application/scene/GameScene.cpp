@@ -158,6 +158,7 @@ void GameScene::Draw()
 	lightManager_->BindLightsToShader();
 	object_->Draw();
 
+
 	SpriteManager::GetInstance()->DrawSet();
 	sprite->Draw();
 	
