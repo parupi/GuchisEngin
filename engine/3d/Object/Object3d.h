@@ -15,16 +15,16 @@ class Object3d
 {
 public: // メンバ関数
 	Object3d() = default;
-	~Object3d();
+	virtual ~Object3d();
 
-	void Initialize(const std::string& filePath);
+	virtual void Initialize(const std::string& filePath);
 	// アニメーション用アップデート
-	void AnimationUpdate();
-	void Update();
-	void Draw();
+	virtual void AnimationUpdate();
+	virtual void Update();
+	virtual void Draw();
 
 #ifdef _DEBUG
-	void DebugGui();
+	virtual void DebugGui();
 #endif // _DEBUG
 
 

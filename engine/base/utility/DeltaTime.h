@@ -12,7 +12,7 @@ public:
 	static float GetDeltaTime() {return deltaTime_;}
 
 private:
-	static std::chrono::high_resolution_clock::time_point reference_;
+	static std::chrono::high_resolution_clock::time_point preTime_;
 	static float deltaTime_;
 };
 
