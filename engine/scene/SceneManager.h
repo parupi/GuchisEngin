@@ -6,14 +6,15 @@
 class SceneManager
 {
 private:
-	static std::unique_ptr<SceneManager> instance;
+	static SceneManager* instance;
 	static std::once_flag initInstanceFlag;
 
+	SceneManager() = default;
+	~SceneManager() = default;
 	SceneManager(SceneManager&) = default;
 	SceneManager& operator=(SceneManager&) = default;
 public:
-	SceneManager() = default;
-	~SceneManager() = default;
+
 	// シングルトンインスタンスの取得
 	static SceneManager* GetInstance();
 	// 次のシーンを予約する
