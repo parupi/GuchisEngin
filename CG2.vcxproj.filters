@@ -107,10 +107,10 @@
     <ClCompile Include="engine\input\Input.cpp">
       <Filter>ソース ファイル\engine\input</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\Model\Model.cpp">
+    <ClCompile Include="engine\3d\Object\Model\Model.cpp">
       <Filter>ソース ファイル\engine\3d</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\Model\ModelLoader.cpp">
+    <ClCompile Include="engine\3d\Object\Model\ModelLoader.cpp">
       <Filter>ソース ファイル\engine\3d</Filter>
     </ClCompile>
     <ClCompile Include="engine\3d\Object\Object3dManager.cpp">
@@ -134,7 +134,7 @@
     <ClCompile Include="engine\base\Logger.cpp">
       <Filter>ソース ファイル\engine\base</Filter>
     </ClCompile>
-    <ClCompile Include="engine\base\ModelManager.cpp">
+    <ClCompile Include="engine\3d\Object\Model\ModelManager.cpp">
       <Filter>ソース ファイル\engine\base</Filter>
     </ClCompile>
     <ClCompile Include="engine\3d\Camera\Camera.cpp">
@@ -200,10 +200,10 @@
     <ClCompile Include="engine\math\Matrix4x4.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\Object\Animation\Animator.cpp">
+    <ClCompile Include="engine\3d\Object\Model\Animation\Animator.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\Object\Animation\Skeleton.cpp">
+    <ClCompile Include="engine\3d\Object\Model\Animation\Skeleton.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="application\scene\fade\Fade.cpp">
@@ -218,13 +218,16 @@
     <ClCompile Include="engine\base\PSOManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\Object\Animation\SkinCluster.cpp">
+    <ClCompile Include="engine\3d\Object\Model\Animation\SkinCluster.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="engine\base\utility\DeltaTime.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="engine\scene\SampleScene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\Object\Model\Mesh\Mesh.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -302,13 +305,13 @@
     <ClInclude Include="engine\base\Logger.h">
       <Filter>ヘッダー ファイル\base</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\Model\Model.h">
+    <ClInclude Include="engine\3d\Object\Model\Model.h">
       <Filter>ヘッダー ファイル\3d</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\Model\ModelLoader.h">
+    <ClInclude Include="engine\3d\Object\Model\ModelLoader.h">
       <Filter>ヘッダー ファイル\3d</Filter>
     </ClInclude>
-    <ClInclude Include="engine\base\ModelManager.h">
+    <ClInclude Include="engine\3d\Object\Model\ModelManager.h">
       <Filter>ヘッダー ファイル\base</Filter>
     </ClInclude>
     <ClInclude Include="engine\3d\Object\Object3d.h">
@@ -389,10 +392,10 @@
     <ClInclude Include="engine\math\Quaternion.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\Object\Animation\Animator.h">
+    <ClInclude Include="engine\3d\Object\Model\Animation\Animator.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\Object\Animation\Skeleton.h">
+    <ClInclude Include="engine\3d\Object\Model\Animation\Skeleton.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="application\scene\fade\Fade.h">
@@ -407,16 +410,19 @@
     <ClInclude Include="engine\base\PSOManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\Object\Animation\SkinCluster.h">
+    <ClInclude Include="engine\3d\Object\Model\Animation\SkinCluster.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\Object\Animation\AnimationStructs.h">
+    <ClInclude Include="engine\3d\Object\Model\ModelStructs.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="engine\base\utility\DeltaTime.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="engine\scene\SampleScene.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\Object\Model\Mesh\Mesh.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

@@ -110,10 +110,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="engine\base\utility\DeltaTime.cpp" />
     <ClCompile Include="engine\debuger\DebugSphere.cpp" />
-    <ClCompile Include="engine\3d\Object\Animation\Animator.cpp" />
+    <ClCompile Include="engine\3d\Object\Model\Animation\Animator.cpp" />
     <ClCompile Include="engine\3d\Camera\CameraManager.cpp" />
     <ClCompile Include="engine\3d\LightManager.cpp" />
-    <ClCompile Include="engine\3d\Object\Animation\Skeleton.cpp" />
+    <ClCompile Include="engine\3d\Object\Model\Animation\Skeleton.cpp" />
     <ClCompile Include="engine\3d\WorldTransform.cpp" />
     <ClCompile Include="engine\audio\Audio.cpp" />
     <ClCompile Include="engine\debuger\GlobalVariables.cpp" />
@@ -137,9 +137,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\math\Easing.cpp" />
     <ClCompile Include="engine\math\function.cpp" />
-    <ClCompile Include="engine\3d\Model\Model.cpp" />
-    <ClCompile Include="engine\3d\Model\ModelLoader.cpp" />
-    <ClCompile Include="engine\base\ModelManager.cpp" />
+    <ClCompile Include="engine\3d\Object\Model\Model.cpp" />
+    <ClCompile Include="engine\3d\Object\Model\ModelLoader.cpp" />
+    <ClCompile Include="engine\3d\Object\Model\ModelManager.cpp" />
     <ClCompile Include="engine\3d\Object\Object3d.cpp" />
     <ClCompile Include="engine\3d\Object\Object3dManager.cpp" />
     <ClCompile Include="engine\2d\Sprite.cpp" />
@@ -159,8 +159,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\math\Matrix4x4.cpp" />
     <ClCompile Include="engine\base\OffScreen.cpp" />
     <ClCompile Include="engine\base\PSOManager.cpp" />
-    <ClCompile Include="engine\3d\Object\Animation\SkinCluster.cpp" />
+    <ClCompile Include="engine\3d\Object\Model\Animation\SkinCluster.cpp" />
     <ClCompile Include="engine\scene\SampleScene.cpp" />
+    <ClCompile Include="engine\3d\Object\Model\Mesh\Mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\BoxFilter.PS.hlsl">
@@ -236,12 +237,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\base\utility\DeltaTime.h" />
-    <ClInclude Include="engine\3d\Object\Animation\AnimationStructs.h" />
+    <ClInclude Include="engine\3d\Object\Model\ModelStructs.h" />
     <ClInclude Include="engine\debuger\DebugSphere.h" />
-    <ClInclude Include="engine\3d\Object\Animation\Animator.h" />
+    <ClInclude Include="engine\3d\Object\Model\Animation\Animator.h" />
     <ClInclude Include="engine\3d\Camera\CameraManager.h" />
     <ClInclude Include="engine\3d\LightManager.h" />
-    <ClInclude Include="engine\3d\Object\Animation\Skeleton.h" />
+    <ClInclude Include="engine\3d\Object\Model\Animation\Skeleton.h" />
     <ClInclude Include="engine\3d\WorldTransform.h" />
     <ClInclude Include="engine\audio\Audio.h" />
     <ClInclude Include="engine\debuger\GlobalVariables.h" />
@@ -265,9 +266,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\math\Vector2.h" />
     <ClInclude Include="engine\math\Vector3.h" />
     <ClInclude Include="engine\math\Vector4.h" />
-    <ClInclude Include="engine\3d\Model\Model.h" />
-    <ClInclude Include="engine\3d\Model\ModelLoader.h" />
-    <ClInclude Include="engine\base\ModelManager.h" />
+    <ClInclude Include="engine\3d\Object\Model\Model.h" />
+    <ClInclude Include="engine\3d\Object\Model\ModelLoader.h" />
+    <ClInclude Include="engine\3d\Object\Model\ModelManager.h" />
     <ClInclude Include="engine\3d\Object\Object3d.h" />
     <ClInclude Include="engine\3d\Object\Object3dManager.h" />
     <ClInclude Include="engine\2d\Sprite.h" />
@@ -290,8 +291,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="application\scene\fade\Fade.h" />
     <ClInclude Include="engine\base\OffScreen.h" />
     <ClInclude Include="engine\base\PSOManager.h" />
-    <ClInclude Include="engine\3d\Object\Animation\SkinCluster.h" />
+    <ClInclude Include="engine\3d\Object\Model\Animation\SkinCluster.h" />
     <ClInclude Include="engine\scene\SampleScene.h" />
+    <ClInclude Include="engine\3d\Object\Model\Mesh\Mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

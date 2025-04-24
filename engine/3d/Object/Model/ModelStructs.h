@@ -97,10 +97,17 @@ struct JointWeightData {
 
 struct ModelData {
 	std::map<std::string, JointWeightData> skinClusterData;
-	std::vector<VertexData> vertices;
-	std::vector<uint32_t> indices;
-	MaterialData material;
+	std::vector<MeshData> meshes;
+	std::vector<MaterialData> materials;
 	Node rootNode;
 	bool isAnimation;
 	bool isHasBones;
+};
+
+struct MeshData {
+	std::string name;
+	std::vector<VertexData> vertices;
+	std::vector<uint32_t> indices;
+	uint32_t materialIndex; // このメッシュに持たせるマテリアルのインデックス
+
 };
