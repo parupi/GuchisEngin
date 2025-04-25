@@ -9,7 +9,6 @@
 #include "ModelManager.h"
 Object3d::~Object3d()
 {
-	//delete animator_;
 }
 
 void Object3d::Initialize(const std::string& fileName)
@@ -18,6 +17,9 @@ void Object3d::Initialize(const std::string& fileName)
 	model_ = ModelManager::GetInstance()->FindModel(fileName);
 
 	objectManager_ = Object3dManager::GetInstance();
+
+	transform_ = std::make_unique<WorldTransform>();
+	transform_->Initialize();
 
 	CreateMaterialResource();
 	CreateCameraResource();
@@ -30,8 +32,10 @@ void Object3d::AnimationUpdate()
 	}
 }
 
-void Object3d::Draw(WorldTransform& worldTransform)
+void Object3d::Update()
 {
+	transform_->TransferMatrix();
+
 	// uvTransformに値を適用
 	uvTransform_.translate = { uvPosition_.x, uvPosition_.y, 0.0f };
 	uvTransform_.rotate = { 0.0f, 0.0f, uvRotation_ };
@@ -49,36 +53,76 @@ void Object3d::Draw(WorldTransform& worldTransform)
 	Matrix4x4 worldViewProjectionMatrix;
 	if (camera_) {
 		const Matrix4x4& viewProjectionMatrix = camera_->GetViewProjectionMatrix();
-		worldViewProjectionMatrix = worldTransform.GetMatWorld() * viewProjectionMatrix;
-	}
-	else {
-		worldViewProjectionMatrix = worldTransform.GetMatWorld();
+		worldViewProjectionMatrix = transform_->GetMatWorld() * viewProjectionMatrix;
+	} else {
+		worldViewProjectionMatrix = transform_->GetMatWorld();
 	}
 
 	if (model_->GetModelData().isAnimation) {
 		if (model_->GetModelData().isHasBones) {
-			worldTransform.SetMapWVP(/*model_->GetModelData().rootNode.localMatrix * */worldViewProjectionMatrix);
-			worldTransform.SetMapWorld(/*model_->GetModelData().rootNode.localMatrix * */worldTransform.GetMatWorld());
+			transform_->SetMapWVP(worldViewProjectionMatrix);
+			transform_->SetMapWorld(transform_->GetMatWorld());
+		} else {
+			transform_->SetMapWVP(model_->GetModelData().rootNode.localMatrix * worldViewProjectionMatrix);
+			transform_->SetMapWorld(model_->GetModelData().rootNode.localMatrix * transform_->GetMatWorld());
 		}
-		else {
-			worldTransform.SetMapWVP(model_->GetModelData().rootNode.localMatrix * worldViewProjectionMatrix);
-			worldTransform.SetMapWorld(model_->GetModelData().rootNode.localMatrix * worldTransform.GetMatWorld());
-		}
+	} else {
+		transform_->SetMapWVP(worldViewProjectionMatrix);
+		transform_->SetMapWorld(transform_->GetMatWorld());
 	}
-	else {
-		worldTransform.SetMapWVP(/*model_->GetModelData().rootNode.localMatrix * */worldViewProjectionMatrix);
-		worldTransform.SetMapWorld(/*model_->GetModelData().rootNode.localMatrix * */worldTransform.GetMatWorld());
-	}
+}
 
+void Object3d::Draw()
+{
 	// cameraの場所を指定
 	objectManager_->GetDxManager()->GetCommandList()->SetGraphicsRootConstantBufferView(3, cameraResource_->GetGPUVirtualAddress());
 	// マテリアルCBufferの場所を指定
 	objectManager_->GetDxManager()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
 	// 3Dモデルが割り当てられていれば描画する
 	if (model_) {
-		model_->Draw(worldTransform);
+		model_->Draw(transform_.get());
 	}
 }
+
+
+#ifdef _DEBUG
+void Object3d::DebugGui()
+{
+	if (ImGui::TreeNode("Models")) {
+		auto& modelMap = ModelManager::GetInstance()->models;
+		static std::vector<std::string> modelNames;
+		static int selectedIndex = 0;
+
+		// モデル一覧を初期化（必要なら一度だけでOK）
+		if (modelNames.empty()) {
+			for (const auto& pair : modelMap) {
+				modelNames.push_back(pair.first);
+			}
+		}
+
+		if (!modelNames.empty()) {
+			const char* currentItem = modelNames[selectedIndex].c_str();
+
+			if (ImGui::BeginCombo("Model List", currentItem)) {
+				for (int i = 0; i < modelNames.size(); ++i) {
+					bool isSelected = (selectedIndex == i);
+					if (ImGui::Selectable(modelNames[i].c_str(), isSelected)) {
+						selectedIndex = i;
+						SetModel(modelNames[selectedIndex]);
+					}
+					if (isSelected) {
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+				ImGui::EndCombo();
+			}
+		}
+		ImGui::TreePop();
+	}
+
+	transform_->DebugGui();
+}
+#endif // _DEBUG
 
 void Object3d::CreateMaterialResource()
 {

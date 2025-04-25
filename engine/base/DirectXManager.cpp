@@ -305,7 +305,6 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXManager::CreateRenderTextureResour
 
 void DirectXManager::CreateRTVForOffScreen()
 {
-	//const Vector4 kRenderTargetClearValue = { 0.8f, 1.0f, 0.4f, 1.0f };
 	clearValue.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	clearValue.Color[0] = 0.6f;
 	clearValue.Color[1] = 0.5f;
@@ -600,6 +599,9 @@ void DirectXManager::EndDraw()
 	UINT backBufferIndex;
 	backBufferIndex = swapChain_->GetCurrentBackBufferIndex();
 
+	// FPS固定
+	UpdateFixFPS();
+
 	// 画面に描く処理はすべて終わり、画面に移すので、状態を遷移
 	// 今回はRenderTargetからPresentにする
 	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
@@ -629,9 +631,6 @@ void DirectXManager::EndDraw()
 		// イベントを待つ
 		WaitForSingleObject(fenceEvent_, INFINITE);
 	}
-
-	// FPS固定
-	UpdateFixFPS();
 
 	// 次のフレーム用のコマンドリストを準備
 	hr = commandAllocator_->Reset();

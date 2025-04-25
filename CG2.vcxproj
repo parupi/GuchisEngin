@@ -45,11 +45,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)..\generated\outputs\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)..\generated\outputs\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\generated\obj\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)..\generated\outputs\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)..\generated\outputs\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\generated\obj\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -62,7 +62,7 @@
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir)engine\base;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\input;$(ProjectDir)engine\audio;$(ProjectDir)engine\scene;$(ProjectDir)engine\math;$(ProjectDir)externals\DirectXTex;$(ProjectDir)externals\imgui;$(ProjectDir)externals\nlohmann;$(ProjectDir)engine\debuger;$(ProjectDir)application\scene;$(ProjectDir)engine\core;$(ProjectDir)application\player;$(ProjectDir)application\Enemy;$(ProjectDir)externals\assimp\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)engine\base;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\input;$(ProjectDir)engine\audio;$(ProjectDir)engine\scene;$(ProjectDir)engine\math;$(ProjectDir)externals\DirectXTex;$(ProjectDir)externals\imgui;$(ProjectDir)externals\nlohmann;$(ProjectDir)engine\debuger;$(ProjectDir)application\scene;$(ProjectDir)engine\core;$(ProjectDir)application\player;$(ProjectDir)application\Enemy;$(ProjectDir)externals\assimp\include;$(ProjectDir)engine\3d\Object\Animation;$(ProjectDir)engine\3d\Object;$(ProjectDir)engine\3d\Model;$(ProjectDir)engine\3d\Camera</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -89,7 +89,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)engine\base;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\input;$(ProjectDir)engine\audio;$(ProjectDir)engine\scene;$(ProjectDir)engine\math;$(ProjectDir)externals\DirectXTex;$(ProjectDir)externals\imgui;$(ProjectDir)externals\nlohmann;$(ProjectDir)engine\debuger;$(ProjectDir)engine\debug;$(ProjectDir)application\scene;$(ProjectDir)engine\core;$(ProjectDir)application\player;$(ProjectDir)application\Enemy;$(ProjectDir)externals\assimp\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)engine\base;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\input;$(ProjectDir)engine\audio;$(ProjectDir)engine\scene;$(ProjectDir)engine\math;$(ProjectDir)externals\DirectXTex;$(ProjectDir)externals\imgui;$(ProjectDir)externals\nlohmann;$(ProjectDir)engine\debuger;$(ProjectDir)engine\debug;$(ProjectDir)application\scene;$(ProjectDir)engine\core;$(ProjectDir)application\player;$(ProjectDir)application\Enemy;$(ProjectDir)externals\assimp\include;$(ProjectDir)engine\3d\Camera;$(ProjectDir)engine\3d\Model;$(ProjectDir)engine\3d\Object;$(ProjectDir)engine\3d\Object\Animation;$(ProjectDir)engine\3d\Object\Animation;$(ProjectDir)engine\3d\Object;$(ProjectDir)engine\3d\Model;$(ProjectDir)engine\3d\Camera</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -108,16 +108,17 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\base\utility\DeltaTime.cpp" />
     <ClCompile Include="engine\debuger\DebugSphere.cpp" />
-    <ClCompile Include="engine\3d\Animator.cpp" />
-    <ClCompile Include="engine\3d\CameraManager.cpp" />
+    <ClCompile Include="engine\3d\Object\Animation\Animator.cpp" />
+    <ClCompile Include="engine\3d\Camera\CameraManager.cpp" />
     <ClCompile Include="engine\3d\LightManager.cpp" />
-    <ClCompile Include="engine\3d\Skeleton.cpp" />
+    <ClCompile Include="engine\3d\Object\Animation\Skeleton.cpp" />
     <ClCompile Include="engine\3d\WorldTransform.cpp" />
     <ClCompile Include="engine\audio\Audio.cpp" />
     <ClCompile Include="engine\debuger\GlobalVariables.cpp" />
     <ClCompile Include="engine\scene\BaseScene.cpp" />
-    <ClCompile Include="engine\3d\Camera.cpp" />
+    <ClCompile Include="engine\3d\Camera\Camera.cpp" />
     <ClCompile Include="engine\base\DirectXManager.cpp" />
     <ClCompile Include="externals\imgui\imgui.cpp" />
     <ClCompile Include="externals\imgui\imgui_demo.cpp" />
@@ -136,11 +137,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\math\Easing.cpp" />
     <ClCompile Include="engine\math\function.cpp" />
-    <ClCompile Include="engine\3d\Model.cpp" />
-    <ClCompile Include="engine\3d\ModelLoader.cpp" />
+    <ClCompile Include="engine\3d\Model\Model.cpp" />
+    <ClCompile Include="engine\3d\Model\ModelLoader.cpp" />
     <ClCompile Include="engine\base\ModelManager.cpp" />
-    <ClCompile Include="engine\3d\Object3d.cpp" />
-    <ClCompile Include="engine\3d\Object3dManager.cpp" />
+    <ClCompile Include="engine\3d\Object\Object3d.cpp" />
+    <ClCompile Include="engine\3d\Object\Object3dManager.cpp" />
     <ClCompile Include="engine\2d\Sprite.cpp" />
     <ClCompile Include="engine\2d\SpriteManager.cpp" />
     <ClCompile Include="engine\base\StringUtility.cpp" />
@@ -158,6 +159,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\math\Matrix4x4.cpp" />
     <ClCompile Include="engine\base\OffScreen.cpp" />
     <ClCompile Include="engine\base\PSOManager.cpp" />
+    <ClCompile Include="engine\3d\Object\Animation\SkinCluster.cpp" />
+    <ClCompile Include="engine\scene\SampleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\BoxFilter.PS.hlsl">
@@ -232,17 +235,19 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\base\utility\DeltaTime.h" />
+    <ClInclude Include="engine\3d\Object\Animation\AnimationStructs.h" />
     <ClInclude Include="engine\debuger\DebugSphere.h" />
-    <ClInclude Include="engine\3d\Animator.h" />
-    <ClInclude Include="engine\3d\CameraManager.h" />
+    <ClInclude Include="engine\3d\Object\Animation\Animator.h" />
+    <ClInclude Include="engine\3d\Camera\CameraManager.h" />
     <ClInclude Include="engine\3d\LightManager.h" />
-    <ClInclude Include="engine\3d\Skeleton.h" />
+    <ClInclude Include="engine\3d\Object\Animation\Skeleton.h" />
     <ClInclude Include="engine\3d\WorldTransform.h" />
     <ClInclude Include="engine\audio\Audio.h" />
     <ClInclude Include="engine\debuger\GlobalVariables.h" />
     <ClInclude Include="engine\scene\AbstractSceneFactory.h" />
     <ClInclude Include="engine\scene\BaseScene.h" />
-    <ClInclude Include="engine\3d\Camera.h" />
+    <ClInclude Include="engine\3d\Camera\Camera.h" />
     <ClInclude Include="engine\base\DirectXManager.h" />
     <ClInclude Include="externals\imgui\imconfig.h" />
     <ClInclude Include="externals\imgui\imgui.h" />
@@ -260,11 +265,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\math\Vector2.h" />
     <ClInclude Include="engine\math\Vector3.h" />
     <ClInclude Include="engine\math\Vector4.h" />
-    <ClInclude Include="engine\3d\Model.h" />
-    <ClInclude Include="engine\3d\ModelLoader.h" />
+    <ClInclude Include="engine\3d\Model\Model.h" />
+    <ClInclude Include="engine\3d\Model\ModelLoader.h" />
     <ClInclude Include="engine\base\ModelManager.h" />
-    <ClInclude Include="engine\3d\Object3d.h" />
-    <ClInclude Include="engine\3d\Object3dManager.h" />
+    <ClInclude Include="engine\3d\Object\Object3d.h" />
+    <ClInclude Include="engine\3d\Object\Object3dManager.h" />
     <ClInclude Include="engine\2d\Sprite.h" />
     <ClInclude Include="engine\2d\SpriteManager.h" />
     <ClInclude Include="engine\base\StringUtility.h" />
@@ -285,6 +290,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="application\scene\fade\Fade.h" />
     <ClInclude Include="engine\base\OffScreen.h" />
     <ClInclude Include="engine\base\PSOManager.h" />
+    <ClInclude Include="engine\3d\Object\Animation\SkinCluster.h" />
+    <ClInclude Include="engine\scene\SampleScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

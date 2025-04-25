@@ -6,10 +6,10 @@
 #include <map>
 #include <string>
 #include <optional>
-#include <Model.h>
+
 //#include <Skeleton.h>
 
-//class Model;
+class Model;
 class Skeleton;
 
 class Animator {
@@ -54,18 +54,12 @@ public:
 	static Quaternion CalculateValue(const std::vector<KeyframeQuaternion>& keyframes, float time);
 private:
 	// アニメーション
-	Animation animation;
-	// スケルトン
-	std::unique_ptr<Skeleton> skeleton_;
+	Animation animation_;
 	// モデルデータ
 	Model* model_;
 	// 現在のアニメーションタイム
 	float animationTime = 0.0f;
-	// アニメーション用行列
-	Matrix4x4 localMatrix;
 
 public: // ゲッター // セッター //
-	Matrix4x4 GetLocalMatrix() const { return localMatrix; }
-	//void SetSkeleton(Skeleton* skeleton) { skeleton_ = skeleton; }
-	Skeleton* GetSkeleton() const { return skeleton_.get(); }
+	Animation GetAnimation() { return animation_; }
 };

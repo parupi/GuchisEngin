@@ -34,6 +34,10 @@ public:
 	// 描画前処理
 	void DrawSet(BlendMode blendMode = BlendMode::kAdd);
 
+#ifdef _DEBUG
+	void DebugGui();
+#endif // DEBUG
+
 private: // 構造体
 
 	struct Color {
@@ -103,7 +107,9 @@ private: // 構造体
 		Vector2 rotateX;
 		Vector2 rotateY;
 		Vector2 rotateZ;
-		Vector2 scale;
+		Vector2 scaleX;
+		Vector2 scaleY;
+		Vector2 scaleZ;
 		Vector2 velocityX;
 		Vector2 velocityY;
 		Vector2 velocityZ;

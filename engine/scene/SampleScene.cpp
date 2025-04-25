@@ -1,4 +1,4 @@
-#include <GameScene.h>
+#include "SampleScene.h"
 #include <TextureManager.h>
 #include <ModelManager.h>
 #include <ParticleManager.h>
@@ -7,7 +7,7 @@
 #include <Vector3.h>
 #include <Matrix4x4.h>
 
-void GameScene::Initialize()
+void SampleScene::Initialize()
 {
 	// カメラの生成
 	normalCamera_ = std::make_shared<Camera>();
@@ -15,21 +15,20 @@ void GameScene::Initialize()
 	cameraManager_.SetActiveCamera(0);
 	normalCamera_->SetTranslate(Vector3{ 0.0f, 35.0f, -44.0f });
 	normalCamera_->SetRotate(Vector3{ 0.68f, 0.0f, 0.0f });
-	//normalCamera_->SetTranslate(Vector3{ 0.0f, 0.0f, -10.0f });
-	//normalCamera_->SetRotate(Vector3{ 0.0f, 0.0f, 0.0f });
+
 
 	// .objファイルからモデルを読み込む
 	ModelManager::GetInstance()->LoadModel("Resource", "walk.gltf");
 	ModelManager::GetInstance()->LoadModel("Resource", "simpleSkin.gltf");
 	ModelManager::GetInstance()->LoadModel("Resource", "sneakWalk.gltf");
 	ModelManager::GetInstance()->LoadModel("Resource", "plane.obj");
-	ModelManager::GetInstance()->LoadModel("Resource", "Models/AnimatedCube/AnimatedCube.gltf");
+	//ModelManager::GetInstance()->LoadModel("Resource", "Models/AnimatedCube/AnimatedCube.gltf");
 	ModelManager::GetInstance()->LoadModel("Resource", "Models/Terrain/Terrain.obj");
 	ModelManager::GetInstance()->LoadModel("Resource", "multiMaterial.obj");
 	TextureManager::GetInstance()->LoadTexture("resource/uvChecker.png");
 
 	object_ = std::make_unique<Object3d>();
-	object_->Initialize("Models/AnimatedCube/AnimatedCube.gltf");
+	object_->Initialize("Models/Terrain/Terrain.obj");
 
 	animationObject_ = std::make_unique<Object3d>();
 	animationObject_->Initialize("simpleSkin.gltf");
@@ -49,21 +48,19 @@ void GameScene::Initialize()
 	lightManager_->SetDirLightIntensity(0, 1.0f);
 
 
-	ParticleManager::GetInstance()->CreateParticleGroup("test", "Resource/uvChecker.png");
+	ParticleManager::GetInstance()->CreateParticleGroup("test", "Resource/circle.png");
 
 	particleEmitter_ = std::make_unique<ParticleEmitter>();
 	particleEmitter_->Initialize("test");
-
 }
 
-void GameScene::Finalize()
+void SampleScene::Finalize()
 {
-
 }
 
-void GameScene::Update()
+void SampleScene::Update()
 {
-	particleEmitter_->Update({0.0f, 0.0f, 0.0f}, 8);
+	particleEmitter_->Update({ 0.0f, 0.0f, 0.0f }, 8);
 	ParticleManager::GetInstance()->Update();
 
 	object_->AnimationUpdate();
@@ -82,7 +79,7 @@ void GameScene::Update()
 	normalCamera_->SetTranslate(normalCameraPos);
 	normalCamera_->SetRotate(cameraRotate);
 
-	
+
 	DebugUpdate();
 
 	Vector2 uvObjectPos = object_->GetUVPosition();
@@ -94,10 +91,6 @@ void GameScene::Update()
 	ImGui::DragFloat2("UVScale", &uvObjectSize.x, 0.01f, -10.0f, 10.0f);
 	ImGui::SliderAngle("UVRotate", &uvObjectRotate);
 	ImGui::End();
-
-	Quaternion rotate = MakeRotateAxisAngleQuaternion(axis, angle);
-
-	PrintOnImGui(object_->GetWorldTransform()->GetMatWorld());
 
 	object_->SetUVPosition(uvObjectPos);
 	object_->SetUVSize(uvObjectSize);
@@ -144,31 +137,30 @@ void GameScene::Update()
 	sprite->SetUVRotation(uvSpriteRotate);
 }
 
-void GameScene::Draw()
+void SampleScene::Draw()
 {
 	ParticleManager::GetInstance()->DrawSet();
 	ParticleManager::GetInstance()->Draw();
 
-	// 3Dオブジェクト描画前処理
-	Object3dManager::GetInstance()->DrawSetForAnimation();
-	lightManager_->BindLightsToShader();
-	animationObject_->Draw();
+	//// 3Dオブジェクト描画前処理
+	//Object3dManager::GetInstance()->DrawSetForAnimation();
+	//lightManager_->BindLightsToShader();
+	//animationObject_->Draw();
 
-	Object3dManager::GetInstance()->DrawSet();
-	lightManager_->BindLightsToShader();
-	object_->Draw();
+	//Object3dManager::GetInstance()->DrawSet();
+	//lightManager_->BindLightsToShader();
+	//object_->Draw();
 
 
-	SpriteManager::GetInstance()->DrawSet();
-	sprite->Draw();
-	
+	//SpriteManager::GetInstance()->DrawSet();
+	//sprite->Draw();
 }
 
 #ifdef _DEBUG
-void GameScene::DebugUpdate()
+void SampleScene::DebugUpdate()
 {
 	ImGui::Begin("Object");
 	object_->DebugGui();
 	ImGui::End();
 }
-#endif // _DEBUG
+#endif

@@ -12,8 +12,7 @@
 #include <LightManager.h>
 #include <ParticleEmitter.h>
 #include "DebugSphere.h"
-
-class GameScene : public BaseScene
+class SampleScene : public BaseScene
 {
 public:
 	// 初期化
@@ -24,11 +23,10 @@ public:
 	void Update() override;
 	// 描画
 	void Draw() override;
-	
+
 #ifdef _DEBUG
 	void DebugUpdate() override;
 #endif // _DEBUG
-
 
 private:
 	CameraManager cameraManager_;
@@ -50,7 +48,7 @@ private:
 	std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
 
 
-	Vector3 axis = { 0.0f, 0.0f, 0.0f };
-	float angle = 1.0f;
+	//Vector3 axis = { 0.0f, 0.0f, 0.0f };
+	//float angle = 1.0f;
 };
 

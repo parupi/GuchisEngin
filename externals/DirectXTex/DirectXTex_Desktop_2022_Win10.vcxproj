@@ -132,7 +132,7 @@
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">
-    <OutDir>$(SolutionDir)..\generated\outputs\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)..\generated\outputs\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\generated\obj\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>DirectXTex</TargetName>
     <GenerateManifest>true</GenerateManifest>
@@ -150,7 +150,7 @@
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|X64'">
-    <OutDir>$(SolutionDir)..\generated\outputs\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)..\generated\outputs\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\generated\obj\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>DirectXTex</TargetName>
     <GenerateManifest>true</GenerateManifest>
@@ -168,7 +168,7 @@
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|X64'">
-    <OutDir>$(SolutionDir)..\generated\outputs\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)..\generated\outputs\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\generated\obj\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>DirectXTex</TargetName>
     <GenerateManifest>true</GenerateManifest>

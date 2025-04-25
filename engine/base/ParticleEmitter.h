@@ -1,6 +1,7 @@
 #pragma once
 #include <function.h>
 #include <ParticleManager.h>
+#include <utility/DeltaTime.h>
 class ParticleEmitter
 {
 public:
@@ -9,7 +10,7 @@ public:
 	// 更新
 	void Update(Vector3 Position, uint32_t count);
 	// 発生
-	void Emit();
+	void Emit() const;
 private:
 
 	struct Emitter {
@@ -23,8 +24,9 @@ private:
 
 private:
 	//ParticleManager* particleManager_;
+	bool emitAll_ = false;
 	Emitter emitter{};
-	float kDeltaTime = 1.0f / 60.0f;
+	float kDeltaTime = DeltaTime::GetDeltaTime();
 
 public:
 	void SetFrequency(float time) { emitter.frequency = time; }

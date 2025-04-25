@@ -381,29 +381,29 @@ int main(int arg, char **argv)
 {
    stbtt_fontinfo font;
    int i,j,ascent,baseline,ch=0;
-   float scale, xpos=2; // leave a little padding in case the character extends left
+   float scaleX, xpos=2; // leave a little padding in case the character extends left
    char *text = "Heljo World!"; // intentionally misspelled to show 'lj' brokenness
 
    fread(buffer, 1, 1000000, fopen("c:/windows/fonts/arialbd.ttf", "rb"));
    stbtt_InitFont(&font, buffer, 0);
 
-   scale = stbtt_ScaleForPixelHeight(&font, 15);
+   scaleX = stbtt_ScaleForPixelHeight(&font, 15);
    stbtt_GetFontVMetrics(&font, &ascent,0,0);
-   baseline = (int) (ascent*scale);
+   baseline = (int) (ascent*scaleX);
 
    while (text[ch]) {
       int advance,lsb,x0,y0,x1,y1;
       float x_shift = xpos - (float) floor(xpos);
       stbtt_GetCodepointHMetrics(&font, text[ch], &advance, &lsb);
-      stbtt_GetCodepointBitmapBoxSubpixel(&font, text[ch], scale,scale,x_shift,0, &x0,&y0,&x1,&y1);
-      stbtt_MakeCodepointBitmapSubpixel(&font, &screen[baseline + y0][(int) xpos + x0], x1-x0,y1-y0, 79, scale,scale,x_shift,0, text[ch]);
+      stbtt_GetCodepointBitmapBoxSubpixel(&font, text[ch], scaleX,scaleX,x_shift,0, &x0,&y0,&x1,&y1);
+      stbtt_MakeCodepointBitmapSubpixel(&font, &screen[baseline + y0][(int) xpos + x0], x1-x0,y1-y0, 79, scaleX,scaleX,x_shift,0, text[ch]);
       // note that this stomps the old data, so where character boxes overlap (e.g. 'lj') it's wrong
       // because this API is really for baking character bitmaps into textures. if you want to render
       // a sequence of characters, you really need to render each bitmap to a temp buffer, then
       // "alpha blend" that into the working buffer
-      xpos += (advance * scale);
+      xpos += (advance * scaleX);
       if (text[ch+1])
-         xpos += scale*stbtt_GetCodepointKernAdvance(&font, text[ch],text[ch+1]);
+         xpos += scaleX*stbtt_GetCodepointKernAdvance(&font, text[ch],text[ch+1]);
       ++ch;
    }
 

@@ -44,3 +44,31 @@ void WorldTransform::TransferMatrix()
         constMap->WorldInverseTranspose = Inverse(matWorld_);
     }
 }
+
+
+#ifdef _DEBUG
+void WorldTransform::DebugGui()
+{
+    if (ImGui::TreeNode("Transform")) {
+        if (ImGui::Button("ResetRotate")) {
+            rotation_ = Identity();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("ResetScale")) {
+            scale_ = Vector3(1.0f, 1.0f, 1.0f);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("ResetTranslate")) {
+            translation_ = Vector3(0.0f, 0.0f, 0.0f);
+        }
+
+        ImGui::DragFloat3("translate", &translation_.x, 0.01f);
+        ImGui::DragFloat3("scale", &scale_.x, 0.01f);
+        Vector3 rotate = { 0.0f, 0.0f, 0.0f };
+        ImGui::DragFloat3("rotation", &rotate.x, 0.1f);
+        rotation_ = (rotation_ * Normalize(EulerDegree(rotate)));
+        ImGui::TreePop();
+    }
+}
+#endif // _DEBUG
+
