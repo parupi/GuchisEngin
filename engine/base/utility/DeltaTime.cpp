@@ -13,7 +13,7 @@ void DeltaTime::Initialize()
 void DeltaTime::Update()
 {
     auto currentTime = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<float> elapsed = currentTime - preTime_;
+    std::chrono::duration<double> elapsed = currentTime - preTime_;
     deltaTime_ = elapsed.count(); // 秒で保持
     preTime_ = currentTime;
 }
