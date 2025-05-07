@@ -12,14 +12,11 @@ public:
 	// 更新処理
 	void Update();
 	// 描画
-	void Draw(/*OffScreenEffectType effectType = OffScreenEffectType::kNone*/);
+	void Draw();
 
 private:
 	DirectXManager* dxManager_ = nullptr;
 	PSOManager* psoManager_ = nullptr;
-
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState_ = nullptr;
 
 	OffScreenEffectType effectType_ = OffScreenEffectType::kNone;
 };

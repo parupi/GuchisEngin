@@ -12,7 +12,8 @@
 #include <LightManager.h>
 #include <ParticleEmitter.h>
 #include "DebugSphere.h"
-#include <OffScreen.h>
+//#include <OffScreen.h>
+#include "offscreen/GrayEffect.h"
 class SampleScene : public BaseScene
 {
 public:
@@ -52,5 +53,7 @@ private:
 
 	//Vector3 axis = { 0.0f, 0.0f, 0.0f };
 	//float angle = 1.0f;
+	//std::unique_ptr<GrayEffect> grayEffect_ = nullptr;
+
 };
 

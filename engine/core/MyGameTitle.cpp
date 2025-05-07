@@ -1,6 +1,7 @@
 #include "MyGameTitle.h"
 #include <SceneFactory.h>
 #include <ParticleManager.h>
+#include "../offscreen/OffScreenManager.h"
 
 void MyGameTitle::Initialize()
 {
@@ -18,8 +19,9 @@ void MyGameTitle::Initialize()
 	// オブジェクト共通部
 	Object3dManager::GetInstance()->Initialize(dxManager.get(), psoManager.get());
 
-	offScreen_ = std::make_unique<OffScreen>();
-	offScreen_->Initialize(dxManager.get(), psoManager.get());
+	//offScreen_ = std::make_unique<OffScreen>();
+	//offScreen_->Initialize(dxManager.get(), psoManager.get());
+	OffScreenManager::GetInstance()->Initialize(dxManager.get(), psoManager.get());
 
 	// 最初のシーンを生成
 	sceneFactory_ = std::make_unique<SceneFactory>();
@@ -39,6 +41,7 @@ void MyGameTitle::Finalize()
 	Object3dManager::GetInstance()->Finalize();
 	ModelManager::GetInstance()->Finalize();
 	TextureManager::GetInstance()->Finalize();
+	OffScreenManager::GetInstance()->Finalize();
 	ImGuiManager::GetInstance()->Finalize();
 	GuchisFramework::Finalize();
 }
@@ -48,7 +51,7 @@ void MyGameTitle::Update()
 	ImGuiManager::GetInstance()->Begin();
 	GuchisFramework::Update();
 
-	offScreen_->Update();
+	OffScreenManager::GetInstance()->Update();
 	GlobalVariables::GetInstance()->Update();
 
 	ImGuiManager::GetInstance()->End();
@@ -63,7 +66,7 @@ void MyGameTitle::Draw()
 	dxManager->BeginDraw();
 
 	//SceneManager::GetInstance()->DrawRTV();
-	offScreen_->Draw(/*OffScreenEffectType::kGray*/);
+	OffScreenManager::GetInstance()->Draw();
 
 	ImGuiManager::GetInstance()->Draw();
 
