@@ -161,6 +161,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\base\PSOManager.cpp" />
     <ClCompile Include="engine\3d\Object\Animation\SkinCluster.cpp" />
     <ClCompile Include="engine\scene\SampleScene.cpp" />
+    <ClCompile Include="OffScreenManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\BoxFilter.PS.hlsl">
@@ -292,6 +293,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\base\PSOManager.h" />
     <ClInclude Include="engine\3d\Object\Animation\SkinCluster.h" />
     <ClInclude Include="engine\scene\SampleScene.h" />
+    <ClInclude Include="OffScreenManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

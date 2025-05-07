@@ -12,6 +12,7 @@
 #include <LightManager.h>
 #include <ParticleEmitter.h>
 #include "DebugSphere.h"
+#include <OffScreen.h>
 class SampleScene : public BaseScene
 {
 public:
@@ -23,6 +24,8 @@ public:
 	void Update() override;
 	// 描画
 	void Draw() override;
+	// RTV描画
+	void DrawRTV() override;
 
 #ifdef _DEBUG
 	void DebugUpdate() override;
@@ -46,7 +49,6 @@ private:
 
 	//ParticleManager* particleManager_ = nullptr;
 	std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
-
 
 	//Vector3 axis = { 0.0f, 0.0f, 0.0f };
 	//float angle = 1.0f;

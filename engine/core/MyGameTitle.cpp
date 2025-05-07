@@ -48,6 +48,7 @@ void MyGameTitle::Update()
 	ImGuiManager::GetInstance()->Begin();
 	GuchisFramework::Update();
 
+	offScreen_->Update();
 	GlobalVariables::GetInstance()->Update();
 
 	ImGuiManager::GetInstance()->End();
@@ -61,7 +62,8 @@ void MyGameTitle::Draw()
 
 	dxManager->BeginDraw();
 
-	offScreen_->Draw(OffScreenEffectType::kNone);
+	//SceneManager::GetInstance()->DrawRTV();
+	offScreen_->Draw(/*OffScreenEffectType::kGray*/);
 
 	ImGuiManager::GetInstance()->Draw();
 

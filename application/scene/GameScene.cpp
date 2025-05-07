@@ -158,10 +158,13 @@ void GameScene::Draw()
 	lightManager_->BindLightsToShader();
 	object_->Draw();
 
-
 	SpriteManager::GetInstance()->DrawSet();
 	sprite->Draw();
 	
+}
+
+void GameScene::DrawRTV()
+{
 }
 
 #ifdef _DEBUG
