@@ -1,6 +1,6 @@
 #include <GameScene.h>
 #include <TextureManager.h>
-#include <ModelManager.h>
+#include <Model/ModelManager.h>
 #include <ParticleManager.h>
 #include <imgui.h>
 #include <Quaternion.h>

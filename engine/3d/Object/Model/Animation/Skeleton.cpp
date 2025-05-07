@@ -1,7 +1,8 @@
 #include "Skeleton.h"
-#include <Model.h>
+#include "Animation.h"
+#include <Model/SkinnedModel.h>
 
-void Skeleton::Initialize(Model* model)
+void Skeleton::Initialize(SkinnedModel* model)
 {
 	model_ = model;
 
@@ -22,15 +23,15 @@ void Skeleton::Update()
 	}
 }
 
-void Skeleton::ApplyAnimation(const Animator::Animation& animation, float animationTime)
+void Skeleton::ApplyAnimation(const AnimationData& animation, float animationTime)
 {
 	for (auto& joint : skeletonData_.joints) {
 		auto it = animation.nodeAnimations.find(joint.name);
 		if (it != animation.nodeAnimations.end()) {
-			const Animator::NodeAnimation& nodeAnimation = it->second;
-			joint.transform.translate = Animator::CalculateValue(nodeAnimation.translate.keyframes, animationTime);
-			joint.transform.rotate = Animator::CalculateValue(nodeAnimation.rotate.keyframes, animationTime);
-			joint.transform.scale = Animator::CalculateValue(nodeAnimation.scale.keyframes, animationTime);
+			const NodeAnimation& nodeAnimation = it->second;
+			joint.transform.translate = Animation::CalculateValue(nodeAnimation.translate.keyframes, animationTime);
+			joint.transform.rotate = Animation::CalculateValue(nodeAnimation.rotate.keyframes, animationTime);
+			joint.transform.scale = Animation::CalculateValue(nodeAnimation.scale.keyframes, animationTime);
 		}
 	}
 }

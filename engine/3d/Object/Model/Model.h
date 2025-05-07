@@ -11,23 +11,28 @@
 #include <Camera.h>
 #include <span>
 #include <map>
-#include "SkinCluster.h"
-#include "Skeleton.h"
-#include "Animation/AnimationStructs.h"
+#include "Animation/SkinCluster.h"
+#include "Animation/Skeleton.h"
+#include "ModelStructs.h"
+#include "Mesh/Mesh.h"
+#include "Material/Material.h"
+#include "BaseModel.h"
 //#include <DebugSphere.h>
 
 class WorldTransform;
-class Animator;
+//class Animation;
 //class Skeleton;
 //class SkinCluster;
 
-class Model
+class Model : public BaseModel
 {
 public: // メンバ関数
 	// 初期化
 	void Initialize(ModelLoader* modelLoader, const std::string& directoryPath, const std::string& fileName);
+
+	void Update() override;
 	// 描画
-	void Draw(WorldTransform* transform);
+	void Draw() override;
 private:
 	//// 頂点データの生成
 	//void CreateVertexResource();
@@ -38,24 +43,26 @@ public: // 構造体
 
 	// 現在のアニメーションタイム
 	float animationTime = 0.0f;
-	///↑↑↑アニメーション用構造体(引っ越し予定)↑↑↑///
 private:
+	std::vector<std::unique_ptr<Mesh>> meshes_;
+	std::vector<std::unique_ptr<Material>> materials_;
+
 	ModelLoader* modelLoader_ = nullptr;
 	//Skeleton* skeleton_ = nullptr;
 
 	ModelData modelData_;
-	std::unique_ptr<Animator> animator_;
-	std::unique_ptr<Skeleton> skeleton_;
-	std::unique_ptr<SkinCluster> skinCluster_;
+	//std::unique_ptr<Animation> animator_;
+	//std::unique_ptr<Skeleton> skeleton_;
+	//std::unique_ptr<SkinCluster> skinCluster_;
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_ = nullptr;
+	//Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
+	//Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_ = nullptr;
 
-	VertexData* vertexData_ = nullptr;
-	uint32_t* indexData_ = nullptr;
+	//VertexData* vertexData_ = nullptr;
+	//uint32_t* indexData_ = nullptr;
 
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
-	D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
+	//D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
+	//D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
 
 	std::string directoryPath_;
 
@@ -64,12 +71,8 @@ private:
 public:
 	// mtlファイルを読む関数
 	//static MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
-	// モデルを読む関数
-	static ModelData LoadModelFile(const std::string& directoryPath, const std::string& filename);
-	// ノードをモデルデータに変換する関数
-	static Node ReadNode(aiNode* node);
-	// ボーンの保持を確認する
-	static bool HasBones(const aiScene* scene);
+
+
 
 	/////↓↓↓アニメーション用関数(引っ越し予定)↓↓↓///
 	////// アニメーションを読む処理
@@ -89,7 +92,7 @@ public:
 	//// アニメーションを適用する
 	//void ApplyAnimation(SkeletonData& skeleton, const Animator::Animation& animation, float animationTime);
 	//// 全体の更新
-	void Update();
+	//void Update();
 	//// SkinClusterを生成する関数
 	//SkinCluster CreateSkinCluster(const SkeletonData& skeleton, const ModelData& modelData);
 	//// スキンクラスターの更新
@@ -104,14 +107,14 @@ public:
 
 public: // ゲッター // セッター //
 	//void SetVertices(VertexData vertex);
-	void SetTexturePath(const std::string& filePath) { modelData_.material.textureFilePath = filePath; }
+	//void SetTexturePath(const std::string& filePath) { modelData_.material.textureFilePath = filePath; }
 
 	ModelData GetModelData() { return modelData_; }
 	std::string GetDirectoryPath() { return directoryPath_; }
 	DirectXManager* GetDxManager() { return modelLoader_->GetDxManager(); }
 	SrvManager* GetSrvManager() { return modelLoader_->GetSrvManager(); }
-	Animator* GetAnimator() { return animator_.get(); }
-	void SetLocalMatrix(const Matrix4x4& matrix) { modelData_.rootNode.localMatrix = matrix; }
+	//Animation* GetAnimator() { return animator_.get(); }
+	//void SetLocalMatrix(const Matrix4x4& matrix) { modelData_.rootNode.localMatrix = matrix; }
 	//SkinCluster GetSkinCluster(){return }
 	//void SetSkeleton(Skeleton* skeleton) { skeleton_ = skeleton; }
 	//Skeleton* GetSkeleton() { return skeleton_; }

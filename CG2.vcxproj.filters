@@ -200,9 +200,6 @@
     <ClCompile Include="engine\math\Matrix4x4.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\Object\Model\Animation\Animator.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="engine\3d\Object\Model\Animation\Skeleton.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -228,6 +225,15 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="engine\3d\Object\Model\Mesh\Mesh.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\Object\Model\Animation\Animation.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\Object\Model\Material\Material.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\Object\Model\SkinnedModel.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -392,9 +398,6 @@
     <ClInclude Include="engine\math\Quaternion.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\Object\Model\Animation\Animator.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="engine\3d\Object\Model\Animation\Skeleton.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -423,6 +426,18 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="engine\3d\Object\Model\Mesh\Mesh.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\Object\Model\Animation\Animation.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\Object\Model\Material\Material.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\Object\Model\BaseModel.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\Object\Model\SkinnedModel.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

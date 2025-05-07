@@ -1,20 +1,24 @@
 #pragma once
-#include "AnimationStructs.h"
+#include "Model/ModelStructs.h"
 
-class Model;
+class SkinnedModel;
 class Skeleton;
 
 class SkinCluster
 {
-private:
-
-
-
 public:
-	void Initialize(const SkeletonData& skeleton, Model* model);
+	void Initialize(
+		const SkeletonData& skeleton,
+		const SkinnedMeshData& meshData, // メッシュごとのデータ
+		DirectXManager* dxManager,
+		SrvManager* srvManager);
 
 	// SkinClusterを生成する関数
-	SkinClusterData CreateSkinCluster(const SkeletonData& skeleton, Model* model);
+	SkinClusterData CreateSkinCluster(
+		const SkeletonData& skeleton,
+		const SkinnedMeshData& meshData, // メッシュごとのデータ
+		DirectXManager* dxManager,
+		SrvManager* srvManager);
 	// スキンクラスターの更新
 	void UpdateSkinCluster(const SkeletonData& skeleton);
 
