@@ -47,6 +47,11 @@ void SceneManager::Draw()
 	scene_->Draw();
 }
 
+void SceneManager::DrawRTV()
+{
+	scene_->DrawRTV();
+}
+
 void SceneManager::ChangeScene(const std::string& sceneName)
 {
 	assert(sceneFactory_);

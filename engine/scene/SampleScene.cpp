@@ -6,6 +6,9 @@
 #include <Quaternion.h>
 #include <Vector3.h>
 #include <Matrix4x4.h>
+#include <offscreen/OffScreenManager.h>
+#include <offscreen/VignetteEffect.h>
+#include <offscreen/SmoothEffect.h>
 
 void SampleScene::Initialize()
 {
@@ -47,11 +50,17 @@ void SampleScene::Initialize()
 	lightManager_->SetDirLightActive(0, true);
 	lightManager_->SetDirLightIntensity(0, 1.0f);
 
-
 	ParticleManager::GetInstance()->CreateParticleGroup("test", "Resource/circle.png");
 
 	particleEmitter_ = std::make_unique<ParticleEmitter>();
 	particleEmitter_->Initialize("test");
+
+	//grayEffect_ = std::make_unique<GrayEffect>();
+	//grayEffect_->Initialize();
+
+	OffScreenManager::GetInstance()->AddEfect(std::make_unique<GrayEffect>());
+	OffScreenManager::GetInstance()->AddEfect(std::make_unique<VignetteEffect>());
+	OffScreenManager::GetInstance()->AddEfect(std::make_unique<SmoothEffect>());
 }
 
 void SampleScene::Finalize()
@@ -142,18 +151,24 @@ void SampleScene::Draw()
 	ParticleManager::GetInstance()->DrawSet();
 	ParticleManager::GetInstance()->Draw();
 
-	//// 3Dオブジェクト描画前処理
-	//Object3dManager::GetInstance()->DrawSetForAnimation();
-	//lightManager_->BindLightsToShader();
-	//animationObject_->Draw();
+	// 3Dオブジェクト描画前処理
+	Object3dManager::GetInstance()->DrawSetForAnimation();
+	lightManager_->BindLightsToShader();
+	animationObject_->Draw();
 
-	//Object3dManager::GetInstance()->DrawSet();
-	//lightManager_->BindLightsToShader();
-	//object_->Draw();
+	Object3dManager::GetInstance()->DrawSet();
+	lightManager_->BindLightsToShader();
+	object_->Draw();
 
 
-	//SpriteManager::GetInstance()->DrawSet();
-	//sprite->Draw();
+	SpriteManager::GetInstance()->DrawSet();
+	sprite->Draw();
+}
+
+void SampleScene::DrawRTV()
+{
+
+
 }
 
 #ifdef _DEBUG
