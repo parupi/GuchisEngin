@@ -6,6 +6,10 @@
 #include <Quaternion.h>
 #include <Vector3.h>
 #include <Matrix4x4.h>
+#include <offscreen/OffScreenManager.h>
+#include <offscreen/VignetteEffect.h>
+#include <offscreen/SmoothEffect.h>
+#include <Primitive/PrimitiveDrawer.h>
 
 void SampleScene::Initialize()
 {
@@ -25,7 +29,8 @@ void SampleScene::Initialize()
 	//ModelManager::GetInstance()->LoadModel("Resource", "Models/AnimatedCube/AnimatedCube.gltf");
 	ModelManager::GetInstance()->LoadModel("Resource", "Models/Terrain/Terrain.obj");
 	ModelManager::GetInstance()->LoadModel("Resource", "multiMaterial.obj");
-	TextureManager::GetInstance()->LoadTexture("resource/uvChecker.png");
+	TextureManager::GetInstance()->LoadTexture("Resource/uvChecker.png");
+	TextureManager::GetInstance()->LoadTexture("Resource/gradationLine.png");
 
 	object_ = std::make_unique<Object3d>();
 	object_->Initialize("Models/Terrain/Terrain.obj");
@@ -47,11 +52,17 @@ void SampleScene::Initialize()
 	lightManager_->SetDirLightActive(0, true);
 	lightManager_->SetDirLightIntensity(0, 1.0f);
 
-
 	ParticleManager::GetInstance()->CreateParticleGroup("test", "Resource/circle.png");
 
 	particleEmitter_ = std::make_unique<ParticleEmitter>();
 	particleEmitter_->Initialize("test");
+
+	//grayEffect_ = std::make_unique<GrayEffect>();
+	//grayEffect_->Initialize();
+
+	OffScreenManager::GetInstance()->AddEfect(std::make_unique<GrayEffect>());
+	OffScreenManager::GetInstance()->AddEfect(std::make_unique<VignetteEffect>());
+	OffScreenManager::GetInstance()->AddEfect(std::make_unique<SmoothEffect>());
 }
 
 void SampleScene::Finalize()
@@ -139,8 +150,8 @@ void SampleScene::Update()
 
 void SampleScene::Draw()
 {
-	ParticleManager::GetInstance()->DrawSet();
-	ParticleManager::GetInstance()->Draw();
+	//ParticleManager::GetInstance()->DrawSet();
+	//ParticleManager::GetInstance()->Draw();
 
 	//// 3Dオブジェクト描画前処理
 	//Object3dManager::GetInstance()->DrawSetForAnimation();
@@ -154,6 +165,16 @@ void SampleScene::Draw()
 
 	//SpriteManager::GetInstance()->DrawSet();
 	//sprite->Draw();
+
+	//PrimitiveDrawer::GetInstance()->DrawLine({ 0.0f, 0.0f, 0.0f }, { 0.0f, 5.0f, 0.0f }, {1.0f, 1.0f, 1.0f, 1.0f});
+	PrimitiveDrawer::GetInstance()->DrawRing({ 0.0f, 0.0f, 0.0f }, 0.2f, 1.0f, {1.0f, 1.0f, 1.0f, 1.0f}, 32, RingDrawMode::Fill, "Resource/gradationLine.png");
+	//PrimitiveDrawer::GetInstance()->DrawRing({ 0.0f, 0.0f, 0.0f }, 0.1f, 0.3f, {1.0f, 1.0f, 1.0f, 1.0f}, 32, RingDrawMode::Line);
+}
+
+void SampleScene::DrawRTV()
+{
+
+
 }
 
 #ifdef _DEBUG

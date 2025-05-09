@@ -16,6 +16,8 @@ public:
 	virtual void Update() = 0;
 	// 描画
 	virtual void Draw() = 0;
+	// RTVの描画
+	virtual void DrawRTV() = 0;
 
 #ifdef _DEBUG
 	// 描画の更新
