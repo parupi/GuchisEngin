@@ -909,7 +909,7 @@ void PSOManager::CreatePrimitiveSignature()
 	D3D12_STATIC_SAMPLER_DESC samplerDesc{};
 	samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
 	samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
 	samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	samplerDesc.ShaderRegister = 0; // s0
 	samplerDesc.RegisterSpace = 0;

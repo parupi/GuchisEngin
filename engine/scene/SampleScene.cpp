@@ -150,21 +150,21 @@ void SampleScene::Update()
 
 void SampleScene::Draw()
 {
-	ParticleManager::GetInstance()->DrawSet();
-	ParticleManager::GetInstance()->Draw();
+	//ParticleManager::GetInstance()->DrawSet();
+	//ParticleManager::GetInstance()->Draw();
 
-	// 3Dオブジェクト描画前処理
-	Object3dManager::GetInstance()->DrawSetForAnimation();
-	lightManager_->BindLightsToShader();
-	animationObject_->Draw();
+	//// 3Dオブジェクト描画前処理
+	//Object3dManager::GetInstance()->DrawSetForAnimation();
+	//lightManager_->BindLightsToShader();
+	//animationObject_->Draw();
 
-	Object3dManager::GetInstance()->DrawSet();
-	lightManager_->BindLightsToShader();
-	object_->Draw();
+	//Object3dManager::GetInstance()->DrawSet();
+	//lightManager_->BindLightsToShader();
+	//object_->Draw();
 
 
-	SpriteManager::GetInstance()->DrawSet();
-	sprite->Draw();
+	//SpriteManager::GetInstance()->DrawSet();
+	//sprite->Draw();
 
 	//PrimitiveDrawer::GetInstance()->DrawLine({ 0.0f, 0.0f, 0.0f }, { 0.0f, 5.0f, 0.0f }, {1.0f, 1.0f, 1.0f, 1.0f});
 	PrimitiveDrawer::GetInstance()->DrawRing({ 0.0f, 0.0f, 0.0f }, 0.2f, 1.0f, {1.0f, 1.0f, 1.0f, 1.0f}, 32, RingDrawMode::Fill, "Resource/gradationLine.png");
