@@ -1,7 +1,8 @@
 #include "MyGameTitle.h"
 #include <SceneFactory.h>
 #include <ParticleManager.h>
-#include "../offscreen/OffScreenManager.h"
+#include "offscreen/OffScreenManager.h"
+#include "Primitive/PrimitiveDrawer.h"
 
 void MyGameTitle::Initialize()
 {
@@ -19,9 +20,9 @@ void MyGameTitle::Initialize()
 	// オブジェクト共通部
 	Object3dManager::GetInstance()->Initialize(dxManager.get(), psoManager.get());
 
-	//offScreen_ = std::make_unique<OffScreen>();
-	//offScreen_->Initialize(dxManager.get(), psoManager.get());
 	OffScreenManager::GetInstance()->Initialize(dxManager.get(), psoManager.get());
+
+	PrimitiveDrawer::GetInstance()->Initialize(dxManager.get(), psoManager.get(), srvManager.get());
 
 	// 最初のシーンを生成
 	sceneFactory_ = std::make_unique<SceneFactory>();
@@ -61,12 +62,17 @@ void MyGameTitle::Draw()
 {
 	dxManager->BeginDrawForRenderTarget();
 	srvManager->BeginDraw();
+	PrimitiveDrawer::GetInstance()->BeginDraw();
 	SceneManager::GetInstance()->Draw();
+
+	PrimitiveDrawer::GetInstance()->EndDraw();
 
 	dxManager->BeginDraw();
 
 	//SceneManager::GetInstance()->DrawRTV();
+
 	OffScreenManager::GetInstance()->Draw();
+
 
 	ImGuiManager::GetInstance()->Draw();
 

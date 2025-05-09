@@ -242,6 +242,9 @@
     <ClCompile Include="engine\offscreen\SmoothEffect.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="engine\3d\Primitive\PrimitiveDrawer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\Object3d.PS.hlsl">
@@ -261,6 +264,8 @@
     <FxCompile Include="resource\shaders\GaussianFilter.PS.hlsl" />
     <FxCompile Include="resource\shaders\BoxFilter.PS.hlsl" />
     <FxCompile Include="resource\shaders\OutLine.PS.hlsl" />
+    <FxCompile Include="Resource\shaders\PrimitiveDrawer.PS.hlsl" />
+    <FxCompile Include="Resource\shaders\PrimitiveDrawer.VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -447,6 +452,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="engine\offscreen\SmoothEffect.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\Primitive\PrimitiveDrawer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
