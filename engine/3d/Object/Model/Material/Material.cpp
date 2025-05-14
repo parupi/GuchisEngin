@@ -17,24 +17,54 @@ void Material::Initialize(DirectXManager* directXManager, SrvManager* srvManager
 	CreateMaterialResource();
 }
 
-void Material::Draw()
+void Material::Update()
 {
 	// uvTransformに値を適用
-	uvTransform_.translate = { uvPosition_.x, uvPosition_.y, 0.0f };
-	uvTransform_.rotate = { 0.0f, 0.0f, uvRotation_ };
-	uvTransform_.scale = { uvSize_.x, uvSize_.y, 1.0f };
+	uvTransform_.translate = { uvData_.position.x, uvData_.position.y, 0.0f };
+	uvTransform_.rotate = { 0.0f, 0.0f, uvData_.rotation };
+	uvTransform_.scale = { uvData_.size.x, uvData_.size.y, 1.0f };
 	// Transform情報を作る
 	Matrix4x4 uvTransformMatrix = MakeIdentity4x4();
 	uvTransformMatrix *= MakeScaleMatrix(uvTransform_.scale);
 	uvTransformMatrix *= MakeRotateZMatrix(uvTransform_.rotate.z);
 	uvTransformMatrix *= MakeTranslateMatrix(uvTransform_.translate);
 	materialForGPU_->uvTransform = uvTransformMatrix;
+}
 
+void Material::Draw()
+{
 	// マテリアルCBufferの場所を指定
 	directXManager_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
 
 	srvManager_->SetGraphicsRootDescriptorTable(2, materialData_.textureIndex);
 }
+
+#ifdef _DEBUG
+void Material::DebugGui(uint32_t index)
+{
+	std::string label = "Material" + std::to_string(index);
+	if (ImGui::TreeNode(label.c_str())) {
+		if (ImGui::Button("ResetUVRotate")) {
+			uvData_.rotation = 0.0f;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("ResetUVScale")) {
+			uvData_.size = {1.0f, 1.0f};
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("ResetuvPosition")) {
+			uvData_.position = {0.0f, 0.0f};
+		}
+
+		ImGui::DragFloat2("uvPosition", &uvData_.position.x, 0.01f, -10.0f, 10.0f);
+		ImGui::DragFloat2("UVScale", &uvData_.size.x, 0.01f, -10.0f, 10.0f);
+		ImGui::SliderAngle("UVRotate", &uvData_.rotation);
+		ImGui::ColorEdit4("color", &materialForGPU_->color.x);
+		ImGui::TreePop();
+	}
+}
+#endif // _DEBUG
+
 
 void Material::CreateMaterialResource()
 {

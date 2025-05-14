@@ -37,7 +37,7 @@ void SampleScene::Initialize()
 	TextureManager::GetInstance()->LoadTexture("gradationLine.png");
 
 	object_ = std::make_unique<Object3d>();
-	object_->Initialize("Terrain");
+	object_->Initialize("multiMaterial");
 
 	animationObject_ = std::make_unique<Object3d>();
 	animationObject_->Initialize("simpleSkin");
@@ -97,19 +97,17 @@ void SampleScene::Update()
 
 	DebugUpdate();
 
-	//Vector2 uvObjectPos = object_->GetUVPosition();
-	//Vector2 uvObjectSize = object_->GetUVSize();
-	//float uvObjectRotate = object_->GetUVRotation();
-
 	//ImGui::Begin("Transform");
-	//ImGui::DragFloat2("UVTranslate", &uvObjectPos.x, 0.01f, -10.0f, 10.0f);
-	//ImGui::DragFloat2("UVScale", &uvObjectSize.x, 0.01f, -10.0f, 10.0f);
-	//ImGui::SliderAngle("UVRotate", &uvObjectRotate);
+	//ImGui::DragFloat2("UVTranslate0", &static_cast<Model*>(object_->GetModel())->GetMaterials(0)->GetUVData().position.x, 0.01f, -10.0f, 10.0f);
+	//ImGui::DragFloat2("UVScale0", &static_cast<Model*>(object_->GetModel())->GetMaterials(0)->GetUVData().size.x, 0.01f, -10.0f, 10.0f);
+	//ImGui::SliderAngle("UVRotate0", &static_cast<Model*>(object_->GetModel())->GetMaterials(0)->GetUVData().rotation);
+	//ImGui::DragFloat2("UVTranslate1", &static_cast<Model*>(object_->GetModel())->GetMaterials(1)->GetUVData().position.x, 0.01f, -10.0f, 10.0f);
+	//ImGui::DragFloat2("UVScale1", &static_cast<Model*>(object_->GetModel())->GetMaterials(1)->GetUVData().size.x, 0.01f, -10.0f, 10.0f);
+	//ImGui::SliderAngle("UVRotate1", &static_cast<Model*>(object_->GetModel())->GetMaterials(1)->GetUVData().rotation);
+	//ImGui::DragFloat2("UVTranslate2", &static_cast<Model*>(object_->GetModel())->GetMaterials(2)->GetUVData().position.x, 0.01f, -10.0f, 10.0f);
+	//ImGui::DragFloat2("UVScale2", &static_cast<Model*>(object_->GetModel())->GetMaterials(2)->GetUVData().size.x, 0.01f, -10.0f, 10.0f);
+	//ImGui::SliderAngle("UVRotate2", &static_cast<Model*>(object_->GetModel())->GetMaterials(2)->GetUVData().rotation);
 	//ImGui::End();
-
-	//object_->SetUVPosition(uvObjectPos);
-	//object_->SetUVSize(uvObjectSize);
-	//object_->SetUVRotation(uvObjectRotate);
 
 	object_->Update();
 
@@ -169,7 +167,7 @@ void SampleScene::Draw()
 	//sprite->Draw();
 
 	//PrimitiveDrawer::GetInstance()->DrawLine({ 0.0f, 0.0f, 0.0f }, { 0.0f, 5.0f, 0.0f }, {1.0f, 1.0f, 1.0f, 1.0f});
-	PrimitiveDrawer::GetInstance()->DrawRing({ 0.0f, 0.0f, 0.0f }, 0.2f, 1.0f, {1.0f, 1.0f, 1.0f, 1.0f}, 32, RingDrawMode::Fill, "gradationLine.png");
+	PrimitiveDrawer::GetInstance()->DrawRing({ 0.0f, 0.0f, 0.0f }, 0.2f, 1.0f, {1.0f, 1.0f, 1.0f, 1.0f}, 32, RingDrawMode::Fill, "uvChecker.png");
 	//PrimitiveDrawer::GetInstance()->DrawRing({ 0.0f, 0.0f, 0.0f }, 0.1f, 0.3f, {1.0f, 1.0f, 1.0f, 1.0f}, 32, RingDrawMode::Line);
 }
 

@@ -58,21 +58,12 @@ public: // ゲッター // セッター //
 	// モデル
 	//void SetModel(Model* model) { model_ = model; }
 	void SetModel(const std::string& filePath);
-	void SetModel(BaseModel* model) {model_ = model;}
+	//void SetModel(BaseModel* model) {model_ = model;}
 	BaseModel* GetModel() { return model_; }
-	//Animator* GetAnimator() { return animator_; }
 	// カメラ
 	void SetCamera(Camera* camera) { camera_ = camera; }
 
-	// uv平行移動
-	//const Vector2& GetUVPosition() const { return uvPosition_; }
-	//void SetUVPosition(const Vector2& position) { uvPosition_ = position; }
-	//// 回転
-	//float GetUVRotation() const { return uvRotation_; }
-	//void SetUVRotation(float rotation) { uvRotation_ = rotation; }
-	//// 拡縮
-	//const Vector2& GetUVSize() const { return uvSize_; }
-	//void SetUVSize(const Vector2& size) { uvSize_ = size; }
+
 	// ワールドトランスフォームの取得
 	WorldTransform* GetWorldTransform() { return transform_.get(); }
 };

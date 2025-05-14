@@ -34,6 +34,10 @@ void Model::Initialize(ModelLoader* modelManager, const std::string& fileName)
 
 void Model::Update()
 {
+	for (size_t i = 0; i < materials_.size(); i++) {
+		materials_[i]->Update();
+	}
+
 }
 
 void Model::Draw()
@@ -80,6 +84,13 @@ void Model::DebugGui(Object3d* object)
 			}
 		}
 		ImGui::TreePop();
+	}
+
+	for (size_t i = 0; i < materials_.size(); i++) {
+		if (i == 0) {
+			continue;
+		}
+		materials_[i]->DebugGui(i);
 	}
 }
 #endif // _DEBUG
