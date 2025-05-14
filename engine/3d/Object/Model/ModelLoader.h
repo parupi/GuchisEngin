@@ -11,8 +11,8 @@ public: // メンバ関数
 	void Initialize(DirectXManager* dxManager, SrvManager* srvManager);
 
 	// モデルを読む関数
-	static ModelData LoadModelFile(const std::string& directoryPath, const std::string& filename);
-	static SkinnedModelData LoadSkinnedModel(const std::string& directoryPath, const std::string& filename);
+	static ModelData LoadModelFile(const std::string& filename);
+	static SkinnedModelData LoadSkinnedModel(const std::string& filename);
 
 
 	// ノードをモデルデータに変換する関数

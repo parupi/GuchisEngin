@@ -31,7 +31,7 @@ void Object3d::Initialize(const std::string& fileName)
 void Object3d::AnimationUpdate()
 {
 	//if (model_->GetModelData().isAnimation) {
-	model_->Update();
+	//model_->Update();
 	//}
 }
 
@@ -39,7 +39,7 @@ void Object3d::Update()
 {
 	transform_->TransferMatrix();
 
-
+	model_->Update();
 
 	camera_ = objectManager_->GetDefaultCamera();
 	cameraData_->worldPosition = camera_->GetTranslate();
@@ -52,18 +52,8 @@ void Object3d::Update()
 		worldViewProjectionMatrix = transform_->GetMatWorld();
 	}
 
-	//if (model_->GetModelData().isAnimation) {
-		//if (model_->GetModelData().isHasBones) {
-			transform_->SetMapWVP(worldViewProjectionMatrix);
-			transform_->SetMapWorld(transform_->GetMatWorld());
-		//} else {
-			//transform_->SetMapWVP(model_->GetModelData().rootNode.localMatrix * worldViewProjectionMatrix);
-			//transform_->SetMapWorld(model_->GetModelData().rootNode.localMatrix * transform_->GetMatWorld());
-		//}
-	//} else {
-		//transform_->SetMapWVP(worldViewProjectionMatrix);
-		//transform_->SetMapWorld(transform_->GetMatWorld());
-	//}
+	transform_->SetMapWVP(worldViewProjectionMatrix);
+	transform_->SetMapWorld(transform_->GetMatWorld());
 }
 
 void Object3d::Draw()

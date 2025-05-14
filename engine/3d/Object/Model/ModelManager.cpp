@@ -23,7 +23,7 @@ void ModelManager::Finalize()
 	instance = nullptr;
 }
 
-void ModelManager::LoadModel(const std::string& directoryPath, const std::string& fileName)
+void ModelManager::LoadModel(const std::string& fileName)
 {
 	// 読み込み済みモデルを検索
 	if (models.contains(fileName)) {
@@ -32,13 +32,13 @@ void ModelManager::LoadModel(const std::string& directoryPath, const std::string
 	}
 
 	std::unique_ptr<Model> model = std::make_unique<Model>();
-	model->Initialize(modelLoader.get(), directoryPath, fileName);
+	model->Initialize(modelLoader.get(), fileName);
 
 	// モデルをmapコンテナに格納する
 	models.insert(std::make_pair(fileName, std::move(model)));
 }
 
-void ModelManager::LoadSkinnedModel(const std::string& directoryPath, const std::string& filePath)
+void ModelManager::LoadSkinnedModel(const std::string& filePath)
 {
 	// 読み込み済みモデルを検索
 	if (skinnedModels.contains(filePath)) {
@@ -47,7 +47,7 @@ void ModelManager::LoadSkinnedModel(const std::string& directoryPath, const std:
 	}
 
 	std::unique_ptr<SkinnedModel> skinnedModel = std::make_unique<SkinnedModel>();
-	skinnedModel->Initialize(modelLoader.get(), directoryPath, filePath);
+	skinnedModel->Initialize(modelLoader.get(), filePath);
 
 	// モデルをmapコンテナに格納する
 	skinnedModels.insert(std::make_pair(filePath, std::move(skinnedModel)));

@@ -24,7 +24,7 @@ class Model : public BaseModel
 {
 public: // メンバ関数
 	// 初期化
-	void Initialize(ModelLoader* modelLoader, const std::string& directoryPath, const std::string& fileName);
+	void Initialize(ModelLoader* modelLoader, const std::string& fileName);
 
 	void Update() override;
 	// 描画
@@ -42,12 +42,13 @@ private:
 	//Skeleton* skeleton_ = nullptr;
 
 	ModelData modelData_;
-	std::string directoryPath_;
+	//std::string directoryPath_;
 public:
 	ModelData GetModelData() { return modelData_; }
-	std::string GetDirectoryPath() { return directoryPath_; }
+	//std::string GetDirectoryPath() { return directoryPath_; }
 	DirectXManager* GetDxManager() { return modelLoader_->GetDxManager(); }
 	SrvManager* GetSrvManager() { return modelLoader_->GetSrvManager(); }
 
+	Material* GetMaterials(uint32_t index) {return materials_[index].get();}
 };
 

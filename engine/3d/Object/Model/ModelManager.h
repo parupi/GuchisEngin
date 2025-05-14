@@ -29,8 +29,8 @@ public:
 	void Finalize();
 public:
 	// モデルファイル読み込み
-	void LoadModel(const std::string& directoryPath, const std::string& filePath);
-	void LoadSkinnedModel(const std::string& directoryPath, const std::string& filePath);
+	void LoadModel(const std::string& filePath);
+	void LoadSkinnedModel(const std::string& filePath);
 	// モデルの検索
 	BaseModel* FindModel(const std::string& fileName);
 	//SkinnedModel* FindSkinnedModel(const std::string& filePath);

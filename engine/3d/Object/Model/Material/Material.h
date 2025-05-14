@@ -11,8 +11,15 @@ public:
 	~Material() = default;
 	// 初期化
 	void Initialize(DirectXManager* directXManager, SrvManager* srvManager, MaterialData materialData);
+	// 更新処理
+	void Update();
+
 	// 描画
 	void Draw();
+
+#ifdef _DEBUG
+	void DebugGui(uint32_t index);
+#endif // _DEBUG
 
 private:
 	void CreateMaterialResource();
@@ -26,18 +33,17 @@ private:
 	DirectXManager* directXManager_ = nullptr;
 	SrvManager* srvManager_ = nullptr;
 
-	
-
 	EulerTransform uvTransform_{ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} };
-	Vector2 uvPosition_ = { 0.0f, 0.0f };
-	float uvRotation_ = 0.0f;
-	Vector2 uvSize_ = { 1.0f, 1.0f };
+	UVData uvData_;
+
 public:
 	// 色
-	const Vector4& GetColor() const { return materialForGPU_->color; }
+	Vector4& GetColor() const { return materialForGPU_->color; }
 	void SetColor(const Vector4& color) { materialForGPU_->color = color; }
 	// Lighting
 	bool GetIsLighting() const { return materialForGPU_->enableLighting; }
 	void SetIsLighting(const bool isLighting) { materialForGPU_->enableLighting = isLighting; }
+
+	UVData& GetUVData() { return uvData_; }
 };
 

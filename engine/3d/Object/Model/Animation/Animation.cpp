@@ -9,7 +9,7 @@
 void Animation::Initialize(SkinnedModel* model, const std::string& filename)
 {
 	model_ = model;
-	animation_ = LoadAnimationFile(model_->GetDirectoryPath(), filename);
+	animation_ = LoadAnimationFile(filename);
 }
 
 void Animation::Update()
@@ -27,11 +27,11 @@ void Animation::Update()
 	model_->SetLocalMatrix(MakeAffineMatrix(scale, rotate, translate));
 }
 
-AnimationData Animation::LoadAnimationFile(const std::string& directoryPath, const std::string& filename)
+AnimationData Animation::LoadAnimationFile(const std::string& filename)
 {
 	AnimationData animation; // 今回作るアニメーション
 	Assimp::Importer importer;
-	std::string filePath = directoryPath + "/" + filename;
+	std::string filePath = "Resource/Models/" + filename + "/" + filename + ".gltf";
 	const aiScene* scene = importer.ReadFile(filePath.c_str(), 0);
 	assert(scene->mNumAnimations != 0); // アニメーションがない場合
 	aiAnimation* animationAssimp = scene->mAnimations[0]; // 最初のアニメーションだけ採用

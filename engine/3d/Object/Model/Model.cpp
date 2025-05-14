@@ -10,14 +10,12 @@
 #include "Material/Material.h"
 #include <Object3d.h>
 
-void Model::Initialize(ModelLoader* modelManager, const std::string& directoryPath, const std::string& fileName)
+void Model::Initialize(ModelLoader* modelManager, const std::string& fileName)
 {
 	modelLoader_ = modelManager;
 
-	directoryPath_ = directoryPath;
-
 	// モデルの読み込み
-	modelData_ = modelLoader_->LoadModelFile(directoryPath_, fileName);
+	modelData_ = modelLoader_->LoadModelFile(fileName);
 
 	// 各メッシュをMeshクラスへ変換
 	for (const auto& meshData : modelData_.meshes) {
@@ -36,6 +34,10 @@ void Model::Initialize(ModelLoader* modelManager, const std::string& directoryPa
 
 void Model::Update()
 {
+	for (size_t i = 0; i < materials_.size(); i++) {
+		materials_[i]->Update();
+	}
+
 }
 
 void Model::Draw()
@@ -82,6 +84,13 @@ void Model::DebugGui(Object3d* object)
 			}
 		}
 		ImGui::TreePop();
+	}
+
+	for (size_t i = 0; i < materials_.size(); i++) {
+		if (i == 0) {
+			continue;
+		}
+		materials_[i]->DebugGui(i);
 	}
 }
 #endif // _DEBUG
