@@ -38,14 +38,42 @@ void ModelManager::LoadModel(const std::string& directoryPath, const std::string
 	models.insert(std::make_pair(fileName, std::move(model)));
 }
 
-Model* ModelManager::FindModel(const std::string& filePath)
+void ModelManager::LoadSkinnedModel(const std::string& directoryPath, const std::string& filePath)
 {
 	// 読み込み済みモデルを検索
-	if (models.contains(filePath)) {
-		// 読み込みモデルを戻り値としてreturn
-		return models.at(filePath).get();
+	if (skinnedModels.contains(filePath)) {
+		// 読み込み済みなら早期return
+		return;
 	}
 
-	// ファイル名が一致しなければnull
+	std::unique_ptr<SkinnedModel> skinnedModel = std::make_unique<SkinnedModel>();
+	skinnedModel->Initialize(modelLoader.get(), directoryPath, filePath);
+
+	// モデルをmapコンテナに格納する
+	skinnedModels.insert(std::make_pair(filePath, std::move(skinnedModel)));
+}
+
+BaseModel* ModelManager::FindModel(const std::string& fileName)
+{
+	// まず通常モデルから探す
+	if (models.contains(fileName)) {
+		return models.at(fileName).get();
+	}
+	// 次にスキンモデルから探す
+	if (skinnedModels.contains(fileName)) {
+		return skinnedModels.at(fileName).get();
+	}
 	return nullptr;
 }
+
+//SkinnedModel* ModelManager::FindSkinnedModel(const std::string& filePath)
+//{
+//	// 読み込み済みモデルを検索
+//	if (skinnedModels.contains(filePath)) {
+//		// 読み込みモデルを戻り値としてreturn
+//		return skinnedModels.at(filePath).get();
+//	}
+//
+//	// ファイル名が一致しなければnull
+//	return nullptr;
+//}

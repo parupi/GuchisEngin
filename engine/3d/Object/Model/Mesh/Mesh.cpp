@@ -2,7 +2,7 @@
 #include "DirectXManager.h"
 #include "SrvManager.h"
 
-void Mesh::Initialize(DirectXManager* directXManager, SrvManager* srvManager, MeshData meshData)
+void Mesh::Initialize(DirectXManager* directXManager, SrvManager* srvManager, const MeshData& meshData)
 {
 	directXManager_ = directXManager;
 	srvManager_ = srvManager;
@@ -16,6 +16,14 @@ void Mesh::Initialize(DirectXManager* directXManager, SrvManager* srvManager, Me
 
 void Mesh::Draw()
 {
+	//D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
+	//	vertexBufferView_,
+	//	skinCluster_->GetSkinCluster().influenceBufferView
+	//};
+	//// VertexBufferViewを設定
+	//directXManager_->GetCommandList()->IASetVertexBuffers(0, 2, vbvs);
+
+
 	// VertexBufferViewを設定
 	directXManager_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 	directXManager_->GetCommandList()->IASetIndexBuffer(&indexBufferView_);

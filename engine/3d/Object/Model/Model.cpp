@@ -251,18 +251,9 @@ void Model::Draw()
 //
 //	// どのメッシュにもボーンが含まれていない場合
 //	return false;
-//}
+//}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
 
 void Model::Update()
 {
-	//animationTime += 1.0f / 60.0f;
-	//animationTime = std::fmod(animationTime, animator_->GetAnimation().duration); // 最後までいったらリピート再生
 
-	//if (modelData_.isHasBones) {
-	//	skeleton_->ApplyAnimation(animator_->GetAnimation(), animationTime);
-	//	skeleton_->Update();
-	//	skinCluster_->UpdateSkinCluster(skeleton_->GetSkeletonData());
-	//} else {
-	//	animator_->Update();
-	//}
 }

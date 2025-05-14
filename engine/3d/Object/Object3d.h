@@ -7,6 +7,7 @@
 #include "function.h"
 #include <fstream>
 #include "Model/Model.h"
+#include "Model/BaseModel.h"
 #include <Camera.h>
 class Object3dManager;
 class WorldTransform;
@@ -41,7 +42,8 @@ private: // 構造体
 
 private: // メンバ変数
 	Object3dManager* objectManager_ = nullptr;
-	Model* model_ = nullptr;
+	BaseModel* model_ = nullptr;
+	//SkinnedModel* skinnedModel_ = nullptr;
 	Camera* camera_ = nullptr;
 	//Animator* animator_ = nullptr;
 
@@ -55,9 +57,10 @@ private: // メンバ変数
 	std::unique_ptr<WorldTransform> transform_;
 public: // ゲッター // セッター // 
 	// モデル
-	void SetModel(Model* model) { model_ = model; }
+	//void SetModel(Model* model) { model_ = model; }
 	void SetModel(const std::string& filePath);
-	Model* GetModel() { return model_; }
+	void SetModel(BaseModel* model) {model_ = model;}
+	BaseModel* GetModel() { return model_; }
 	//Animator* GetAnimator() { return animator_; }
 	// カメラ
 	void SetCamera(Camera* camera) { camera_ = camera; }

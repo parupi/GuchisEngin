@@ -18,17 +18,17 @@ void SampleScene::Initialize()
 
 
 	// .objファイルからモデルを読み込む
-	//ModelManager::GetInstance()->LoadModel("Resource", "walk.gltf");
-	//ModelManager::GetInstance()->LoadModel("Resource", "simpleSkin.gltf");
-	//ModelManager::GetInstance()->LoadModel("Resource", "sneakWalk.gltf");
+	ModelManager::GetInstance()->LoadSkinnedModel("Resource", "walk.gltf");
+	ModelManager::GetInstance()->LoadSkinnedModel("Resource", "simpleSkin.gltf");
+	ModelManager::GetInstance()->LoadSkinnedModel("Resource", "sneakWalk.gltf");
 	ModelManager::GetInstance()->LoadModel("Resource", "plane.obj");
 	//ModelManager::GetInstance()->LoadModel("Resource", "Models/AnimatedCube/AnimatedCube.gltf");
 	ModelManager::GetInstance()->LoadModel("Resource", "Models/Terrain/Terrain.obj");
 	ModelManager::GetInstance()->LoadModel("Resource", "multiMaterial.obj");
-	TextureManager::GetInstance()->LoadTexture("resource/uvChecker.png");
+	TextureManager::GetInstance()->LoadTexture("Resource/uvChecker.png");
 
 	object_ = std::make_unique<Object3d>();
-	object_->Initialize("Models/Terrain/Terrain.obj");
+	object_->Initialize("walk.gltf");
 
 	//animationObject_ = std::make_unique<Object3d>();
 	//animationObject_->Initialize("simpleSkin.gltf");
@@ -103,11 +103,11 @@ void SampleScene::Update()
 	ImGui::Begin("SetModel");
 	if (ImGui::Button("Set Work"))
 	{
-		//animationObject_->SetModel("walk.gltf");
+		object_->SetModel("walk.gltf");
 	}
 	if (ImGui::Button("Set sneakWalk"))
 	{
-		//animationObject_->SetModel("sneakWalk.gltf");
+		object_->SetModel("sneakWalk.gltf");
 	}
 	ImGui::End();
 
@@ -146,11 +146,12 @@ void SampleScene::Draw()
 	Object3dManager::GetInstance()->DrawSetForAnimation();
 	lightManager_->BindLightsToShader();
 	//animationObject_->Draw();
+	object_->Draw();
 
 	Object3dManager::GetInstance()->DrawSet();
 	lightManager_->BindLightsToShader();
-	object_->Draw();
-
+	//object_->Draw();
+	
 
 	SpriteManager::GetInstance()->DrawSet();
 	sprite->Draw();

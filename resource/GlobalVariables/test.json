@@ -6,7 +6,7 @@
             1.0,
             1.0
         ],
-        "maxLifeTime": 60.439998626708984,
+        "maxLifeTime": 0.0,
         "maxRotate": [
             0.0,
             0.0,
@@ -29,7 +29,7 @@
             0.0,
             0.0
         ],
-        "minLifeTime": 32.84000015258789,
+        "minLifeTime": 0.0,
         "minRotate": [
             0.0,
             0.0,

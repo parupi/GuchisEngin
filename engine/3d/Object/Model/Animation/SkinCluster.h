@@ -3,6 +3,8 @@
 
 class SkinnedModel;
 class Skeleton;
+class DirectXManager;
+class SrvManager;
 
 class SkinCluster
 {
@@ -10,6 +12,7 @@ public:
 	void Initialize(
 		const SkeletonData& skeleton,
 		const SkinnedMeshData& meshData, // メッシュごとのデータ
+		const std::map<std::string, JointWeightData>& skinClusterData,
 		DirectXManager* dxManager,
 		SrvManager* srvManager);
 
@@ -17,6 +20,7 @@ public:
 	SkinClusterData CreateSkinCluster(
 		const SkeletonData& skeleton,
 		const SkinnedMeshData& meshData, // メッシュごとのデータ
+		const std::map<std::string, JointWeightData>& skinClusterData,
 		DirectXManager* dxManager,
 		SrvManager* srvManager);
 	// スキンクラスターの更新

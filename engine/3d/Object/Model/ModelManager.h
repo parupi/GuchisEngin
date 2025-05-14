@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include "Model.h"
+#include "SkinnedModel.h"
 #include <mutex>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -29,10 +30,13 @@ public:
 public:
 	// モデルファイル読み込み
 	void LoadModel(const std::string& directoryPath, const std::string& filePath);
+	void LoadSkinnedModel(const std::string& directoryPath, const std::string& filePath);
 	// モデルの検索
-	Model* FindModel(const std::string& filePath);
+	BaseModel* FindModel(const std::string& fileName);
+	//SkinnedModel* FindSkinnedModel(const std::string& filePath);
 	// モデルデータ
 	std::map<std::string, std::unique_ptr<Model>> models;
+	std::map<std::string, std::unique_ptr<SkinnedModel>> skinnedModels;
 
 private:
 

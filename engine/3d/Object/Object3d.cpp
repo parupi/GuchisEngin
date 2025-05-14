@@ -13,10 +13,14 @@ Object3d::~Object3d()
 
 void Object3d::Initialize(const std::string& fileName)
 {
-	// モデルを検索してセットする
-	model_ = ModelManager::GetInstance()->FindModel(fileName);
 
 	objectManager_ = Object3dManager::GetInstance();
+
+	// モデルを検索してセットする
+	model_ = ModelManager::GetInstance()->FindModel(fileName);
+	if (!model_) {
+		assert(false && "Model not found.");
+	}
 
 	transform_ = std::make_unique<WorldTransform>();
 	transform_->Initialize();
@@ -27,7 +31,7 @@ void Object3d::Initialize(const std::string& fileName)
 void Object3d::AnimationUpdate()
 {
 	//if (model_->GetModelData().isAnimation) {
-	//	model_->Update();
+	model_->Update();
 	//}
 }
 
@@ -50,15 +54,15 @@ void Object3d::Update()
 
 	//if (model_->GetModelData().isAnimation) {
 		//if (model_->GetModelData().isHasBones) {
-		//	transform_->SetMapWVP(worldViewProjectionMatrix);
-		//	transform_->SetMapWorld(transform_->GetMatWorld());
+			transform_->SetMapWVP(worldViewProjectionMatrix);
+			transform_->SetMapWorld(transform_->GetMatWorld());
 		//} else {
-		//	transform_->SetMapWVP(model_->GetModelData().rootNode.localMatrix * worldViewProjectionMatrix);
-		//	transform_->SetMapWorld(model_->GetModelData().rootNode.localMatrix * transform_->GetMatWorld());
+			//transform_->SetMapWVP(model_->GetModelData().rootNode.localMatrix * worldViewProjectionMatrix);
+			//transform_->SetMapWorld(model_->GetModelData().rootNode.localMatrix * transform_->GetMatWorld());
 		//}
 	//} else {
-		transform_->SetMapWVP(worldViewProjectionMatrix);
-		transform_->SetMapWorld(transform_->GetMatWorld());
+		//transform_->SetMapWVP(worldViewProjectionMatrix);
+		//transform_->SetMapWorld(transform_->GetMatWorld());
 	//}
 }
 

@@ -145,23 +145,23 @@ SkinnedModelData ModelLoader::LoadSkinnedModel(const std::string& directoryPath,
 	// --- メッシュの読み込み ---
 	modelData.meshes.resize(scene->mNumMeshes);
 	for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex) {
-		MeshData meshData;
+		SkinnedMeshData SkinnedMeshData;
 		aiMesh* mesh = scene->mMeshes[meshIndex];
 
 		assert(mesh->HasNormals());
 		assert(mesh->HasTextureCoords(0));
 
-		meshData.skinClusterName = mesh->mName.C_Str();
+		SkinnedMeshData.skinClusterName = mesh->mName.C_Str();
 
-		meshData.vertices.resize(mesh->mNumVertices);
+		SkinnedMeshData.meshData.vertices.resize(mesh->mNumVertices);
 		for (uint32_t vertexIndex = 0; vertexIndex < mesh->mNumVertices; ++vertexIndex) {
 			aiVector3D& pos = mesh->mVertices[vertexIndex];
 			aiVector3D& norm = mesh->mNormals[vertexIndex];
 			aiVector3D& uv = mesh->mTextureCoords[0][vertexIndex];
 
-			meshData.vertices[vertexIndex].position = { -pos.x, pos.y, pos.z, 1.0f };
-			meshData.vertices[vertexIndex].normal = { -norm.x, norm.y, norm.z };
-			meshData.vertices[vertexIndex].texcoord = { uv.x, uv.y };
+			SkinnedMeshData.meshData.vertices[vertexIndex].position = { -pos.x, pos.y, pos.z, 1.0f };
+			SkinnedMeshData.meshData.vertices[vertexIndex].normal = { -norm.x, norm.y, norm.z };
+			SkinnedMeshData.meshData.vertices[vertexIndex].texcoord = { uv.x, uv.y };
 		}
 
 		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
@@ -171,10 +171,10 @@ SkinnedModelData ModelLoader::LoadSkinnedModel(const std::string& directoryPath,
 				uint32_t i1 = face.mIndices[1];
 				uint32_t i2 = face.mIndices[2];
 				uint32_t i3 = face.mIndices[3];
-				meshData.indices.insert(meshData.indices.end(), { i0, i1, i2, i0, i2, i3 });
+				SkinnedMeshData.meshData.indices.insert(SkinnedMeshData.meshData.indices.end(), { i0, i1, i2, i0, i2, i3 });
 			} else if (face.mNumIndices == 3) {
 				for (uint32_t i = 0; i < 3; ++i) {
-					meshData.indices.push_back(face.mIndices[i]);
+					SkinnedMeshData.meshData.indices.push_back(face.mIndices[i]);
 				}
 			}
 		}
@@ -206,9 +206,9 @@ SkinnedModelData ModelLoader::LoadSkinnedModel(const std::string& directoryPath,
 		}
 
 		// --- マテリアルとの紐付け ---
-		meshData.materialIndex = mesh->mMaterialIndex;
+		SkinnedMeshData.meshData.materialIndex = mesh->mMaterialIndex;
 
-		modelData.meshes[meshIndex] = meshData;
+		modelData.meshes[meshIndex] = SkinnedMeshData;
 	}
 
 	return modelData;

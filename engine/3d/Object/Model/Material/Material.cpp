@@ -38,7 +38,12 @@ void Material::Draw()
 	// マテリアルCBufferの場所を指定
 	directXManager_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
 
-	srvManager_->SetGraphicsRootDescriptorTable(2, materialData_.textureIndex);
+	if (materialData_.textureIndex != 0) {
+		srvManager_->SetGraphicsRootDescriptorTable(2, materialData_.textureIndex);
+	}
+
+	//// SRVのDescriptorTableの先頭を設定。
+	//srvManager_->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetTextureIndexByFilePath(materialData_.textureFilePath));
 }
 
 void Material::CreateMaterialResource()

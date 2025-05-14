@@ -7,7 +7,7 @@ class DirectXManager;
 class Mesh {
 public:
 	// 初期化処理
-	void Initialize(DirectXManager* directXManager, SrvManager* srvManager, MeshData meshData);
+	void Initialize(DirectXManager* directXManager, SrvManager* srvManager, const MeshData& meshData);
 	// 描画処理
 	void Draw();
 

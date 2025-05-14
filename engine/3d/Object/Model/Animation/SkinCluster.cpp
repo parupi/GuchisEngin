@@ -1,19 +1,23 @@
 #include "SkinCluster.h"
 #include "Model/SkinnedModel.h"
 #include "Model/Animation/Skeleton.h"
+#include "DirectXManager.h"
+#include "SrvManager.h"
 
 void SkinCluster::Initialize(
 	const SkeletonData& skeleton,
 	const SkinnedMeshData& meshData, // メッシュごとのデータ
+	const std::map<std::string, JointWeightData>& skinClusterData,
 	DirectXManager* dxManager,
 	SrvManager* srvManager)
 {
-	skinCluster_ = CreateSkinCluster(skeleton, meshData, dxManager, srvManager);
+	skinCluster_ = CreateSkinCluster(skeleton, meshData, skinClusterData, dxManager, srvManager);
 }
 
 SkinClusterData SkinCluster::CreateSkinCluster(
 	const SkeletonData& skeleton,
 	const SkinnedMeshData& meshData, // メッシュごとのデータ
+	const std::map<std::string, JointWeightData>& skinClusterData,
 	DirectXManager* dxManager,
 	SrvManager* srvManager)
 {
@@ -55,7 +59,7 @@ SkinClusterData SkinCluster::CreateSkinCluster(
 	skinCluster.inverseBindPoseMatrices.resize(skeleton.joints.size());
 	std::generate(skinCluster.inverseBindPoseMatrices.begin(), skinCluster.inverseBindPoseMatrices.end(), MakeIdentity4x4);
 
-	for (const auto& jointWeight : meshData.skinClusterData) { // ModelのSkinClusterの情報を解析
+	for (const auto& jointWeight : skinClusterData) { // ModelのSkinClusterの情報を解析
 		auto it = skeleton.jointMap.find(jointWeight.first); // JointWeight.firstはJoint名
 		if (it == skeleton.jointMap.end()) { // 見つからなかったら次に回す
 			continue;
