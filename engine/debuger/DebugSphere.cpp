@@ -1,5 +1,5 @@
 #include "DebugSphere.h"
-#include <ModelManager.h>
+#include <Model/ModelManager.h>
 
 void DebugSphere::Initialize()
 {

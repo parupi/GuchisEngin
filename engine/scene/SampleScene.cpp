@@ -1,6 +1,6 @@
 #include "SampleScene.h"
 #include <TextureManager.h>
-#include <ModelManager.h>
+#include <Model/ModelManager.h>
 #include <ParticleManager.h>
 #include <imgui.h>
 #include <Quaternion.h>
@@ -22,9 +22,11 @@ void SampleScene::Initialize()
 
 
 	// .objファイルからモデルを読み込む
-	ModelManager::GetInstance()->LoadModel("Resource", "walk.gltf");
-	ModelManager::GetInstance()->LoadModel("Resource", "simpleSkin.gltf");
-	ModelManager::GetInstance()->LoadModel("Resource", "sneakWalk.gltf");
+	ModelManager::GetInstance()->LoadSkinnedModel("Resource", "walk.gltf");
+	ModelManager::GetInstance()->LoadSkinnedModel("Resource", "simpleSkin.gltf");
+	ModelManager::GetInstance()->LoadSkinnedModel("Resource", "sneakWalk.gltf");
+	ModelManager::GetInstance()->LoadSkinnedModel("Resource", "ParentKoala.gltf");
+
 	ModelManager::GetInstance()->LoadModel("Resource", "plane.obj");
 	//ModelManager::GetInstance()->LoadModel("Resource", "Models/AnimatedCube/AnimatedCube.gltf");
 	ModelManager::GetInstance()->LoadModel("Resource", "Models/Terrain/Terrain.obj");
@@ -33,10 +35,10 @@ void SampleScene::Initialize()
 	TextureManager::GetInstance()->LoadTexture("Resource/gradationLine.png");
 
 	object_ = std::make_unique<Object3d>();
-	object_->Initialize("Models/Terrain/Terrain.obj");
+	object_->Initialize("walk.gltf");
 
-	animationObject_ = std::make_unique<Object3d>();
-	animationObject_->Initialize("simpleSkin.gltf");
+	//animationObject_ = std::make_unique<Object3d>();
+	//animationObject_->Initialize("simpleSkin.gltf");
 
 	//transform_.Initialize();
 	//animationTransform_.Initialize();
@@ -75,7 +77,7 @@ void SampleScene::Update()
 	ParticleManager::GetInstance()->Update();
 
 	object_->AnimationUpdate();
-	animationObject_->AnimationUpdate();
+	//animationObject_->AnimationUpdate();
 	cameraManager_.Update();
 	sprite->Update();
 
@@ -93,32 +95,32 @@ void SampleScene::Update()
 
 	DebugUpdate();
 
-	Vector2 uvObjectPos = object_->GetUVPosition();
-	Vector2 uvObjectSize = object_->GetUVSize();
-	float uvObjectRotate = object_->GetUVRotation();
+	//Vector2 uvObjectPos = object_->GetUVPosition();
+	//Vector2 uvObjectSize = object_->GetUVSize();
+	//float uvObjectRotate = object_->GetUVRotation();
 
-	ImGui::Begin("Transform");
-	ImGui::DragFloat2("UVTranslate", &uvObjectPos.x, 0.01f, -10.0f, 10.0f);
-	ImGui::DragFloat2("UVScale", &uvObjectSize.x, 0.01f, -10.0f, 10.0f);
-	ImGui::SliderAngle("UVRotate", &uvObjectRotate);
-	ImGui::End();
+	//ImGui::Begin("Transform");
+	//ImGui::DragFloat2("UVTranslate", &uvObjectPos.x, 0.01f, -10.0f, 10.0f);
+	//ImGui::DragFloat2("UVScale", &uvObjectSize.x, 0.01f, -10.0f, 10.0f);
+	//ImGui::SliderAngle("UVRotate", &uvObjectRotate);
+	//ImGui::End();
 
-	object_->SetUVPosition(uvObjectPos);
-	object_->SetUVSize(uvObjectSize);
-	object_->SetUVRotation(uvObjectRotate);
+	//object_->SetUVPosition(uvObjectPos);
+	//object_->SetUVSize(uvObjectSize);
+	//object_->SetUVRotation(uvObjectRotate);
 
 	object_->Update();
 
-	animationObject_->Update();
+	//animationObject_->Update();
 
 	ImGui::Begin("SetModel");
 	if (ImGui::Button("Set Work"))
 	{
-		animationObject_->SetModel("walk.gltf");
+		object_->SetModel("walk.gltf");
 	}
 	if (ImGui::Button("Set sneakWalk"))
 	{
-		animationObject_->SetModel("sneakWalk.gltf");
+		object_->SetModel("sneakWalk.gltf");
 	}
 	ImGui::End();
 
@@ -161,7 +163,17 @@ void SampleScene::Draw()
 	//Object3dManager::GetInstance()->DrawSet();
 	//lightManager_->BindLightsToShader();
 	//object_->Draw();
+  
+	// 3Dオブジェクト描画前処理
+	Object3dManager::GetInstance()->DrawSetForAnimation();
+	lightManager_->BindLightsToShader();
+	//animationObject_->Draw();
+	object_->Draw();
 
+	Object3dManager::GetInstance()->DrawSet();
+	lightManager_->BindLightsToShader();
+	//object_->Draw();
+	
 
 	//SpriteManager::GetInstance()->DrawSet();
 	//sprite->Draw();

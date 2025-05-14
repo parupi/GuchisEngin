@@ -1,24 +1,36 @@
 #include "SkinCluster.h"
-#include "Model.h"
-#include <Skeleton.h>
+#include "Model/SkinnedModel.h"
+#include "Model/Animation/Skeleton.h"
+#include "DirectXManager.h"
+#include "SrvManager.h"
 
-void SkinCluster::Initialize(const SkeletonData& skeleton, Model* model)
+void SkinCluster::Initialize(
+	const SkeletonData& skeleton,
+	const SkinnedMeshData& meshData, // メッシュごとのデータ
+	const std::map<std::string, JointWeightData>& skinClusterData,
+	DirectXManager* dxManager,
+	SrvManager* srvManager)
 {
-	skinCluster_ = CreateSkinCluster(skeleton, model);
+	skinCluster_ = CreateSkinCluster(skeleton, meshData, skinClusterData, dxManager, srvManager);
 }
 
-SkinClusterData SkinCluster::CreateSkinCluster(const SkeletonData& skeleton, Model* model)
+SkinClusterData SkinCluster::CreateSkinCluster(
+	const SkeletonData& skeleton,
+	const SkinnedMeshData& meshData, // メッシュごとのデータ
+	const std::map<std::string, JointWeightData>& skinClusterData,
+	DirectXManager* dxManager,
+	SrvManager* srvManager)
 {
 	SkinClusterData skinCluster;
 
 	// palette用のResource確保
-	skinCluster.paletteResource = model->GetDxManager()->CreateBufferResource(sizeof(WellForGPU) * skeleton.joints.size());
+	skinCluster.paletteResource = dxManager->CreateBufferResource(sizeof(WellForGPU) * skeleton.joints.size());
 	WellForGPU* mappedPalette = nullptr;
 	skinCluster.paletteResource->Map(0, nullptr, reinterpret_cast<void**>(&mappedPalette));
 	skinCluster.mappedPalette = { mappedPalette, skeleton.joints.size() };
-	uint32_t srvIndex = model->GetSrvManager()->Allocate();
-	skinCluster.paletteSrvHandle.first = model->GetSrvManager()->GetCPUDescriptorHandle(srvIndex);
-	skinCluster.paletteSrvHandle.second = model->GetSrvManager()->GetGPUDescriptorHandle(srvIndex);
+	uint32_t srvIndex = srvManager->Allocate();
+	skinCluster.paletteSrvHandle.first = srvManager->GetCPUDescriptorHandle(srvIndex);
+	skinCluster.paletteSrvHandle.second = srvManager->GetGPUDescriptorHandle(srvIndex);
 
 	//palette用のSRVを生成
 	D3D12_SHADER_RESOURCE_VIEW_DESC paletteSrvDesc{};
@@ -29,25 +41,25 @@ SkinClusterData SkinCluster::CreateSkinCluster(const SkeletonData& skeleton, Mod
 	paletteSrvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
 	paletteSrvDesc.Buffer.NumElements = UINT(skeleton.joints.size());
 	paletteSrvDesc.Buffer.StructureByteStride = sizeof(WellForGPU);
-	model->GetDxManager()->GetDevice()->CreateShaderResourceView(skinCluster.paletteResource.Get(), &paletteSrvDesc, skinCluster.paletteSrvHandle.first);
+	dxManager->GetDevice()->CreateShaderResourceView(skinCluster.paletteResource.Get(), &paletteSrvDesc, skinCluster.paletteSrvHandle.first);
 
 	// influence用のResourceを確保
-	skinCluster.influenceResource = model->GetDxManager()->CreateBufferResource(sizeof(VertexInfluence) * model->GetModelData().vertices.size());
+	skinCluster.influenceResource = dxManager->CreateBufferResource(sizeof(VertexInfluence) * meshData.meshData.vertices.size());
 	VertexInfluence* mappedInfluence = nullptr;
 	skinCluster.influenceResource->Map(0, nullptr, reinterpret_cast<void**>(&mappedInfluence));
-	std::memset(mappedInfluence, 0, sizeof(VertexInfluence) * model->GetModelData().vertices.size());
-	skinCluster.mappedInfluence = { mappedInfluence, model->GetModelData().vertices.size() };
+	std::memset(mappedInfluence, 0, sizeof(VertexInfluence) * meshData.meshData.vertices.size());
+	skinCluster.mappedInfluence = { mappedInfluence, meshData.meshData.vertices.size() };
 
 	// Influence用のVBVを生成
 	skinCluster.influenceBufferView.BufferLocation = skinCluster.influenceResource->GetGPUVirtualAddress();
-	skinCluster.influenceBufferView.SizeInBytes = UINT(sizeof(VertexInfluence) * model->GetModelData().vertices.size());
+	skinCluster.influenceBufferView.SizeInBytes = UINT(sizeof(VertexInfluence) * meshData.meshData.vertices.size());
 	skinCluster.influenceBufferView.StrideInBytes = sizeof(VertexInfluence);
 
 	// InverseBindPoseMatrixを格納する場所を探し、単位行列で埋める
 	skinCluster.inverseBindPoseMatrices.resize(skeleton.joints.size());
 	std::generate(skinCluster.inverseBindPoseMatrices.begin(), skinCluster.inverseBindPoseMatrices.end(), MakeIdentity4x4);
 
-	for (const auto& jointWeight : model->GetModelData().skinClusterData) { // ModelのSkinClusterの情報を解析
+	for (const auto& jointWeight : skinClusterData) { // ModelのSkinClusterの情報を解析
 		auto it = skeleton.jointMap.find(jointWeight.first); // JointWeight.firstはJoint名
 		if (it == skeleton.jointMap.end()) { // 見つからなかったら次に回す
 			continue;

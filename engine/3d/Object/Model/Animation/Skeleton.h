@@ -1,20 +1,20 @@
 #pragma once
-#include "AnimationStructs.h"
-#include "Animator.h"
+#include "Model/ModelStructs.h"
 
-class Model;
+
+class SkinnedModel;
 
 class Skeleton
 {
 public:
 	// 初期化
-	void Initialize(Model* model);
+	void Initialize(SkinnedModel* model);
 	// 更新
 	void Update();
 	// SkinClusterの更新
 	//void Update();
 	// 
-	void ApplyAnimation(const Animator::Animation& animation, float animationTime);
+	void ApplyAnimation(const AnimationData& animation, float animationTime);
 private:
 	// Nodeの階層からSkeletonを作る
 	void CreateSkeleton(const Node& rootNode);
@@ -26,7 +26,7 @@ private:
 	SkeletonData skeletonData_;
 
 	// モデルデータ
-	Model* model_;
+	SkinnedModel* model_;
 
 public: // ゲッター // セッター //
 	SkeletonData GetSkeletonData() const { return skeletonData_; }

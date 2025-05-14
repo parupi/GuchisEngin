@@ -95,12 +95,67 @@ struct JointWeightData {
 	std::vector<VertexWeightData> vertexWeights;
 };
 
-struct ModelData {
-	std::map<std::string, JointWeightData> skinClusterData;
+
+
+struct MeshData {
+	std::string name;
 	std::vector<VertexData> vertices;
 	std::vector<uint32_t> indices;
-	MaterialData material;
+	uint32_t materialIndex; // このメッシュに持たせるマテリアルのインデックス
+};
+
+
+struct ModelData {
+	//std::map<std::string, JointWeightData> skinClusterData;
+	std::vector<MeshData> meshes;
+	std::vector<MaterialData> materials;
+
+	//Node rootNode;
+	//bool isAnimation;
+	//bool isHasBones;
+};
+
+struct SkinnedMeshData {
+	MeshData meshData;
+
+	std::string skinClusterName; // このメッシュが参照するスキンクラスタの名前
+};
+
+struct SkinnedModelData {
+	std::map<std::string, JointWeightData> skinClusterData;
+	std::vector<SkinnedMeshData> meshes;
+	std::vector<MaterialData> materials;
 	Node rootNode;
-	bool isAnimation;
-	bool isHasBones;
+};
+
+template <typename tValue>
+struct Keyframe {
+	float time;
+	tValue value;
+};
+using KeyframeVector3 = Keyframe<Vector3>;
+using KeyframeQuaternion = Keyframe<Quaternion>;
+
+template<typename tValue>
+struct AnimationCurve {
+	std::vector<Keyframe<tValue>> keyframes;
+};
+
+struct NodeAnimation {
+	AnimationCurve<Vector3> translate;
+	AnimationCurve<Quaternion> rotate;
+	AnimationCurve<Vector3> scale;
+};
+
+struct AnimationData {
+	float duration; // アニメーション全体の尺
+	std::map<std::string, NodeAnimation> nodeAnimations;
+};
+
+struct MaterialForGPU {
+	Vector4 color;
+	bool enableLighting;
+	float padding[3];
+	Matrix4x4 uvTransform;
+	float shininess;
 };

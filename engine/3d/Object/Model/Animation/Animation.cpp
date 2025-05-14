@@ -1,18 +1,18 @@
-#include "Animator.h"
+#include "Animation.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <cassert>
 
-#include <Skeleton.h>
-#include <Model.h>
+#include <Model/Animation/Skeleton.h>
+#include "Model/SkinnedModel.h"
 
-void Animator::Initialize(Model* model, const std::string& filename)
+void Animation::Initialize(SkinnedModel* model, const std::string& filename)
 {
 	model_ = model;
 	animation_ = LoadAnimationFile(model_->GetDirectoryPath(), filename);
 }
 
-void Animator::Update()
+void Animation::Update()
 {
 	animationTime += 1.0f / 60.0f;
 	animationTime = std::fmod(animationTime, animation_.duration); // 最後までいったらリピート再生
@@ -27,9 +27,9 @@ void Animator::Update()
 	model_->SetLocalMatrix(MakeAffineMatrix(scale, rotate, translate));
 }
 
-Animator::Animation Animator::LoadAnimationFile(const std::string& directoryPath, const std::string& filename)
+AnimationData Animation::LoadAnimationFile(const std::string& directoryPath, const std::string& filename)
 {
-	Animation animation; // 今回作るアニメーション
+	AnimationData animation; // 今回作るアニメーション
 	Assimp::Importer importer;
 	std::string filePath = directoryPath + "/" + filename;
 	const aiScene* scene = importer.ReadFile(filePath.c_str(), 0);
@@ -74,7 +74,7 @@ Animator::Animation Animator::LoadAnimationFile(const std::string& directoryPath
 	return animation;
 }
 
-Vector3 Animator::CalculateValue(const std::vector<KeyframeVector3>& keyframes, float time)
+Vector3 Animation::CalculateValue(const std::vector<KeyframeVector3>& keyframes, float time)
 {
 	assert(!keyframes.empty());// キーがないものは返す値がわからないのでだめ
 	if (keyframes.size() == 1 || time <= keyframes[0].time) {// キーが一つか、時刻がキーフレーム前なら最初の値とする
@@ -93,7 +93,7 @@ Vector3 Animator::CalculateValue(const std::vector<KeyframeVector3>& keyframes, 
 	return (*keyframes.rbegin()).value;
 }
 
-Quaternion Animator::CalculateValue(const std::vector<KeyframeQuaternion>& keyframes, float time)
+Quaternion Animation::CalculateValue(const std::vector<KeyframeQuaternion>& keyframes, float time)
 {
 	assert(!keyframes.empty());// キーがないものは返す値がわからないのでだめ
 	if (keyframes.size() == 1 || time <= keyframes[0].time) {// キーが一つか、時刻がキーフレーム前なら最初の値とする

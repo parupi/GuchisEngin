@@ -6,46 +6,40 @@
 #include <numbers>
 //#include <Skeleton.h>
 //#include <Animator.h>
-#include "ModelManager.h"
+#include "Model/ModelManager.h"
 Object3d::~Object3d()
 {
 }
 
 void Object3d::Initialize(const std::string& fileName)
 {
-	// モデルを検索してセットする
-	model_ = ModelManager::GetInstance()->FindModel(fileName);
 
 	objectManager_ = Object3dManager::GetInstance();
+
+	// モデルを検索してセットする
+	model_ = ModelManager::GetInstance()->FindModel(fileName);
+	if (!model_) {
+		assert(false && "Model not found.");
+	}
 
 	transform_ = std::make_unique<WorldTransform>();
 	transform_->Initialize();
 
-	CreateMaterialResource();
 	CreateCameraResource();
 }
 
 void Object3d::AnimationUpdate()
 {
-	if (model_->GetModelData().isAnimation) {
-		model_->Update();
-	}
+	//if (model_->GetModelData().isAnimation) {
+	model_->Update();
+	//}
 }
 
 void Object3d::Update()
 {
 	transform_->TransferMatrix();
 
-	// uvTransformに値を適用
-	uvTransform_.translate = { uvPosition_.x, uvPosition_.y, 0.0f };
-	uvTransform_.rotate = { 0.0f, 0.0f, uvRotation_ };
-	uvTransform_.scale = { uvSize_.x, uvSize_.y, 1.0f };
-	// Transform情報を作る
-	Matrix4x4 uvTransformMatrix = MakeIdentity4x4();
-	uvTransformMatrix *= MakeScaleMatrix(uvTransform_.scale);
-	uvTransformMatrix *= MakeRotateZMatrix(uvTransform_.rotate.z);
-	uvTransformMatrix *= MakeTranslateMatrix(uvTransform_.translate);
-	materialData_->uvTransform = uvTransformMatrix;
+
 
 	camera_ = objectManager_->GetDefaultCamera();
 	cameraData_->worldPosition = camera_->GetTranslate();
@@ -58,29 +52,29 @@ void Object3d::Update()
 		worldViewProjectionMatrix = transform_->GetMatWorld();
 	}
 
-	if (model_->GetModelData().isAnimation) {
-		if (model_->GetModelData().isHasBones) {
+	//if (model_->GetModelData().isAnimation) {
+		//if (model_->GetModelData().isHasBones) {
 			transform_->SetMapWVP(worldViewProjectionMatrix);
 			transform_->SetMapWorld(transform_->GetMatWorld());
-		} else {
-			transform_->SetMapWVP(model_->GetModelData().rootNode.localMatrix * worldViewProjectionMatrix);
-			transform_->SetMapWorld(model_->GetModelData().rootNode.localMatrix * transform_->GetMatWorld());
-		}
-	} else {
-		transform_->SetMapWVP(worldViewProjectionMatrix);
-		transform_->SetMapWorld(transform_->GetMatWorld());
-	}
+		//} else {
+			//transform_->SetMapWVP(model_->GetModelData().rootNode.localMatrix * worldViewProjectionMatrix);
+			//transform_->SetMapWorld(model_->GetModelData().rootNode.localMatrix * transform_->GetMatWorld());
+		//}
+	//} else {
+		//transform_->SetMapWVP(worldViewProjectionMatrix);
+		//transform_->SetMapWorld(transform_->GetMatWorld());
+	//}
 }
 
 void Object3d::Draw()
 {
 	// cameraの場所を指定
 	objectManager_->GetDxManager()->GetCommandList()->SetGraphicsRootConstantBufferView(3, cameraResource_->GetGPUVirtualAddress());
-	// マテリアルCBufferの場所を指定
-	objectManager_->GetDxManager()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
+	// wvp用のCBufferの場所を設定
+	objectManager_->GetDxManager()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transform_->GetConstBuffer()->GetGPUVirtualAddress());
 	// 3Dモデルが割り当てられていれば描画する
 	if (model_) {
-		model_->Draw(transform_.get());
+		model_->Draw();
 	}
 }
 
@@ -88,54 +82,11 @@ void Object3d::Draw()
 #ifdef _DEBUG
 void Object3d::DebugGui()
 {
-	if (ImGui::TreeNode("Models")) {
-		auto& modelMap = ModelManager::GetInstance()->models;
-		static std::vector<std::string> modelNames;
-		static int selectedIndex = 0;
-
-		// モデル一覧を初期化（必要なら一度だけでOK）
-		if (modelNames.empty()) {
-			for (const auto& pair : modelMap) {
-				modelNames.push_back(pair.first);
-			}
-		}
-
-		if (!modelNames.empty()) {
-			const char* currentItem = modelNames[selectedIndex].c_str();
-
-			if (ImGui::BeginCombo("Model List", currentItem)) {
-				for (int i = 0; i < modelNames.size(); ++i) {
-					bool isSelected = (selectedIndex == i);
-					if (ImGui::Selectable(modelNames[i].c_str(), isSelected)) {
-						selectedIndex = i;
-						SetModel(modelNames[selectedIndex]);
-					}
-					if (isSelected) {
-						ImGui::SetItemDefaultFocus();
-					}
-				}
-				ImGui::EndCombo();
-			}
-		}
-		ImGui::TreePop();
-	}
+	model_->DebugGui(this);
 
 	transform_->DebugGui();
 }
 #endif // _DEBUG
-
-void Object3d::CreateMaterialResource()
-{
-	// マテリアル用のリソースを作る。今回はFcolor1つ分のサイズを用意する
-	materialResource_ = objectManager_->GetDxManager()->CreateBufferResource(sizeof(Material));
-	// 書き込むためのアドレスを取得
-	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
-	// 白を入れる
-	materialData_->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-	materialData_->enableLighting = true;
-	materialData_->uvTransform = MakeIdentity4x4();
-	materialData_->shininess = 20.0f;
-}
 
 void Object3d::CreateCameraResource()
 {

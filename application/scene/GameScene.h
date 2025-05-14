@@ -1,7 +1,7 @@
 #pragma once
 #include <Object3d.h>
 #include <Sprite.h>
-#include <Model.h>
+#include <Model/Model.h>
 #include <vector>
 #include <Camera.h>
 #include <BaseScene.h>
