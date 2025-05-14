@@ -21,6 +21,8 @@ void SampleScene::Initialize()
 	ModelManager::GetInstance()->LoadSkinnedModel("Resource", "walk.gltf");
 	ModelManager::GetInstance()->LoadSkinnedModel("Resource", "simpleSkin.gltf");
 	ModelManager::GetInstance()->LoadSkinnedModel("Resource", "sneakWalk.gltf");
+	ModelManager::GetInstance()->LoadSkinnedModel("Resource", "ParentKoala.gltf");
+
 	ModelManager::GetInstance()->LoadModel("Resource", "plane.obj");
 	//ModelManager::GetInstance()->LoadModel("Resource", "Models/AnimatedCube/AnimatedCube.gltf");
 	ModelManager::GetInstance()->LoadModel("Resource", "Models/Terrain/Terrain.obj");

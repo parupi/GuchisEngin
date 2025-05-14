@@ -17,12 +17,8 @@
 #include "Mesh/Mesh.h"
 #include "Material/Material.h"
 #include "BaseModel.h"
-//#include <DebugSphere.h>
 
-class WorldTransform;
-//class Animation;
-//class Skeleton;
-//class SkinCluster;
+class Object3d;
 
 class Model : public BaseModel
 {
@@ -33,16 +29,11 @@ public: // メンバ関数
 	void Update() override;
 	// 描画
 	void Draw() override;
-private:
-	//// 頂点データの生成
-	//void CreateVertexResource();
-	//// Indexデータの生成
-	//void CreateIndexResource();
+#ifdef _DEBUG
+	void DebugGui(Object3d* object);
+#endif // _DEBUG
 
-public: // 構造体
 
-	// 現在のアニメーションタイム
-	float animationTime = 0.0f;
 private:
 	std::vector<std::unique_ptr<Mesh>> meshes_;
 	std::vector<std::unique_ptr<Material>> materials_;
@@ -51,73 +42,12 @@ private:
 	//Skeleton* skeleton_ = nullptr;
 
 	ModelData modelData_;
-	//std::unique_ptr<Animation> animator_;
-	//std::unique_ptr<Skeleton> skeleton_;
-	//std::unique_ptr<SkinCluster> skinCluster_;
-
-	//Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
-	//Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_ = nullptr;
-
-	//VertexData* vertexData_ = nullptr;
-	//uint32_t* indexData_ = nullptr;
-
-	//D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
-	//D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
-
 	std::string directoryPath_;
-
-	// デバッグ用変数
-	//std::vector<DebugSphere> spheres_;
 public:
-	// mtlファイルを読む関数
-	//static MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
-
-
-
-	/////↓↓↓アニメーション用関数(引っ越し予定)↓↓↓///
-	////// アニメーションを読む処理
-	////Animation LoadAnimationFile(const std::string& directoryPath, const std::string& filename);
-	////// アニメーションの更新
-	////void UpdateAnimation();
-	//// 骨骨の更新
-	//void UpdateSkeleton(SkeletonData& skeleton);
-	////// 任意の時刻を取得する (Vector3)
-	////Vector3 CalculateValue(const std::vector<KeyframeVector3>& keyframes, float time);
-	////// 任意の時刻を取得する (Quaternion)
-	////Quaternion CalculateValue(const std::vector<KeyframeQuaternion>& keyframes, float time);
-	//// Nodeの階層からSkeletonを作る
-	//SkeletonData CreateSkeleton(const Model::Node& rootNode);
-	//// NodeからJointを作る
-	//int32_t CreateJoint(const Model::Node& node, const std::optional<int32_t>& parent, std::vector<Joint>& joints);
-	//// アニメーションを適用する
-	//void ApplyAnimation(SkeletonData& skeleton, const Animator::Animation& animation, float animationTime);
-	//// 全体の更新
-	//void Update();
-	//// SkinClusterを生成する関数
-	//SkinCluster CreateSkinCluster(const SkeletonData& skeleton, const ModelData& modelData);
-	//// スキンクラスターの更新
-	//void UpdateSkinCluster(SkinCluster& skinCluster, const SkeletonData& skeleton);
-	/////↑↑↑アニメーション用関数(引っ越し予定)↑↑↑///
-
-
-	/////↓↓↓デバッグ用関数↓↓↓///
-	//std::vector<Vector3> GetConnectionPositions();
-	//uint32_t GetConnectionCount();
-	/////↑↑↑デバッグ用関数↑↑↑///
-
-public: // ゲッター // セッター //
-	//void SetVertices(VertexData vertex);
-	//void SetTexturePath(const std::string& filePath) { modelData_.material.textureFilePath = filePath; }
-
 	ModelData GetModelData() { return modelData_; }
 	std::string GetDirectoryPath() { return directoryPath_; }
 	DirectXManager* GetDxManager() { return modelLoader_->GetDxManager(); }
 	SrvManager* GetSrvManager() { return modelLoader_->GetSrvManager(); }
-	//Animation* GetAnimator() { return animator_.get(); }
-	//void SetLocalMatrix(const Matrix4x4& matrix) { modelData_.rootNode.localMatrix = matrix; }
-	//SkinCluster GetSkinCluster(){return }
-	//void SetSkeleton(Skeleton* skeleton) { skeleton_ = skeleton; }
-	//Skeleton* GetSkeleton() { return skeleton_; }
 
 };
 

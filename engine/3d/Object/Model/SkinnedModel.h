@@ -8,6 +8,7 @@
 #include "Animation/SkinCluster.h"
 
 class WorldTransform;
+class Object3d;
 
 class SkinnedModel : public BaseModel
 {
@@ -18,7 +19,9 @@ public: // メンバ関数
 	void Update() override;
 	// 描画
 	void Draw() override;
-
+#ifdef _DEBUG
+	void DebugGui(Object3d* object) override;
+#endif // _DEBUG
 private:
 	std::vector<std::unique_ptr<Mesh>> meshes_;
 	std::vector<std::unique_ptr<Material>> materials_;

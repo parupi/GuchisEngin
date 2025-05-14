@@ -82,37 +82,7 @@ void Object3d::Draw()
 #ifdef _DEBUG
 void Object3d::DebugGui()
 {
-	if (ImGui::TreeNode("Models")) {
-		auto& modelMap = ModelManager::GetInstance()->models;
-		static std::vector<std::string> modelNames;
-		static int selectedIndex = 0;
-
-		// モデル一覧を初期化（必要なら一度だけでOK）
-		if (modelNames.empty()) {
-			for (const auto& pair : modelMap) {
-				modelNames.push_back(pair.first);
-			}
-		}
-
-		if (!modelNames.empty()) {
-			const char* currentItem = modelNames[selectedIndex].c_str();
-
-			if (ImGui::BeginCombo("Model List", currentItem)) {
-				for (int i = 0; i < modelNames.size(); ++i) {
-					bool isSelected = (selectedIndex == i);
-					if (ImGui::Selectable(modelNames[i].c_str(), isSelected)) {
-						selectedIndex = i;
-						SetModel(modelNames[selectedIndex]);
-					}
-					if (isSelected) {
-						ImGui::SetItemDefaultFocus();
-					}
-				}
-				ImGui::EndCombo();
-			}
-		}
-		ImGui::TreePop();
-	}
+	model_->DebugGui(this);
 
 	transform_->DebugGui();
 }

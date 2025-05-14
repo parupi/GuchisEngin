@@ -3,7 +3,8 @@
 #include "Model/Animation/SkinCluster.h"
 #include "Model/Animation/Animation.h"
 #include <TextureManager.h>
-
+#include "ModelManager.h"
+#include <Object3d.h>
 
 void SkinnedModel::Initialize(ModelLoader* modelLoader, const std::string& directoryPath, const std::string& fileName)
 {
@@ -35,36 +36,12 @@ void SkinnedModel::Initialize(ModelLoader* modelLoader, const std::string& direc
 		materials_.emplace_back(std::move(material));
 	}
 
-
-
 	// スキンクラスタ作成
 	skinCluster_ = std::make_unique<SkinCluster>();
 	const auto& skinClusterData = modelData_.skinClusterData;
 	const auto& meshData = modelData_.meshes.at(0); // 複数メッシュがある場合は要拡張
 
 	skinCluster_->Initialize(skeleton_->GetSkeletonData(), meshData, skinClusterData, GetDxManager(), GetSrvManager());
-
-
-	//// 各メッシュをMeshクラスへ変換
-	//for (const auto& meshData : modelData_.meshes) {
-	//	auto mesh = std::make_unique<Mesh>();
-
-	//	const auto& skinCluster = modelData_.skinClusterData.at(meshData.skinClusterName);
-
-	//	const auto& skinClusterData = modelData_.skinClusterData.at(meshData.skinClusterName);
-	//	skinCluster_->Initialize(skeleton_.get(), meshData, skinClusterData, modelLoader_->GetDxManager(), modelLoader_->GetSrvManager());
-
-	//	mesh->Initialize(modelLoader_->GetDxManager(), modelLoader_->GetSrvManager(), meshData.meshData);
-	//	meshes_.push_back(std::move(mesh));
-	//}
-
-	//// 各メッシュをMeshクラスへ変換
-	//for (const auto& materialData : modelData_.materials) {
-	//	auto material = std::make_unique<Material>();
-	//	material->Initialize(modelLoader_->GetDxManager(), modelLoader_->GetSrvManager(), materialData);
-	//	materials_.push_back(std::move(material));
-	//}
-
 
 }
 
@@ -80,26 +57,10 @@ void SkinnedModel::Update()
 
 void SkinnedModel::Draw()
 {
-
-
-
-	//modelLoader_->GetDxManager()->GetCommandList()->IASetIndexBuffer(&indexBufferView_);
-	// wvp用のCBufferの場所を設定
-	//modelLoader_->GetDxManager()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transform->GetConstBuffer()->GetGPUVirtualAddress());
-
-
-
-
 	modelLoader_->GetDxManager()->GetCommandList()->SetGraphicsRootDescriptorTable(13, skinCluster_->GetSkinCluster().paletteSrvHandle.second);
-
 
 	const auto& view = skinCluster_->GetSkinCluster().influenceBufferView;
 	modelLoader_->GetDxManager()->GetCommandList()->IASetVertexBuffers(1, 1, &view);
-	// SRVのDescriptorTableの先頭を設定。
-	//modelLoader_->GetSrvManager()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetTextureIndexByFilePath(modelData_.material.textureFilePath));
-	// ドローコール
-	//modelLoader_->GetDxManager()->GetCommandList()->DrawIndexedInstanced(UINT(modelData_..indices.size()), 1, 0, 0, 0);
-
 
 	for (size_t i = 0; i < materials_.size(); i++) {
 		materials_[i]->Draw();
@@ -107,5 +68,40 @@ void SkinnedModel::Draw()
 
 	for (size_t i = 0; i < meshes_.size(); i++) {
 		meshes_[i]->Draw();
+	}
+}
+
+void SkinnedModel::DebugGui(Object3d* object)
+{
+	if (ImGui::TreeNode("Models")) {
+		auto& modelMap = ModelManager::GetInstance()->skinnedModels;
+		static std::vector<std::string> modelNames;
+		static int selectedIndex = 0;
+
+		// モデル一覧を初期化（必要なら一度だけでOK）
+		if (modelNames.empty()) {
+			for (const auto& pair : modelMap) {
+				modelNames.push_back(pair.first);
+			}
+		}
+
+		if (!modelNames.empty()) {
+			const char* currentItem = modelNames[selectedIndex].c_str();
+
+			if (ImGui::BeginCombo("Model List", currentItem)) {
+				for (int i = 0; i < modelNames.size(); ++i) {
+					bool isSelected = (selectedIndex == i);
+					if (ImGui::Selectable(modelNames[i].c_str(), isSelected)) {
+						selectedIndex = i;
+						object->SetModel(modelNames[selectedIndex]);
+					}
+					if (isSelected) {
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+				ImGui::EndCombo();
+			}
+		}
+		ImGui::TreePop();
 	}
 }

@@ -121,15 +121,28 @@ SkinnedModelData ModelLoader::LoadSkinnedModel(const std::string& directoryPath,
 	assert(scene && scene->HasMeshes());
 
 	modelData.rootNode = ReadNode(scene->mRootNode);
-	//modelData.isAnimation = (scene->mNumAnimations > 0);
-	//modelData.isHasBones = HasBones(scene);
 
 	// --- マテリアルの読み込み ---
-	modelData.materials.resize(scene->mNumMaterials);
+	// 使用されているmaterialIndexの最大値を探す
+	uint32_t maxMaterialIndex = 0;
+	for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex) {
+		aiMesh* mesh = scene->mMeshes[meshIndex];
+		if (mesh->mMaterialIndex > maxMaterialIndex) {
+			maxMaterialIndex = mesh->mMaterialIndex;
+		}
+	}
+
+	// 実際に使われている分だけ確保
+	modelData.materials.resize(maxMaterialIndex + 1);
+
 	for (uint32_t i = 0; i < scene->mNumMaterials; ++i) {
 		aiMaterial* material = scene->mMaterials[i];
 		MaterialData matData;
 		matData.name = material->GetName().C_Str();
+
+		if (matData.name == "") {
+			break;
+		}
 
 		if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
 			aiString textureFilePath;
