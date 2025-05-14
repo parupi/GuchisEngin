@@ -8,12 +8,12 @@ void ModelLoader::Initialize(DirectXManager* dxManager, SrvManager* srvManager)
 	srvManager_ = srvManager;
 }
 
-ModelData ModelLoader::LoadModelFile(const std::string& directoryPath, const std::string& filename)
+ModelData ModelLoader::LoadModelFile(const std::string& filename)
 {
 	ModelData modelData;
 
 	Assimp::Importer importer;
-	std::string filePath = directoryPath + "/" + filename;
+	std::string filePath = "Resource/Models/" + filename + "/" + filename + ".obj";
 
 	const aiScene* scene = importer.ReadFile(filePath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
 	assert(scene && scene->HasMeshes());
@@ -32,7 +32,7 @@ ModelData ModelLoader::LoadModelFile(const std::string& directoryPath, const std
 		if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
 			aiString textureFilePath;
 			material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
-			matData.textureFilePath = directoryPath + "/" + textureFilePath.C_Str();
+			matData.textureFilePath = textureFilePath.C_Str();
 			TextureManager::GetInstance()->LoadTexture(matData.textureFilePath);
 			matData.textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(matData.textureFilePath);
 		}
@@ -75,32 +75,6 @@ ModelData ModelLoader::LoadModelFile(const std::string& directoryPath, const std
 			}
 		}
 
-		//// --- ボーン情報の抽出 ---
-		//for (uint32_t boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex) {
-		//	aiBone* bone = mesh->mBones[boneIndex];
-		//	std::string jointName = bone->mName.C_Str();
-		//	JointWeightData& jointWeightData = modelData.skinClusterData[jointName];
-
-		//	aiMatrix4x4 bindPoseMatrixAssimp = bone->mOffsetMatrix.Inverse();
-		//	aiVector3D scale, translate;
-		//	aiQuaternion rotate;
-		//	bindPoseMatrixAssimp.Decompose(scale, rotate, translate);
-
-		//	Matrix4x4 bindPoseMatrix = MakeAffineMatrix(
-		//		{ scale.x, scale.y, scale.z },
-		//		{ rotate.x, -rotate.y, -rotate.z, rotate.w },
-		//		{ -translate.x, translate.y, translate.z }
-		//	);
-		//	jointWeightData.inverseBindPoseMatrix = Inverse(bindPoseMatrix);
-
-		//	for (uint32_t weightIndex = 0; weightIndex < bone->mNumWeights; ++weightIndex) {
-		//		jointWeightData.vertexWeights.push_back({
-		//			bone->mWeights[weightIndex].mWeight,
-		//			bone->mWeights[weightIndex].mVertexId
-		//			});
-		//	}
-		//}
-
 		// --- マテリアルとの紐付け ---
 		meshData.materialIndex = mesh->mMaterialIndex;
 
@@ -110,12 +84,13 @@ ModelData ModelLoader::LoadModelFile(const std::string& directoryPath, const std
 	return modelData;
 }
 
-SkinnedModelData ModelLoader::LoadSkinnedModel(const std::string& directoryPath, const std::string& filename)
+SkinnedModelData ModelLoader::LoadSkinnedModel(const std::string& filename)
 {
 	SkinnedModelData modelData;
 
 	Assimp::Importer importer;
-	std::string filePath = directoryPath + "/" + filename;
+
+	std::string filePath = "Resource/Models/" + filename + "/" + filename + ".gltf";
 
 	const aiScene* scene = importer.ReadFile(filePath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
 	assert(scene && scene->HasMeshes());
@@ -147,7 +122,7 @@ SkinnedModelData ModelLoader::LoadSkinnedModel(const std::string& directoryPath,
 		if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
 			aiString textureFilePath;
 			material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
-			matData.textureFilePath = directoryPath + "/" + textureFilePath.C_Str();
+			matData.textureFilePath = textureFilePath.C_Str();
 			TextureManager::GetInstance()->LoadTexture(matData.textureFilePath);
 			matData.textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(matData.textureFilePath);
 		}

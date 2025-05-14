@@ -22,30 +22,32 @@ void SampleScene::Initialize()
 
 
 	// .objファイルからモデルを読み込む
-	ModelManager::GetInstance()->LoadSkinnedModel("Resource", "walk.gltf");
-	ModelManager::GetInstance()->LoadSkinnedModel("Resource", "simpleSkin.gltf");
-	ModelManager::GetInstance()->LoadSkinnedModel("Resource", "sneakWalk.gltf");
-	ModelManager::GetInstance()->LoadSkinnedModel("Resource", "ParentKoala.gltf");
+	ModelManager::GetInstance()->LoadSkinnedModel("walk");
+	ModelManager::GetInstance()->LoadSkinnedModel("simpleSkin");
+	ModelManager::GetInstance()->LoadSkinnedModel("sneakWalk");
+	ModelManager::GetInstance()->LoadSkinnedModel("ParentKoala");
 
-	ModelManager::GetInstance()->LoadModel("Resource", "plane.obj");
-	//ModelManager::GetInstance()->LoadModel("Resource", "Models/AnimatedCube/AnimatedCube.gltf");
-	ModelManager::GetInstance()->LoadModel("Resource", "Models/Terrain/Terrain.obj");
-	ModelManager::GetInstance()->LoadModel("Resource", "multiMaterial.obj");
-	TextureManager::GetInstance()->LoadTexture("Resource/uvChecker.png");
-	TextureManager::GetInstance()->LoadTexture("Resource/gradationLine.png");
+	ModelManager::GetInstance()->LoadModel("plane");
+	ModelManager::GetInstance()->LoadModel("Terrain");
+	ModelManager::GetInstance()->LoadModel("axis");
+	ModelManager::GetInstance()->LoadModel("ICO");
+	ModelManager::GetInstance()->LoadModel("multiMesh");
+	ModelManager::GetInstance()->LoadModel("multiMaterial");
+	TextureManager::GetInstance()->LoadTexture("uvChecker.png");
+	TextureManager::GetInstance()->LoadTexture("gradationLine.png");
 
 	object_ = std::make_unique<Object3d>();
-	object_->Initialize("walk.gltf");
+	object_->Initialize("Terrain");
 
-	//animationObject_ = std::make_unique<Object3d>();
-	//animationObject_->Initialize("simpleSkin.gltf");
+	animationObject_ = std::make_unique<Object3d>();
+	animationObject_->Initialize("simpleSkin");
 
 	//transform_.Initialize();
 	//animationTransform_.Initialize();
 
-	sprite = std::make_unique<Sprite>();
-	sprite->Initialize("Resource/uvChecker.png");
-	sprite->SetSize({ 32.0f,32.0f });
+	//sprite = std::make_unique<Sprite>();
+	//sprite->Initialize("Resource/uvChecker.png");
+	//sprite->SetSize({ 32.0f,32.0f });
 
 	// ============ライト=================//
 	lightManager_ = std::make_unique<LightManager>();
@@ -54,7 +56,7 @@ void SampleScene::Initialize()
 	lightManager_->SetDirLightActive(0, true);
 	lightManager_->SetDirLightIntensity(0, 1.0f);
 
-	ParticleManager::GetInstance()->CreateParticleGroup("test", "Resource/circle.png");
+	ParticleManager::GetInstance()->CreateParticleGroup("test", "circle.png");
 
 	particleEmitter_ = std::make_unique<ParticleEmitter>();
 	particleEmitter_->Initialize("test");
@@ -77,9 +79,9 @@ void SampleScene::Update()
 	ParticleManager::GetInstance()->Update();
 
 	object_->AnimationUpdate();
-	//animationObject_->AnimationUpdate();
+	animationObject_->AnimationUpdate();
 	cameraManager_.Update();
-	sprite->Update();
+	//sprite->Update();
 
 	Vector3 normalCameraPos = normalCamera_->GetTranslate();
 	Vector3 cameraRotate = normalCamera_->GetRotate();
@@ -111,43 +113,32 @@ void SampleScene::Update()
 
 	object_->Update();
 
-	//animationObject_->Update();
+	animationObject_->Update();
 
-	ImGui::Begin("SetModel");
-	if (ImGui::Button("Set Work"))
-	{
-		object_->SetModel("walk.gltf");
-	}
-	if (ImGui::Button("Set sneakWalk"))
-	{
-		object_->SetModel("sneakWalk.gltf");
-	}
-	ImGui::End();
+	//Vector2 spritePos = sprite->GetPosition();
+	//Vector2 spriteSize = sprite->GetSize();
+	//float spriteRotate = sprite->GetRotation();
 
-	Vector2 spritePos = sprite->GetPosition();
-	Vector2 spriteSize = sprite->GetSize();
-	float spriteRotate = sprite->GetRotation();
+	//Vector2 uvSpritePos = sprite->GetUVPosition();
+	//Vector2 uvSpriteSize = sprite->GetUVSize();
+	//float uvSpriteRotate = sprite->GetUVRotation();
 
-	Vector2 uvSpritePos = sprite->GetUVPosition();
-	Vector2 uvSpriteSize = sprite->GetUVSize();
-	float uvSpriteRotate = sprite->GetUVRotation();
+	//ImGui::Begin("Sprite");
+	//ImGui::DragFloat2("position", &spritePos.x);
+	//ImGui::DragFloat("rotate", &spriteRotate);
+	//ImGui::DragFloat2("size", &spriteSize.x);
+	//ImGui::DragFloat2("UVTranslate", &uvSpritePos.x, 0.01f, -10.0f, 10.0f);
+	//ImGui::DragFloat2("UVScale", &uvSpriteSize.x, 0.01f, -10.0f, 10.0f);
+	//ImGui::SliderAngle("UVRotate", &uvSpriteRotate);
+	//ImGui::End();
 
-	ImGui::Begin("Sprite");
-	ImGui::DragFloat2("position", &spritePos.x);
-	ImGui::DragFloat("rotate", &spriteRotate);
-	ImGui::DragFloat2("size", &spriteSize.x);
-	ImGui::DragFloat2("UVTranslate", &uvSpritePos.x, 0.01f, -10.0f, 10.0f);
-	ImGui::DragFloat2("UVScale", &uvSpriteSize.x, 0.01f, -10.0f, 10.0f);
-	ImGui::SliderAngle("UVRotate", &uvSpriteRotate);
-	ImGui::End();
+	//sprite->SetPosition(spritePos);
+	//sprite->SetSize(spriteSize);
+	//sprite->SetRotation(spriteRotate);
 
-	sprite->SetPosition(spritePos);
-	sprite->SetSize(spriteSize);
-	sprite->SetRotation(spriteRotate);
-
-	sprite->SetUVPosition(uvSpritePos);
-	sprite->SetUVSize(uvSpriteSize);
-	sprite->SetUVRotation(uvSpriteRotate);
+	//sprite->SetUVPosition(uvSpritePos);
+	//sprite->SetUVSize(uvSpriteSize);
+	//sprite->SetUVRotation(uvSpriteRotate);
 }
 
 void SampleScene::Draw()
@@ -167,19 +158,18 @@ void SampleScene::Draw()
 	// 3Dオブジェクト描画前処理
 	Object3dManager::GetInstance()->DrawSetForAnimation();
 	lightManager_->BindLightsToShader();
-	//animationObject_->Draw();
-	object_->Draw();
+	animationObject_->Draw();
 
 	Object3dManager::GetInstance()->DrawSet();
 	lightManager_->BindLightsToShader();
-	//object_->Draw();
+	object_->Draw();
 	
 
 	//SpriteManager::GetInstance()->DrawSet();
 	//sprite->Draw();
 
 	//PrimitiveDrawer::GetInstance()->DrawLine({ 0.0f, 0.0f, 0.0f }, { 0.0f, 5.0f, 0.0f }, {1.0f, 1.0f, 1.0f, 1.0f});
-	PrimitiveDrawer::GetInstance()->DrawRing({ 0.0f, 0.0f, 0.0f }, 0.2f, 1.0f, {1.0f, 1.0f, 1.0f, 1.0f}, 32, RingDrawMode::Fill, "Resource/gradationLine.png");
+	PrimitiveDrawer::GetInstance()->DrawRing({ 0.0f, 0.0f, 0.0f }, 0.2f, 1.0f, {1.0f, 1.0f, 1.0f, 1.0f}, 32, RingDrawMode::Fill, "gradationLine.png");
 	//PrimitiveDrawer::GetInstance()->DrawRing({ 0.0f, 0.0f, 0.0f }, 0.1f, 0.3f, {1.0f, 1.0f, 1.0f, 1.0f}, 32, RingDrawMode::Line);
 }
 
@@ -194,6 +184,10 @@ void SampleScene::DebugUpdate()
 {
 	ImGui::Begin("Object");
 	object_->DebugGui();
+	ImGui::End();
+
+	ImGui::Begin("AnimationObject");
+	animationObject_->DebugGui();
 	ImGui::End();
 }
 #endif

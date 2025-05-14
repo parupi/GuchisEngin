@@ -10,14 +10,12 @@
 #include "Material/Material.h"
 #include <Object3d.h>
 
-void Model::Initialize(ModelLoader* modelManager, const std::string& directoryPath, const std::string& fileName)
+void Model::Initialize(ModelLoader* modelManager, const std::string& fileName)
 {
 	modelLoader_ = modelManager;
 
-	directoryPath_ = directoryPath;
-
 	// モデルの読み込み
-	modelData_ = modelLoader_->LoadModelFile(directoryPath_, fileName);
+	modelData_ = modelLoader_->LoadModelFile(fileName);
 
 	// 各メッシュをMeshクラスへ変換
 	for (const auto& meshData : modelData_.meshes) {

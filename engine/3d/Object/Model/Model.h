@@ -24,7 +24,7 @@ class Model : public BaseModel
 {
 public: // メンバ関数
 	// 初期化
-	void Initialize(ModelLoader* modelLoader, const std::string& directoryPath, const std::string& fileName);
+	void Initialize(ModelLoader* modelLoader, const std::string& fileName);
 
 	void Update() override;
 	// 描画

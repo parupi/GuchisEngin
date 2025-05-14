@@ -6,14 +6,13 @@
 #include "ModelManager.h"
 #include <Object3d.h>
 
-void SkinnedModel::Initialize(ModelLoader* modelLoader, const std::string& directoryPath, const std::string& fileName)
+void SkinnedModel::Initialize(ModelLoader* modelLoader, const std::string& fileName)
 {
 	// モデルローダーの保持
 	modelLoader_ = modelLoader;
-	directoryPath_ = directoryPath;
 
 	// モデルの読み込み
-	modelData_ = modelLoader_->LoadSkinnedModel(directoryPath, fileName);
+	modelData_ = modelLoader_->LoadSkinnedModel(fileName);
 
 	// スケルトン作成
 	skeleton_ = std::make_unique<Skeleton>();

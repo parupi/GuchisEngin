@@ -23,7 +23,7 @@ public:
 	//void ApplySkeleton();
 private:
 	// アニメーションを読む処理
-	AnimationData LoadAnimationFile(const std::string& directoryPath, const std::string& filename);
+	AnimationData LoadAnimationFile(const std::string& filename);
 public:
 	// 任意の時刻を取得する (Vector3)
 	static Vector3 CalculateValue(const std::vector<KeyframeVector3>& keyframes, float time);
