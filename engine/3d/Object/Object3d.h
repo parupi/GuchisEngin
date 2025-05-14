@@ -49,7 +49,6 @@ private: // メンバ変数
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> cameraResource_ = nullptr;
 
-
 	CameraForGPU* cameraData_ = nullptr;
 
 

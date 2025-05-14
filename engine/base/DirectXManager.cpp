@@ -602,6 +602,9 @@ void DirectXManager::EndDraw()
 	UINT backBufferIndex;
 	backBufferIndex = swapChain_->GetCurrentBackBufferIndex();
 
+	// FPS固定
+	UpdateFixFPS();
+
 	// 画面に描く処理はすべて終わり、画面に移すので、状態を遷移
 	// 今回はRenderTargetからPresentにする
 	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
@@ -631,9 +634,6 @@ void DirectXManager::EndDraw()
 		// イベントを待つ
 		WaitForSingleObject(fenceEvent_, INFINITE);
 	}
-
-	// FPS固定
-	UpdateFixFPS();
 
 	// 次のフレーム用のコマンドリストを準備
 	hr = commandAllocator_->Reset();
