@@ -39,13 +39,13 @@ void TextureManager::LoadTexture(const std::string& fileName)
 	}
 
 	// テクスチャ枚数上限チェック
-	assert(srvManager_->CanAllocate());
+	ASSERT_MSG(srvManager_->CanAllocate(), "[TextureManager] Maximum number of textures reached. Cannot register new texture.");
 
 	// テクスチャファイルを呼んでプログラムで扱えるようにする
 	DirectX::ScratchImage image{};
 	std::wstring filePathW = StringUtility::ConvertString(filePath);
 	HRESULT hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
-	assert(SUCCEEDED(hr));
+	ASSERT_MSG(SUCCEEDED(hr), ("[TextureManager] Failed to find texture"));
 
 	// ミニマップの作成
 	DirectX::ScratchImage mipImages{};

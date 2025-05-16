@@ -137,6 +137,10 @@ void SampleScene::Update()
 	//sprite->SetUVPosition(uvSpritePos);
 	//sprite->SetUVSize(uvSpriteSize);
 	//sprite->SetUVRotation(uvSpriteRotate);
+
+	ImGui::Begin("primitive");
+	ImGui::DragFloat3("position", &pos_.x, 0.01f);
+	ImGui::End();
 }
 
 void SampleScene::Draw()
@@ -167,7 +171,8 @@ void SampleScene::Draw()
 	//sprite->Draw();
 
 	//PrimitiveDrawer::GetInstance()->DrawLine({ 0.0f, 0.0f, 0.0f }, { 0.0f, 5.0f, 0.0f }, {1.0f, 1.0f, 1.0f, 1.0f});
-	PrimitiveDrawer::GetInstance()->DrawRing({ 0.0f, 0.0f, 0.0f }, 0.2f, 1.0f, {1.0f, 1.0f, 1.0f, 1.0f}, 32, RingDrawMode::Fill, "uvChecker.png");
+	//PrimitiveDrawer::GetInstance()->DrawRing(pos_, 0.2f, 1.0f, {1.0f, 1.0f, 1.0f, 1.0f}, 32, RingDrawMode::Fill, "gradationLine.png");
+	PrimitiveDrawer::GetInstance()->DrawCylinder(pos_, 32, 0.5f, 0.5f, 3.0f, "gradationLine.png");
 	//PrimitiveDrawer::GetInstance()->DrawRing({ 0.0f, 0.0f, 0.0f }, 0.1f, 0.3f, {1.0f, 1.0f, 1.0f, 1.0f}, 32, RingDrawMode::Line);
 }
 

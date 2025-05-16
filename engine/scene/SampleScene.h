@@ -55,5 +55,6 @@ private:
 	//float angle = 1.0f;
 	//std::unique_ptr<GrayEffect> grayEffect_ = nullptr;
 
+	Vector3 pos_{0.0f, -2.0f, 0.0f};
 };
 

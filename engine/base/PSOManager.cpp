@@ -978,7 +978,9 @@ void PSOManager::CreatePrimitivePSO()
 	// Depth 無効化
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
 	depthStencilDesc.DepthEnable = false;
-	depthStencilDesc.StencilEnable = false;
+	//depthStencilDesc.StencilEnable = false;
+	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_EQUAL;
 
 	// PSO 設定
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc{};
