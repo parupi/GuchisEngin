@@ -44,6 +44,8 @@ public:
 	void DrawLine(const Vector3& start, const Vector3& end, const Vector4& color);
 	// リング描画
 	void DrawRing(const Vector3& center, float innerRadius, float outerRadius, Vector4 color, int kRingDivide, RingDrawMode mode = RingDrawMode::Fill, std::string filePath = "");
+	// シリンダー描画
+	void DrawCylinder(const Vector3& center, float divide, float topRadius, float bottomRadius, float height, std::string filePath = "");
 private:
 	// リソースの更新
 	void UpdateVertexResource();
