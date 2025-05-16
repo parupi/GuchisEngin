@@ -50,8 +50,8 @@ void SampleScene::Initialize()
 	//sprite->SetSize({ 32.0f,32.0f });
 
 	// ============ライト=================//
-	lightManager_ = std::make_unique<LightManager>();
-	lightManager_->Initialize();
+	//lightManager_ = std::make_unique<LightManager>();
+	
 
 	lightManager_->SetDirLightActive(0, true);
 	lightManager_->SetDirLightIntensity(0, 1.0f);

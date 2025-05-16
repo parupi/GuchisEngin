@@ -46,7 +46,7 @@ private:
 
 	//WorldTransform transform_;
 	//WorldTransform animationTransform_;
-	std::unique_ptr<LightManager> lightManager_;
+	LightManager* lightManager_ = LightManager::GetInstance();
 
 	//ParticleManager* particleManager_ = nullptr;
 	std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;

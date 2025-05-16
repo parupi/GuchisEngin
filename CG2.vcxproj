@@ -113,7 +113,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\debuger\DebugSphere.cpp" />
     <ClCompile Include="engine\3d\Object\Model\Animation\Animation.cpp" />
     <ClCompile Include="engine\3d\Camera\CameraManager.cpp" />
-    <ClCompile Include="engine\3d\LightManager.cpp" />
+    <ClCompile Include="engine\3d\Light\LightManager.cpp" />
     <ClCompile Include="engine\3d\Object\Model\Animation\Skeleton.cpp" />
     <ClCompile Include="engine\3d\WorldTransform.cpp" />
     <ClCompile Include="engine\audio\Audio.cpp" />
@@ -170,6 +170,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\offscreen\VignetteEffect.cpp" />
     <ClCompile Include="engine\offscreen\SmoothEffect.cpp" />
     <ClCompile Include="engine\3d\Primitive\PrimitiveDrawer.cpp" />
+    <ClCompile Include="engine\3d\Light\PointLight.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\BoxFilter.PS.hlsl">
@@ -256,6 +257,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\3d\Light\BaseLight.h" />
+    <ClInclude Include="engine\3d\Light\LightStructs.h" />
     <ClInclude Include="engine\3d\Object\Model\BaseModel.h" />
     <ClInclude Include="engine\offscreen\BaseOffScreen.h" />
     <ClInclude Include="engine\base\utility\DeltaTime.h" />
@@ -263,7 +266,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\debuger\DebugSphere.h" />
     <ClInclude Include="engine\3d\Object\Model\Animation\Animation.h" />
     <ClInclude Include="engine\3d\Camera\CameraManager.h" />
-    <ClInclude Include="engine\3d\LightManager.h" />
+    <ClInclude Include="engine\3d\Light\LightManager.h" />
     <ClInclude Include="engine\3d\Object\Model\Animation\Skeleton.h" />
     <ClInclude Include="engine\3d\WorldTransform.h" />
     <ClInclude Include="engine\audio\Audio.h" />
@@ -323,6 +326,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\offscreen\VignetteEffect.h" />
     <ClInclude Include="engine\offscreen\SmoothEffect.h" />
     <ClInclude Include="engine\3d\Primitive\PrimitiveDrawer.h" />
+    <ClInclude Include="engine\3d\Light\PointLight.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

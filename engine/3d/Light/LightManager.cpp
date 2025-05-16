@@ -2,13 +2,30 @@
 #include <Object3dManager.h>
 #include <numbers>
 
-void LightManager::Initialize()
+LightManager* LightManager::instance = nullptr;
+std::once_flag LightManager::initInstanceFlag;
+
+LightManager* LightManager::GetInstance()
 {
-	dxManager_ = Object3dManager::GetInstance()->GetDxManager();
+	std::call_once(initInstanceFlag, []() {
+		instance = new LightManager();
+		});
+	return instance;
+}
+
+void LightManager::Initialize(DirectXManager* dxManager)
+{
+	dxManager_ = dxManager;
 
 	CreateDirLightResource();
 	CreatePointLightResource();
 	CreateSpotLightResource();
+}
+
+void LightManager::Finalize()
+{
+	delete instance;
+	instance = nullptr;
 }
 
 void LightManager::BindLightsToShader()
@@ -31,11 +48,11 @@ void LightManager::BindLightsToShader()
 
 void LightManager::CreateDirLightResource()
 {
-	dirLightResource1_ = dxManager_->CreateBufferResource(sizeof(DirectionalLight));
+	dirLightResource1_ = dxManager_->CreateBufferResource(sizeof(DirectionalLightData));
 	dirLightResource1_->Map(0, nullptr, reinterpret_cast<void**>(&dirLightData1_));
-	dirLightResource2_ = dxManager_->CreateBufferResource(sizeof(DirectionalLight));
+	dirLightResource2_ = dxManager_->CreateBufferResource(sizeof(DirectionalLightData));
 	dirLightResource2_->Map(0, nullptr, reinterpret_cast<void**>(&dirLightData2_));
-	dirLightResource3_ = dxManager_->CreateBufferResource(sizeof(DirectionalLight));
+	dirLightResource3_ = dxManager_->CreateBufferResource(sizeof(DirectionalLightData));
 	dirLightResource3_->Map(0, nullptr, reinterpret_cast<void**>(&dirLightData3_));
 	dirLightData1_->color = { 1.0f, 1.0f, 1.0f, 1.0f };
 	dirLightData1_->direction = { 0.0f, -2.0f, 1.0f };
@@ -53,11 +70,11 @@ void LightManager::CreateDirLightResource()
 
 void LightManager::CreatePointLightResource()
 {
-	pointLightResource1_ = dxManager_->CreateBufferResource(sizeof(PointLight));
+	pointLightResource1_ = dxManager_->CreateBufferResource(sizeof(PointLightData));
 	pointLightResource1_->Map(0, nullptr, reinterpret_cast<void**>(&pointLightData1_));
-	pointLightResource2_ = dxManager_->CreateBufferResource(sizeof(PointLight));
+	pointLightResource2_ = dxManager_->CreateBufferResource(sizeof(PointLightData));
 	pointLightResource2_->Map(0, nullptr, reinterpret_cast<void**>(&pointLightData2_));
-	pointLightResource3_ = dxManager_->CreateBufferResource(sizeof(PointLight));
+	pointLightResource3_ = dxManager_->CreateBufferResource(sizeof(PointLightData));
 	pointLightResource3_->Map(0, nullptr, reinterpret_cast<void**>(&pointLightData3_));
 	pointLightData1_->color = { 1.0f, 1.0f, 1.0f, 1.0f };
 	pointLightData1_->decay = 1.0f;
@@ -81,11 +98,11 @@ void LightManager::CreatePointLightResource()
 
 void LightManager::CreateSpotLightResource()
 {
-	spotLightResource1_ = dxManager_->CreateBufferResource(sizeof(SpotLight));
+	spotLightResource1_ = dxManager_->CreateBufferResource(sizeof(SpotLightData));
 	spotLightResource1_->Map(0, nullptr, reinterpret_cast<void**>(&spotLightData1_));
-	spotLightResource2_ = dxManager_->CreateBufferResource(sizeof(SpotLight));
+	spotLightResource2_ = dxManager_->CreateBufferResource(sizeof(SpotLightData));
 	spotLightResource2_->Map(0, nullptr, reinterpret_cast<void**>(&spotLightData2_));
-	spotLightResource3_ = dxManager_->CreateBufferResource(sizeof(SpotLight));
+	spotLightResource3_ = dxManager_->CreateBufferResource(sizeof(SpotLightData));
 	spotLightResource3_->Map(0, nullptr, reinterpret_cast<void**>(&spotLightData3_));
 	spotLightData1_->color = { 1.0f, 1.0f, 1.0f, 1.0f };
 	spotLightData1_->position = { 2.0f, 1.25f, 0.0f };

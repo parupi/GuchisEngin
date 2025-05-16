@@ -5,12 +5,13 @@
 #include <wrl.h>
 #include <d3d12.h>
 #include <DirectXManager.h>
+#include <mutex>
 
 constexpr int maxDirLights = 3;
 constexpr int maxPointLights = 3; // ポイントライトの最大数
 constexpr int maxSpotLights = 3;   // スポットライトの最大数
 
-struct DirectionalLight {
+struct DirectionalLightData {
 	Vector4 color;		//!< ライトの色
 	Vector3 direction;	//!< ライトの向き
 	float intensity;	//!< 輝度
@@ -18,7 +19,7 @@ struct DirectionalLight {
 };
 
 // pointLight
-struct PointLight {
+struct PointLightData {
 	Vector4 color; //!<ライトの色
 	Vector3 position; //!<ライトの位置
 	float intensity; //!< 輝度
@@ -29,7 +30,7 @@ struct PointLight {
 };
 
 // spotLight
-struct SpotLight {
+struct SpotLightData {
 	Vector4 color; //!< ライトの色
 	Vector3 position; //!< ライトの位置
 	float intensity; //!< 輝度
@@ -43,8 +44,20 @@ struct SpotLight {
 
 class LightManager
 {
+private:
+	static LightManager* instance;
+	static std::once_flag initInstanceFlag;
+
+	LightManager() = default;
+	~LightManager() = default;
+	LightManager(LightManager&) = default;
+	LightManager& operator=(LightManager&) = default;
 public:
-	void Initialize();
+	// シングルトンインスタンスの取得
+	static LightManager* GetInstance();
+
+	void Initialize(DirectXManager* dxManager);
+	void Finalize();
 	void BindLightsToShader();
 private:
 	void CreateDirLightResource();
@@ -63,15 +76,15 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> spotLightResource2_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Resource> spotLightResource3_ = nullptr;
 
-	DirectionalLight* dirLightData1_ = nullptr;
-	DirectionalLight* dirLightData2_ = nullptr;
-	DirectionalLight* dirLightData3_ = nullptr;
-	PointLight* pointLightData1_ = nullptr;
-	PointLight* pointLightData2_ = nullptr;
-	PointLight* pointLightData3_ = nullptr;
-	SpotLight* spotLightData1_ = nullptr;
-	SpotLight* spotLightData2_ = nullptr;
-	SpotLight* spotLightData3_ = nullptr;
+	DirectionalLightData* dirLightData1_ = nullptr;
+	DirectionalLightData* dirLightData2_ = nullptr;
+	DirectionalLightData* dirLightData3_ = nullptr;
+	PointLightData* pointLightData1_ = nullptr;
+	PointLightData* pointLightData2_ = nullptr;
+	PointLightData* pointLightData3_ = nullptr;
+	SpotLightData* spotLightData1_ = nullptr;
+	SpotLightData* spotLightData2_ = nullptr;
+	SpotLightData* spotLightData3_ = nullptr;
 
 public: // ゲッター // セッター //
 	// DirLight
