@@ -33,7 +33,7 @@ public:
 #endif // _DEBUG
 
 private:
-	CameraManager cameraManager_;
+	CameraManager* cameraManager_ = CameraManager::GetInstance();
 	std::shared_ptr<Camera> normalCamera_;
 
 	std::unique_ptr<Object3d> object_;

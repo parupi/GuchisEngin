@@ -16,14 +16,6 @@ void Mesh::Initialize(DirectXManager* directXManager, SrvManager* srvManager, co
 
 void Mesh::Draw()
 {
-	//D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
-	//	vertexBufferView_,
-	//	skinCluster_->GetSkinCluster().influenceBufferView
-	//};
-	//// VertexBufferViewを設定
-	//directXManager_->GetCommandList()->IASetVertexBuffers(0, 2, vbvs);
-
-
 	// VertexBufferViewを設定
 	directXManager_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 	directXManager_->GetCommandList()->IASetIndexBuffer(&indexBufferView_);

@@ -3,6 +3,7 @@
 #include <ParticleManager.h>
 #include "offscreen/OffScreenManager.h"
 #include "Primitive/PrimitiveDrawer.h"
+#include <CameraManager.h>
 
 void MyGameTitle::Initialize()
 {
@@ -24,6 +25,7 @@ void MyGameTitle::Initialize()
 
 	PrimitiveDrawer::GetInstance()->Initialize(dxManager.get(), psoManager.get(), srvManager.get());
 
+	CameraManager::GetInstance()->Initialize();
 	// 最初のシーンを生成
 	sceneFactory_ = std::make_unique<SceneFactory>();
 	// シーンマネージャーに最初のシーンをセット
@@ -37,6 +39,7 @@ void MyGameTitle::Initialize()
 
 void MyGameTitle::Finalize()
 {
+	CameraManager::GetInstance()->Finalize();
 	ParticleManager::GetInstance()->Finalize();
 	SpriteManager::GetInstance()->Finalize();
 	Object3dManager::GetInstance()->Finalize();

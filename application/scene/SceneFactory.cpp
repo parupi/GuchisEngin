@@ -11,9 +11,9 @@ BaseScene* SceneFactory::CreateScene(const std::string& sceneName)
 	BaseScene* newScene = nullptr;
 
 	if (sceneName == "TITLE") {
-		newScene = new TitleScene();
+		//newScene = new TitleScene();
 	} else if (sceneName == "GAMEPLAY") {
-		newScene = new GameScene();
+		//newScene = new GameScene();
 	} else if (sceneName == "RESULT") {
 		//newScene = new Result();
 	} else if (sceneName == "TUTORIAL") {

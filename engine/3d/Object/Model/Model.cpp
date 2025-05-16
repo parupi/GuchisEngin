@@ -42,13 +42,14 @@ void Model::Update()
 
 void Model::Draw()
 {
-		for (size_t i = 0; i < materials_.size(); i++) {
-			materials_[i]->Draw();
-		}
+	for (const auto& mesh : meshes_) {
+		// このメッシュに対応するマテリアルを設定
+		assert(mesh->GetMeshData().materialIndex < materials_.size());
+		materials_[mesh->GetMeshData().materialIndex]->Draw();
 
-		for (size_t i = 0; i < meshes_.size(); i++) {
-			meshes_[i]->Draw();
-		}
+		// メッシュを描画
+		mesh->Draw();
+	}
 }
 
 #ifdef _DEBUG
@@ -90,7 +91,7 @@ void Model::DebugGui(Object3d* object)
 		if (i == 0) {
 			continue;
 		}
-		materials_[i]->DebugGui(i);
+		materials_[i]->DebugGui(static_cast<uint32_t>(i));
 	}
 }
 #endif // _DEBUG
