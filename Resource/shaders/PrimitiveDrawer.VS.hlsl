@@ -1,8 +1,6 @@
 cbuffer Camera : register(b0)
 {
-    matrix matWorld;
-    matrix matView;
-    matrix matProj;
+    matrix viewProj;
 }
 
 struct VSInput
@@ -22,9 +20,7 @@ struct PSInput
 PSInput main(VSInput input)
 {
     PSInput output;
-    float4 worldPos = mul(float4(input.pos, 1.0f), matWorld);
-    float4 viewPos = mul(worldPos, matView);
-    output.pos = mul(viewPos, matProj);
+    output.pos = mul(float4(input.pos, 1.0f), viewProj);
     
     output.color = input.color;
     output.uv = input.uv;

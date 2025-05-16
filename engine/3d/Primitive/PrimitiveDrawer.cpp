@@ -1,6 +1,7 @@
 #include "PrimitiveDrawer.h"
 #include <numbers>
 #include <TextureManager.h>
+#include <Camera/CameraManager.h>
 
 PrimitiveDrawer* PrimitiveDrawer::instance = nullptr;
 std::once_flag PrimitiveDrawer::initInstanceFlag;
@@ -184,6 +185,12 @@ void PrimitiveDrawer::UpdateIndexResource()
 
 void PrimitiveDrawer::UploadAndDraw(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, D3D_PRIMITIVE_TOPOLOGY topology)
 {
+	const Matrix4x4& viewProjectionMatrix = CameraManager::GetInstance()->GetActiveCamera()->GetViewProjectionMatrix();
+	Matrix4x4 worldViewProjectionMatrix = transform_->GetMatWorld() * viewProjectionMatrix;
+
+	transform_->SetMapWVP(worldViewProjectionMatrix);
+	transform_->SetMapWorld(transform_->GetMatWorld());
+
 	// 頂点バッファをアップロード
    // インデックスバッファをアップロード
 	dxManager_->GetCommandList()->SetPipelineState(psoManager_->GetPrimitivePSO().Get());

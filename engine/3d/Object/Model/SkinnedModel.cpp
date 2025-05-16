@@ -61,12 +61,13 @@ void SkinnedModel::Draw()
 	const auto& view = skinCluster_->GetSkinCluster().influenceBufferView;
 	modelLoader_->GetDxManager()->GetCommandList()->IASetVertexBuffers(1, 1, &view);
 
-	for (size_t i = 0; i < materials_.size(); i++) {
-		materials_[i]->Draw();
-	}
+	for (const auto& mesh : meshes_) {
+		// このメッシュに対応するマテリアルを設定
+		assert(mesh->GetMeshData().materialIndex < materials_.size());
+		materials_[mesh->GetMeshData().materialIndex]->Draw();
 
-	for (size_t i = 0; i < meshes_.size(); i++) {
-		meshes_[i]->Draw();
+		// メッシュを描画
+		mesh->Draw();
 	}
 }
 

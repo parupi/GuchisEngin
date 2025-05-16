@@ -37,11 +37,11 @@ private:
 		kFadeOut
 	};
 private:
-	std::shared_ptr<Camera> camera_ = nullptr;
-	CameraManager cameraManager_;
-	std::unique_ptr<Fade> fade_;
+	//std::shared_ptr<Camera> camera_ = nullptr;
+	//CameraManager cameraManager_;
+	//std::unique_ptr<Fade> fade_;
 
-	TitlePhase phase_ = TitlePhase::kFadeIn;
+	//TitlePhase phase_ = TitlePhase::kFadeIn;
 
 	//std::unique_ptr<ParticleManager> particleManager_ = nullptr;
 	//std::unique_ptr<ParticleEmitter> snowEmitter_ = nullptr;

@@ -15,8 +15,8 @@ void SampleScene::Initialize()
 {
 	// カメラの生成
 	normalCamera_ = std::make_shared<Camera>();
-	cameraManager_.AddCamera(normalCamera_);
-	cameraManager_.SetActiveCamera(0);
+	cameraManager_->AddCamera(normalCamera_);
+	cameraManager_->SetActiveCamera(0);
 	normalCamera_->SetTranslate(Vector3{ 0.0f, 35.0f, -44.0f });
 	normalCamera_->SetRotate(Vector3{ 0.68f, 0.0f, 0.0f });
 
@@ -80,7 +80,7 @@ void SampleScene::Update()
 
 	object_->AnimationUpdate();
 	animationObject_->AnimationUpdate();
-	cameraManager_.Update();
+	cameraManager_->Update();
 	//sprite->Update();
 
 	Vector3 normalCameraPos = normalCamera_->GetTranslate();
@@ -171,8 +171,14 @@ void SampleScene::Draw()
 	//sprite->Draw();
 
 	//PrimitiveDrawer::GetInstance()->DrawLine({ 0.0f, 0.0f, 0.0f }, { 0.0f, 5.0f, 0.0f }, {1.0f, 1.0f, 1.0f, 1.0f});
-	//PrimitiveDrawer::GetInstance()->DrawRing(pos_, 0.2f, 1.0f, {1.0f, 1.0f, 1.0f, 1.0f}, 32, RingDrawMode::Fill, "gradationLine.png");
-	PrimitiveDrawer::GetInstance()->DrawCylinder(pos_, 32, 0.5f, 0.5f, 3.0f, "gradationLine.png");
+	for (uint32_t i = 0; i < 30; i++) {
+		Vector3 pos = pos_;
+		pos.y += i;
+
+		PrimitiveDrawer::GetInstance()->DrawRing(pos, 0.2f, 1.0f, { 1.0f, 1.0f, 1.0f, 1.0f }, 32, RingDrawMode::Fill, "gradationLine.png");
+		PrimitiveDrawer::GetInstance()->DrawCylinder(pos, 32, 0.5f, 0.5f, 3.0f, "gradationLine.png");
+	}
+
 	//PrimitiveDrawer::GetInstance()->DrawRing({ 0.0f, 0.0f, 0.0f }, 0.1f, 0.3f, {1.0f, 1.0f, 1.0f, 1.0f}, 32, RingDrawMode::Line);
 }
 

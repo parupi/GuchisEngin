@@ -33,4 +33,7 @@ private:
 
 	MeshData meshData_;
 
+public:
+	MeshData& GetMeshData() { return meshData_; }
+
 };
