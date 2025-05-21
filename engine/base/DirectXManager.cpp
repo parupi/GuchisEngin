@@ -553,6 +553,8 @@ void DirectXManager::BeginDraw()
 		D3D12_RESOURCE_STATE_GENERIC_READ
 	);
 
+
+
 	// バックバッファのリソースバリアを設定
 	TransitionResource(
 		backBuffers_[backBufferIndex].Get(),
@@ -580,6 +582,7 @@ void DirectXManager::BeginDrawForRenderTarget()
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		D3D12_RESOURCE_STATE_RENDER_TARGET
 	);
+
 	// 描画ターゲットと深度ステンシルビューの設定
 	SetRenderTargets(rtvHandles_[2]);
 

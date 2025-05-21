@@ -16,7 +16,8 @@
             1.0,
             1.0
         ],
-        "maxLifeTime": 2.0,
+        "maxLifeTime": 0.0,
+
         "maxRotate": [
             0.0,
             0.0,
@@ -37,13 +38,9 @@
             0.0,
             0.0
         ],
-        "minAlpha": 0.4300000071525574,
-        "minColor": [
-            1.0,
-            1.0,
-            1.0
-        ],
-        "minLifeTime": 1.5,
+        "minLifeTime": 0.0,
+
+
         "minRotate": [
             0.0,
             0.0,

@@ -1,6 +1,7 @@
 #include "PrimitiveDrawer.h"
 #include <numbers>
 #include <TextureManager.h>
+#include <Camera/CameraManager.h>
 
 PrimitiveDrawer* PrimitiveDrawer::instance = nullptr;
 std::once_flag PrimitiveDrawer::initInstanceFlag;
@@ -105,6 +106,55 @@ void PrimitiveDrawer::DrawRing(const Vector3& center, float innerRadius, float o
 	}
 }
 
+void PrimitiveDrawer::DrawCylinder(const Vector3& center, float divide, float topRadius, float bottomRadius, float height, std::string filePath)
+{
+	bool useTexture = filePath != "";
+
+	// テクスチャが指定されている場合は GPU ハンドルを取得
+	if (useTexture) {
+		textureIndex_ = TextureManager::GetInstance()->GetTextureIndexByFilePath(filePath);
+	}
+
+	const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / static_cast<float>(divide);
+
+	for (uint32_t index = 0; index < divide; ++index) {
+		float sin0 = std::sin(index * radianPerDivide);
+		float cos0 = std::cos(index * radianPerDivide);
+		float sin1 = std::sin((index + 1) * radianPerDivide);
+		float cos1 = std::cos((index + 1) * radianPerDivide);
+		float u0 = float(index) / divide;
+		float u1 = float(index + 1) / divide;
+
+		// UVは内外でv=1.0と0.0に固定
+		Vector2 uvOuter0 = { u0, 0.0f };
+		Vector2 uvOuter1 = { u1, 0.0f };
+		Vector2 uvInner0 = { u0, 1.0f };
+		Vector2 uvInner1 = { u1, 1.0f };
+
+		// 頂点4つ
+		Vertex v0 = { { center.x + -sin0 * topRadius, center.y + height, center.z + cos0 * topRadius },{ 1.0f, 1.0f, 1.0f, 1.0f } ,useTexture ? uvOuter0 : Vector2{} };
+		Vertex v1 = { { center.x + -sin0 * bottomRadius, center.y + 0.0f, center.z + cos0 * bottomRadius }, { 1.0f, 1.0f, 1.0f, 1.0f } ,useTexture ? uvInner0 : Vector2{} };
+		Vertex v2 = { { center.x + -sin1 * topRadius, center.y + height, center.z + cos1 * topRadius }, { 1.0f, 1.0f, 1.0f, 1.0f },useTexture ? uvOuter1 : Vector2{} };
+		Vertex v3 = { { center.x + -sin1 * bottomRadius, center.y + 0.0f, center.z + cos1 * bottomRadius },{ 1.0f, 1.0f, 1.0f, 1.0f } ,useTexture ? uvInner1 : Vector2{} };
+
+		uint16_t baseIndex = static_cast<uint16_t>(vertices_.size());
+		vertices_.push_back(v0);
+		vertices_.push_back(v1);
+		vertices_.push_back(v2);
+		vertices_.push_back(v3);
+
+		// 三角形2枚
+		indices_.push_back(baseIndex + 0);
+		indices_.push_back(baseIndex + 1);
+		indices_.push_back(baseIndex + 2);
+
+		indices_.push_back(baseIndex + 2);
+		indices_.push_back(baseIndex + 1);
+		indices_.push_back(baseIndex + 3);
+		currentTopology_ = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	}
+}
+
 void PrimitiveDrawer::UpdateVertexResource()
 {
 	vertexResource_ = dxManager_->CreateBufferResource(sizeof(Vertex) * vertices_.size());
@@ -135,6 +185,12 @@ void PrimitiveDrawer::UpdateIndexResource()
 
 void PrimitiveDrawer::UploadAndDraw(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, D3D_PRIMITIVE_TOPOLOGY topology)
 {
+	const Matrix4x4& viewProjectionMatrix = CameraManager::GetInstance()->GetActiveCamera()->GetViewProjectionMatrix();
+	Matrix4x4 worldViewProjectionMatrix = transform_->GetMatWorld() * viewProjectionMatrix;
+
+	transform_->SetMapWVP(worldViewProjectionMatrix);
+	transform_->SetMapWorld(transform_->GetMatWorld());
+
 	// 頂点バッファをアップロード
    // インデックスバッファをアップロード
 	dxManager_->GetCommandList()->SetPipelineState(psoManager_->GetPrimitivePSO().Get());
