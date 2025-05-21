@@ -9,11 +9,11 @@
 #include <Audio.h>
 #include <CameraManager.h>
 #include <WorldTransform.h>
-#include <LightManager.h>
 #include <ParticleEmitter.h>
 #include "DebugSphere.h"
 //#include <OffScreen.h>
 #include "offscreen/GrayEffect.h"
+#include <Light/LightManager.h>
 class SampleScene : public BaseScene
 {
 public:
@@ -46,11 +46,12 @@ private:
 
 	//WorldTransform transform_;
 	//WorldTransform animationTransform_;
-	std::unique_ptr<LightManager> lightManager_;
+	LightManager* lightManager_ = LightManager::GetInstance();
 
 	//ParticleManager* particleManager_ = nullptr;
 	std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
 
+	DirectionalLight* dirLight_;
 	//Vector3 axis = { 0.0f, 0.0f, 0.0f };
 	//float angle = 1.0f;
 	//std::unique_ptr<GrayEffect> grayEffect_ = nullptr;

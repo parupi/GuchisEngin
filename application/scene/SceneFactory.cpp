@@ -1,6 +1,6 @@
 #include "SceneFactory.h"
-#include <TitleScene.h>
-#include <GameScene.h>
+//#include <TitleScene.h>
+//#include <GameScene.h>
 //#include <Result.h>
 //#include <TutorialScene.h>
 #include "SampleScene.h"
