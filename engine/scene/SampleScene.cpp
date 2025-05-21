@@ -51,10 +51,13 @@ void SampleScene::Initialize()
 
 	// ============ライト=================//
 	//lightManager_ = std::make_unique<LightManager>();
-	
-
-	lightManager_->SetDirLightActive(0, true);
-	lightManager_->SetDirLightIntensity(0, 1.0f);
+	std::unique_ptr<DirectionalLight> dirLight;
+	dirLight = std::make_unique<DirectionalLight>("dir1");
+	dirLight->GetLightData().intensity = 1.0f;
+	dirLight->GetLightData().enabled = true;
+	dirLight->GetLightData().color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	dirLight->GetLightData().direction = { 0.0f, 0.0f, 1.0f };
+	lightManager_->AddDirectionalLight(std::move(dirLight));
 
 	ParticleManager::GetInstance()->CreateParticleGroup("test", "circle.png");
 
@@ -82,6 +85,14 @@ void SampleScene::Update()
 	animationObject_->AnimationUpdate();
 	cameraManager_.Update();
 	//sprite->Update();
+
+	dirLight_ = lightManager_->GetDirectionalLight("dir1");
+
+	ImGui::Begin("Light");
+	ImGui::DragFloat3("Direction", &dirLight_->GetLightData().direction.x, 0.01f);
+	ImGui::End();
+
+	lightManager_->UpdateAllLight();
 
 	Vector3 normalCameraPos = normalCamera_->GetTranslate();
 	Vector3 cameraRotate = normalCamera_->GetRotate();

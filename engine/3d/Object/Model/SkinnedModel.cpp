@@ -56,7 +56,7 @@ void SkinnedModel::Update()
 
 void SkinnedModel::Draw()
 {
-	modelLoader_->GetDxManager()->GetCommandList()->SetGraphicsRootDescriptorTable(13, skinCluster_->GetSkinCluster().paletteSrvHandle.second);
+	modelLoader_->GetDxManager()->GetCommandList()->SetGraphicsRootDescriptorTable(7, skinCluster_->GetSkinCluster().paletteSrvHandle.second);
 
 	const auto& view = skinCluster_->GetSkinCluster().influenceBufferView;
 	modelLoader_->GetDxManager()->GetCommandList()->IASetVertexBuffers(1, 1, &view);

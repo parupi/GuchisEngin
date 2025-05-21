@@ -108,6 +108,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\3d\Light\BaseLight.cpp" />
+    <ClCompile Include="engine\3d\Light\DirectionalLight.cpp" />
     <ClCompile Include="engine\offscreen\BaseOffScreen.cpp" />
     <ClCompile Include="engine\base\utility\DeltaTime.cpp" />
     <ClCompile Include="engine\debuger\DebugSphere.cpp" />
@@ -133,7 +135,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\debuger\ImGuiManager.cpp" />
     <ClCompile Include="engine\debuger\LeakChecker.cpp" />
     <ClCompile Include="engine\core\GuchisFramework.cpp" />
-    <ClCompile Include="application\scene\GameScene.cpp" />
     <ClCompile Include="application\scene\fade\Fade.cpp" />
     <ClCompile Include="engine\offscreen\GrayEffect.cpp" />
     <ClCompile Include="main.cpp" />
@@ -152,7 +153,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\base\SrvManager.cpp" />
     <ClCompile Include="engine\base\ParticleManager.cpp" />
     <ClCompile Include="engine\core\MyGameTitle.cpp" />
-    <ClCompile Include="application\scene\TitleScene.cpp" />
     <ClCompile Include="engine\scene\SceneManager.cpp" />
     <ClCompile Include="application\scene\SceneFactory.cpp" />
     <ClCompile Include="engine\base\ParticleEmitter.cpp" />
@@ -171,6 +171,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\offscreen\SmoothEffect.cpp" />
     <ClCompile Include="engine\3d\Primitive\PrimitiveDrawer.cpp" />
     <ClCompile Include="engine\3d\Light\PointLight.cpp" />
+    <ClCompile Include="engine\3d\Light\SpotLight.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\BoxFilter.PS.hlsl">
@@ -257,6 +258,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\3d\Light\DirectionalLight.h" />
     <ClInclude Include="engine\3d\Light\BaseLight.h" />
     <ClInclude Include="engine\3d\Light\LightStructs.h" />
     <ClInclude Include="engine\3d\Object\Model\BaseModel.h" />
@@ -307,8 +309,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\core\MyGameTitle.h" />
     <ClInclude Include="engine\debuger\LeakChecker.h" />
     <ClInclude Include="engine\core\GuchisFramework.h" />
-    <ClInclude Include="application\scene\GameScene.h" />
-    <ClInclude Include="application\scene\TitleScene.h" />
     <ClInclude Include="engine\scene\SceneManager.h" />
     <ClInclude Include="application\scene\SceneFactory.h" />
     <ClInclude Include="engine\base\ParticleEmitter.h" />
@@ -327,6 +327,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\offscreen\SmoothEffect.h" />
     <ClInclude Include="engine\3d\Primitive\PrimitiveDrawer.h" />
     <ClInclude Include="engine\3d\Light\PointLight.h" />
+    <ClInclude Include="engine\3d\Light\SpotLight.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

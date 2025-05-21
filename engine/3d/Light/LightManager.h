@@ -6,41 +6,15 @@
 #include <d3d12.h>
 #include <DirectXManager.h>
 #include <mutex>
+#include "BaseLight.h"
+#include "LightStructs.h"
+#include "DirectionalLight.h"
+#include "PointLight.h"
+#include "SpotLight.h"
 
 constexpr int maxDirLights = 3;
 constexpr int maxPointLights = 3; // ポイントライトの最大数
 constexpr int maxSpotLights = 3;   // スポットライトの最大数
-
-struct DirectionalLightData {
-	Vector4 color;		//!< ライトの色
-	Vector3 direction;	//!< ライトの向き
-	float intensity;	//!< 輝度
-	int enabled;
-};
-
-// pointLight
-struct PointLightData {
-	Vector4 color; //!<ライトの色
-	Vector3 position; //!<ライトの位置
-	float intensity; //!< 輝度
-	float radius; //!< ライトの届く最大距離
-	float decay; //!< 減衰率
-	int enabled;
-	float padding[2];
-};
-
-// spotLight
-struct SpotLightData {
-	Vector4 color; //!< ライトの色
-	Vector3 position; //!< ライトの位置
-	float intensity; //!< 輝度
-	Vector3 direction; //!< ライトの向き
-	float distance; //!< ライトの届く最大距離
-	float decay; //!< 減衰率
-	float cosAngle; //!< スポットライトの余弦
-	int enabled;
-	float padding[2];
-};
 
 class LightManager
 {
@@ -58,73 +32,75 @@ public:
 
 	void Initialize(DirectXManager* dxManager);
 	void Finalize();
+	// 描画前処理
 	void BindLightsToShader();
+	// ライトの更新処理
+	void UpdateAllLight();
+	// ライトの追加
+	void AddDirectionalLight(std::unique_ptr<DirectionalLight> light);
+	void AddPointLight(std::unique_ptr<PointLight> light);
+	void AddSpotLight(std::unique_ptr<SpotLight> light);
+
+	DirectionalLight* GetDirectionalLight(const std::string& name);
+	PointLight* GetPointLight(const std::string& name);
+	SpotLight* GetSpotLight(const std::string& name);
 private:
-	void CreateDirLightResource();
-	void CreatePointLightResource();
-	void CreateSpotLightResource();
+	//void CreateDirLightResource();
+	//void CreatePointLightResource();
+	//void CreateSpotLightResource();
+
+	void CreateLightResource();
+	void UpdateBuffer(ID3D12Resource* resource, const void* data, size_t size);
 private:
 	DirectXManager* dxManager_ = nullptr;
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> dirLightResource1_ = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12Resource> dirLightResource2_ = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12Resource> dirLightResource3_ = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12Resource> pointLightResource1_ = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12Resource> pointLightResource2_ = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12Resource> pointLightResource3_ = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12Resource> spotLightResource1_ = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12Resource> spotLightResource2_ = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12Resource> spotLightResource3_ = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Resource> dirLightResource_ = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Resource> pointLightResource_ = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Resource> spotLightResource_ = nullptr;
 
-	DirectionalLightData* dirLightData1_ = nullptr;
-	DirectionalLightData* dirLightData2_ = nullptr;
-	DirectionalLightData* dirLightData3_ = nullptr;
-	PointLightData* pointLightData1_ = nullptr;
-	PointLightData* pointLightData2_ = nullptr;
-	PointLightData* pointLightData3_ = nullptr;
-	SpotLightData* spotLightData1_ = nullptr;
-	SpotLightData* spotLightData2_ = nullptr;
-	SpotLightData* spotLightData3_ = nullptr;
+	std::vector<std::unique_ptr<DirectionalLight>> dirLights_;
+	std::vector< std::unique_ptr<PointLight>> pointLights_;
+	std::vector<std::unique_ptr<SpotLight>> spotLights_;
 
 public: // ゲッター // セッター //
-	// DirLight
-	Vector4 GetDirLightColor(uint32_t index) const;
-	void SetDirLightColor(uint32_t index, const Vector4& color);
-	Vector3 GetDirLightDirection(uint32_t index) const;
-	void SetDirLightDirection(uint32_t index, const Vector3& dir);
-	float GetDirLightIntensity(uint32_t index) const;
-	void SetDirLightIntensity(uint32_t index, float intensity);
-	bool GetDirLightActive(uint32_t index) const;
-	void SetDirLightActive(uint32_t index, bool isActive);
-	// PointLight
-	Vector4 GetPointLightColor(uint32_t index) const;
-	void SetPointLightColor(uint32_t index, const Vector4& color);
-	Vector3 GetPointLightPos(uint32_t index) const;
-	void SetPointLightPos(uint32_t index, const Vector3& pos);
-	float GetPointLightIntensity(uint32_t index) const;
-	void SetPointLightIntensity(uint32_t index, float intensity);
-	float GetPointLightRadius(uint32_t index) const;
-	void SetPointLightRadius(uint32_t index, float radius);
-	void SetPointLightDecay(uint32_t index, float decay);
-	float GetPointLightDecay(uint32_t index) const;
-	bool GetPointLightActive(uint32_t index) const;
-	void SetPointLightActive(uint32_t index, bool isActive);
-	// SpotLight
-	void SetSpotLightColor(uint32_t index, const Vector4& color);
-	void SetSpotLightPos(uint32_t index, const Vector3& pos);
-	void SetSpotLightIntensity(uint32_t index, float intensity);
-	void SetSpotLightDirection(uint32_t index, const Vector3& dir);
-	void SetSpotLightDistance(uint32_t index, float distance);
-	void SetSpotLightDecay(uint32_t index, float decay);
-	void SetSpotLightCosAngle(uint32_t index, float cosAngle);
-	void SetSpotLightActive(uint32_t index, bool isActive);
-	Vector4 GetSpotLightColor(uint32_t index) const;
-	Vector3 GetSpotLightPos(uint32_t index) const;
-	float GetSpotLightIntensity(uint32_t index) const;
-	Vector3 GetSpotLightDirection(uint32_t index) const;
-	float GetSpotLightDistance(uint32_t index) const;
-	float GetSpotLightDecay(uint32_t index) const;
-	float GetSpotLightCosAngle(uint32_t index) const;
-	bool GetSpotLightActive(uint32_t index) const;
+	//// DirLight
+	//Vector4 GetDirLightColor(uint32_t index) const;
+	//void SetDirLightColor(uint32_t index, const Vector4& color);
+	//Vector3 GetDirLightDirection(uint32_t index) const;
+	//void SetDirLightDirection(uint32_t index, const Vector3& dir);
+	//float GetDirLightIntensity(uint32_t index) const;
+	//void SetDirLightIntensity(uint32_t index, float intensity);
+	//bool GetDirLightActive(uint32_t index) const;
+	//void SetDirLightActive(uint32_t index, bool isActive);
+	//// PointLight
+	//Vector4 GetPointLightColor(uint32_t index) const;
+	//void SetPointLightColor(uint32_t index, const Vector4& color);
+	//Vector3 GetPointLightPos(uint32_t index) const;
+	//void SetPointLightPos(uint32_t index, const Vector3& pos);
+	//float GetPointLightIntensity(uint32_t index) const;
+	//void SetPointLightIntensity(uint32_t index, float intensity);
+	//float GetPointLightRadius(uint32_t index) const;
+	//void SetPointLightRadius(uint32_t index, float radius);
+	//void SetPointLightDecay(uint32_t index, float decay);
+	//float GetPointLightDecay(uint32_t index) const;
+	//bool GetPointLightActive(uint32_t index) const;
+	//void SetPointLightActive(uint32_t index, bool isActive);
+	//// SpotLight
+	//void SetSpotLightColor(uint32_t index, const Vector4& color);
+	//void SetSpotLightPos(uint32_t index, const Vector3& pos);
+	//void SetSpotLightIntensity(uint32_t index, float intensity);
+	//void SetSpotLightDirection(uint32_t index, const Vector3& dir);
+	//void SetSpotLightDistance(uint32_t index, float distance);
+	//void SetSpotLightDecay(uint32_t index, float decay);
+	//void SetSpotLightCosAngle(uint32_t index, float cosAngle);
+	//void SetSpotLightActive(uint32_t index, bool isActive);
+	//Vector4 GetSpotLightColor(uint32_t index) const;
+	//Vector3 GetSpotLightPos(uint32_t index) const;
+	//float GetSpotLightIntensity(uint32_t index) const;
+	//Vector3 GetSpotLightDirection(uint32_t index) const;
+	//float GetSpotLightDistance(uint32_t index) const;
+	//float GetSpotLightDecay(uint32_t index) const;
+	//float GetSpotLightCosAngle(uint32_t index) const;
+	//bool GetSpotLightActive(uint32_t index) const;
 };
 

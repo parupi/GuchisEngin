@@ -3,7 +3,7 @@
 #include <ParticleManager.h>
 #include "offscreen/OffScreenManager.h"
 #include "Primitive/PrimitiveDrawer.h"
-#include <LightManager.h>
+#include <Light/LightManager.h>
 
 void MyGameTitle::Initialize()
 {
