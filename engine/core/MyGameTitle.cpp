@@ -27,6 +27,7 @@ void MyGameTitle::Initialize()
 	PrimitiveDrawer::GetInstance()->Initialize(dxManager.get(), psoManager.get(), srvManager.get());
 
 	CameraManager::GetInstance()->Initialize();
+
 	LightManager::GetInstance()->Initialize(dxManager.get());
 	// 最初のシーンを生成
 	sceneFactory_ = std::make_unique<SceneFactory>();
