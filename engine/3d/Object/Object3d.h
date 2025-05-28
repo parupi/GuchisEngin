@@ -29,6 +29,13 @@ public: // メンバ関数
 	virtual void DebugGui();
 #endif // _DEBUG
 
+	// 衝突した
+	virtual void OnCollisionEnter([[maybe_unused]] BaseCollider* other);
+	// 衝突中
+	virtual void OnCollisionStay([[maybe_unused]] BaseCollider* other);
+	// 離れた
+	virtual void OnCollisionExit([[maybe_unused]] BaseCollider* other);
+
 private: // メンバ変数
 	Object3dManager* objectManager_ = nullptr;
 	//BaseModel* model_ = nullptr;

@@ -2,6 +2,9 @@
 #include <mutex>
 #include <vector>
 #include "BaseCollider.h"
+#include "AABBCollider.h"
+#include "SphereCollider.h"
+#include <set>
 class CollisionManager
 {
 private:
@@ -27,11 +30,24 @@ public:
 
 	BaseCollider* FindCollider(std::string colliderName);
 private:
+	using ColliderPair = std::pair<BaseCollider*, BaseCollider*>;
 
+	// コライダーの順序を固定する比較関数（ペアが常に同じ順になるように）
+	struct ColliderPairCompare {
+		bool operator()(const ColliderPair& a, const ColliderPair& b) const {
+			return std::tie(a.first, a.second) < std::tie(b.first, b.second);
+		}
+	};
+
+	std::set<ColliderPair, ColliderPairCompare> currentCollisions_;
+	std::set<ColliderPair, ColliderPairCompare> previousCollisions_;
 	
 	//void RemoveCollider(BaseCollider* collider);
-	//void CheckAllCollisions();
-	//bool CheckCollision(const BaseCollider* a, const BaseCollider* b);
+	void CheckAllCollisions();
+	bool CheckCollision(BaseCollider* a, BaseCollider* b);
+
+	bool CheckAABBToAABBCollision(AABBCollider* a, AABBCollider* b);
+	bool CheckSphereToSphereCollision(SphereCollider* a, SphereCollider* b);
 
 private:
 	std::vector<std::unique_ptr<BaseCollider>> colliders_;

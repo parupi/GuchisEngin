@@ -87,6 +87,7 @@
     <ClCompile Include="engine\3d\Collider\AABBCollider.cpp" />
     <ClCompile Include="engine\3d\Collider\CollisionManager.cpp" />
     <ClCompile Include="engine\3d\Collider\BaseCollider.cpp" />
+    <ClCompile Include="engine\3d\Collider\SphereCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\3d\Object\Model\BaseModel.h" />
@@ -165,6 +166,7 @@
     <ClInclude Include="engine\3d\Collider\AABBCollider.h" />
     <ClInclude Include="engine\3d\Collider\CollisionManager.h" />
     <ClInclude Include="engine\3d\Collider\BaseCollider.h" />
+    <ClInclude Include="engine\3d\Collider\SphereCollider.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\shaders\Fullscreen.hlsli" />

@@ -17,6 +17,8 @@ public:
 	void Update() override;
 	void DrawDebug() override;
 
+	CollisionShapeType GetShapeType() const override { return CollisionShapeType::AABB; }
+
 	const Vector3& GetMax();
 	const Vector3& GetMin();
 

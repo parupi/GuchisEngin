@@ -39,7 +39,8 @@ private:
 	std::shared_ptr<Camera> normalCamera_;
 
 	std::unique_ptr<Object3d> object_;
-	std::unique_ptr<Object3d> animationObject_;
+	std::unique_ptr<Object3d> object2_;
+	//std::unique_ptr<Object3d> animationObject_;
 	std::unique_ptr<Sprite> sprite;
 
 	//Vector4 color1 = { 1.0f, 1.0f, 1.0f, 1.0f };

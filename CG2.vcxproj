@@ -177,6 +177,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\3d\Light\SpotLight.cpp" />
     <ClCompile Include="engine\3d\Object\Renderer\ModelRenderer.cpp" />
     <ClCompile Include="engine\3d\Object\Renderer\RendererManager.cpp" />
+    <ClCompile Include="engine\3d\Collider\SphereCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\BoxFilter.PS.hlsl">
@@ -339,6 +340,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\3d\Light\SpotLight.h" />
     <ClInclude Include="engine\3d\Object\Renderer\ModelRenderer.h" />
     <ClInclude Include="engine\3d\Object\Renderer\RendererManager.h" />
+    <ClInclude Include="engine\3d\Collider\SphereCollider.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />
