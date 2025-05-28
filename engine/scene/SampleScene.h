@@ -14,6 +14,7 @@
 //#include <OffScreen.h>
 #include "offscreen/GrayEffect.h"
 #include <Light/LightManager.h>
+#include <Render/ModelRender.h>
 class SampleScene : public BaseScene
 {
 public:
@@ -52,9 +53,9 @@ private:
 	std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
 
 	DirectionalLight* dirLight_;
-	//Vector3 axis = { 0.0f, 0.0f, 0.0f };
-	//float angle = 1.0f;
-	//std::unique_ptr<GrayEffect> grayEffect_ = nullptr;
+
+	std::unique_ptr<ModelRender> render1_;
+	std::unique_ptr<ModelRender> render2_;
 
 	Vector3 pos_{0.0f, -2.0f, 0.0f};
 };

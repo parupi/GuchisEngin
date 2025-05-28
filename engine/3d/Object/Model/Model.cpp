@@ -9,6 +9,7 @@
 #include "Mesh/Mesh.h"
 #include "Material/Material.h"
 #include <Object3d.h>
+#include <Render/ModelRender.h>
 
 void Model::Initialize(ModelLoader* modelManager, const std::string& fileName)
 {
@@ -53,7 +54,7 @@ void Model::Draw()
 }
 
 #ifdef _DEBUG
-void Model::DebugGui(Object3d* object)
+void Model::DebugGui(ModelRender* render)
 {
 	if (ImGui::TreeNode("Models")) {
 		auto& modelMap = ModelManager::GetInstance()->models;
@@ -75,7 +76,7 @@ void Model::DebugGui(Object3d* object)
 					bool isSelected = (selectedIndex == i);
 					if (ImGui::Selectable(modelNames[i].c_str(), isSelected)) {
 						selectedIndex = i;
-						object->SetModel(modelNames[selectedIndex]);
+						render->SetModel(modelNames[selectedIndex]);
 					}
 					if (isSelected) {
 						ImGui::SetItemDefaultFocus();
