@@ -13,6 +13,7 @@
 #include <Renderer/RendererManager.h>
 #include <Collider/CollisionManager.h>
 #include <Collider/SphereCollider.h>
+#include <Renderer/PrimitiveRenderer.h>
 
 void SampleScene::Initialize()
 {
@@ -54,7 +55,7 @@ void SampleScene::Initialize()
 
 	RendererManager::GetInstance()->AddRenderer(std::move(render1_));
 	RendererManager::GetInstance()->AddRenderer(std::make_unique<ModelRenderer>("render2", "Terrain"));
-	RendererManager::GetInstance()->AddRenderer(std::make_unique<ModelRenderer>("render3", "multiMesh"));
+	RendererManager::GetInstance()->AddRenderer(std::make_unique<PrimitiveRenderer>("render3", PrimitiveRenderer::PrimitiveType::Plane));
 
 	object_->AddRenderer(RendererManager::GetInstance()->FindRender("render1"));
 	object_->AddRenderer(RendererManager::GetInstance()->FindRender("render2"));

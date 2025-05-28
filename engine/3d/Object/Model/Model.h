@@ -26,6 +26,8 @@ public: // メンバ関数
 	// 初期化
 	void Initialize(ModelLoader* modelLoader, const std::string& fileName);
 
+	void InitializeFromMesh(const MeshData& meshData, const MaterialData& materialData);
+
 	void Update() override;
 	// 描画
 	void Draw() override;
