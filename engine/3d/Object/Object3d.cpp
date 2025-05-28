@@ -16,33 +16,21 @@ void Object3d::Initialize(const std::string& fileName)
 
 	objectManager_ = Object3dManager::GetInstance();
 
-	// モデルを検索してセットする
-	model_ = ModelManager::GetInstance()->FindModel(fileName);
-	if (!model_) {
-		assert(false && "Model not found.");
-	}
-
 	transform_ = std::make_unique<WorldTransform>();
 	transform_->Initialize();
-
-	CreateCameraResource();
-}
-
-void Object3d::AnimationUpdate()
-{
-	//if (model_->GetModelData().isAnimation) {
-	//model_->Update();
-	//}
 }
 
 void Object3d::Update()
 {
+	for (size_t i = 0; i < renders_.size(); i++) {
+		renders_[i]->Update(transform_.get());
+	}
+
 	transform_->TransferMatrix();
 
-	model_->Update();
+	//model_->Update();
 
 	camera_ = objectManager_->GetDefaultCamera();
-	cameraData_->worldPosition = camera_->GetTranslate();
 
 	Matrix4x4 worldViewProjectionMatrix;
 	if (camera_) {
@@ -54,17 +42,14 @@ void Object3d::Update()
 
 	transform_->SetMapWVP(worldViewProjectionMatrix);
 	transform_->SetMapWorld(transform_->GetMatWorld());
+
+
 }
 
 void Object3d::Draw()
 {
-	// cameraの場所を指定
-	objectManager_->GetDxManager()->GetCommandList()->SetGraphicsRootConstantBufferView(3, cameraResource_->GetGPUVirtualAddress());
-	// wvp用のCBufferの場所を設定
-	objectManager_->GetDxManager()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transform_->GetConstBuffer()->GetGPUVirtualAddress());
-	// 3Dモデルが割り当てられていれば描画する
-	if (model_) {
-		model_->Draw();
+	for (size_t i = 0; i < renders_.size(); i++) {
+		renders_[i]->Draw(transform_.get());
 	}
 }
 
@@ -72,24 +57,21 @@ void Object3d::Draw()
 #ifdef _DEBUG
 void Object3d::DebugGui()
 {
-	model_->DebugGui(this);
+	//model_->DebugGui(this);
+	if (ImGui::TreeNode("Transform")) {
+		transform_->DebugGui();
+		ImGui::TreePop();
+	}
 
-	transform_->DebugGui();
+
+	for (size_t i = 0; i < renders_.size(); i++) {
+		renders_[i]->DebugGui(i);
+	}
 }
+
 #endif // _DEBUG
 
-void Object3d::CreateCameraResource()
+void Object3d::AddRender(BaseRenderer* render)
 {
-	// カメラ用のリソースを作る
-	cameraResource_ = objectManager_->GetDxManager()->CreateBufferResource(sizeof(CameraForGPU));
-	// 書き込むためのアドレスを取得
-	cameraResource_->Map(0, nullptr, reinterpret_cast<void**>(&cameraData_));
-	// 初期値を入れる
-	cameraData_->worldPosition = { 1.0f, 1.0f, 1.0f };
-}
-
-void Object3d::SetModel(const std::string& filePath)
-{
-	// モデルを検索してセットする
-	model_ = ModelManager::GetInstance()->FindModel(filePath);
+	renders_.push_back(render);
 }
