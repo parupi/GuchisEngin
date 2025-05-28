@@ -9,7 +9,7 @@
 #include "Model/Model.h"
 #include "Model/BaseModel.h"
 #include <Camera.h>
-#include <Render/BaseRender.h>
+#include <Renderer/BaseRenderer.h>
 class Object3dManager;
 class WorldTransform;
 
@@ -37,14 +37,14 @@ private: // メンバ変数
 
 	std::unique_ptr<WorldTransform> transform_;
 
-	std::vector<BaseRender*> renders_;
+	std::vector<BaseRenderer*> renders_;
 public: // ゲッター // セッター // 
 	// モデル
 	//void SetModel(const std::string& filePath);
 	//BaseModel* GetModel() { return model_; }
 
 	// レンダー追加処理
-	void AddRender(BaseRender* render);
+	void AddRender(BaseRenderer* render);
 
 
 	// カメラ

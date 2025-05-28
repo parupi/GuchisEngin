@@ -71,7 +71,7 @@ void Object3d::DebugGui()
 
 #endif // _DEBUG
 
-void Object3d::AddRender(BaseRender* render)
+void Object3d::AddRender(BaseRenderer* render)
 {
 	renders_.push_back(render);
 }

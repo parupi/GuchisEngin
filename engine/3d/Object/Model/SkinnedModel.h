@@ -9,7 +9,7 @@
 
 class WorldTransform;
 class Object3d;
-class ModelRender;
+class ModelRenderer;
 
 class SkinnedModel : public BaseModel
 {
@@ -21,7 +21,7 @@ public: // メンバ関数
 	// 描画
 	void Draw() override;
 #ifdef _DEBUG
-	void DebugGui(ModelRender* render) override;
+	void DebugGui(ModelRenderer* render) override;
 #endif // _DEBUG
 private:
 	std::vector<std::unique_ptr<Mesh>> meshes_;

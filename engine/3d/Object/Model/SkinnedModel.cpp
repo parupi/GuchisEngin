@@ -5,7 +5,7 @@
 #include <TextureManager.h>
 #include "ModelManager.h"
 #include <Object3d.h>
-#include <Render/ModelRender.h>
+#include <Renderer/ModelRenderer.h>
 
 void SkinnedModel::Initialize(ModelLoader* modelLoader, const std::string& fileName)
 {
@@ -72,7 +72,7 @@ void SkinnedModel::Draw()
 	}
 }
 
-void SkinnedModel::DebugGui(ModelRender* render)
+void SkinnedModel::DebugGui(ModelRenderer* render)
 {
 	if (ImGui::TreeNode("Models")) {
 		auto& modelMap = ModelManager::GetInstance()->skinnedModels;

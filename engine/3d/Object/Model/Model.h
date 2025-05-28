@@ -19,7 +19,7 @@
 #include "BaseModel.h"
 
 class Object3d;
-class ModelRender;
+class ModelRenderer;
 class Model : public BaseModel
 {
 public: // メンバ関数
@@ -30,7 +30,7 @@ public: // メンバ関数
 	// 描画
 	void Draw() override;
 #ifdef _DEBUG
-	void DebugGui(ModelRender* render);
+	void DebugGui(ModelRenderer* render);
 #endif // _DEBUG
 
 

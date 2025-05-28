@@ -1,7 +1,7 @@
 #pragma once
 
 class Object3d;
-class ModelRender;
+class ModelRenderer;
 class BaseModel
 {
 public:
@@ -9,7 +9,7 @@ public:
 	virtual void Update() = 0;
 	virtual void Draw() = 0;
 #ifdef _DEBUG
-	virtual void DebugGui(ModelRender* render) = 0;
+	virtual void DebugGui(ModelRenderer* render) = 0;
 #endif // _DEBUG
 };
 

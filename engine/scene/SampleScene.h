@@ -14,7 +14,7 @@
 //#include <OffScreen.h>
 #include "offscreen/GrayEffect.h"
 #include <Light/LightManager.h>
-#include <Render/ModelRender.h>
+#include <Renderer/ModelRenderer.h>
 class SampleScene : public BaseScene
 {
 public:
@@ -54,8 +54,8 @@ private:
 
 	DirectionalLight* dirLight_;
 
-	std::unique_ptr<ModelRender> render1_;
-	std::unique_ptr<ModelRender> render2_;
+	std::unique_ptr<ModelRenderer> render1_;
+	std::unique_ptr<ModelRenderer> render2_;
 
 	Vector3 pos_{0.0f, -2.0f, 0.0f};
 };

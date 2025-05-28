@@ -5,7 +5,7 @@
 #include "Primitive/PrimitiveDrawer.h"
 #include <Light/LightManager.h>
 #include <CameraManager.h>
-#include <Render/RenderManager.h>
+#include <Renderer/RendererManager.h>
 
 void MyGameTitle::Initialize()
 {
@@ -27,7 +27,7 @@ void MyGameTitle::Initialize()
 
 	PrimitiveDrawer::GetInstance()->Initialize(dxManager.get(), psoManager.get(), srvManager.get());
 
-	RenderManager::GetInstance()->Initialize(dxManager.get());
+	RendererManager::GetInstance()->Initialize(dxManager.get());
 
 	CameraManager::GetInstance()->Initialize(dxManager.get());
 

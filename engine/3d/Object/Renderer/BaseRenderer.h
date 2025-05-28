@@ -1,6 +1,6 @@
 #pragma once
 #include <WorldTransform.h>
-class BaseRender
+class BaseRenderer
 {
 public:
 	virtual void Update(WorldTransform* parentTransform) = 0;

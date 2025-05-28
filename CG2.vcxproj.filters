@@ -82,8 +82,8 @@
     <ClCompile Include="engine\3d\Light\DirectionalLight.cpp" />
     <ClCompile Include="engine\3d\Light\BaseLight.cpp" />
     <ClCompile Include="engine\3d\Light\SpotLight.cpp" />
-    <ClCompile Include="engine\3d\Object\Render\ModelRender.cpp" />
-    <ClCompile Include="engine\3d\Object\Render\RenderManager.cpp" />
+    <ClCompile Include="engine\3d\Object\Renderer\ModelRenderer.cpp" />
+    <ClCompile Include="engine\3d\Object\Renderer\RendererManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\3d\Object\Model\BaseModel.h" />
@@ -156,9 +156,9 @@
     <ClInclude Include="engine\3d\Light\LightStructs.h" />
     <ClInclude Include="engine\3d\Light\DirectionalLight.h" />
     <ClInclude Include="engine\3d\Light\SpotLight.h" />
-    <ClInclude Include="engine\3d\Object\Render\BaseRender.h" />
-    <ClInclude Include="engine\3d\Object\Render\ModelRender.h" />
-    <ClInclude Include="engine\3d\Object\Render\RenderManager.h" />
+    <ClInclude Include="engine\3d\Object\Renderer\BaseRenderer.h" />
+    <ClInclude Include="engine\3d\Object\Renderer\ModelRenderer.h" />
+    <ClInclude Include="engine\3d\Object\Renderer\RendererManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\shaders\Fullscreen.hlsli" />

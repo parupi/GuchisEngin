@@ -1,9 +1,9 @@
-#include "ModelRender.h"
-#include "RenderManager.h"
+#include "ModelRenderer.h"
+#include "RendererManager.h"
 #include <Model/ModelManager.h>
 
 
-ModelRender::ModelRender(const std::string& renderName, const std::string& filePath)
+ModelRenderer::ModelRenderer(const std::string& renderName, const std::string& filePath)
 {
 	localTransform_ = std::make_unique<WorldTransform>();
 	localTransform_->Initialize();
@@ -11,7 +11,7 @@ ModelRender::ModelRender(const std::string& renderName, const std::string& fileP
 	name = renderName;
 }
 
-void ModelRender::Update(WorldTransform* parentTransform)
+void ModelRenderer::Update(WorldTransform* parentTransform)
 {
 	model_->Update();
 
@@ -36,21 +36,21 @@ void ModelRender::Update(WorldTransform* parentTransform)
 	//localTransform_->SetMapWVP(parentTransform->GetMatWorld());
 }
 
-void ModelRender::Draw(WorldTransform* parentTransform)
+void ModelRenderer::Draw(WorldTransform* parentTransform)
 {
-	RenderManager::GetInstance()->GetDxManager()->GetCommandList()->SetGraphicsRootConstantBufferView(1, localTransform_->GetConstBuffer()->GetGPUVirtualAddress());
+	RendererManager::GetInstance()->GetDxManager()->GetCommandList()->SetGraphicsRootConstantBufferView(1, localTransform_->GetConstBuffer()->GetGPUVirtualAddress());
 
 	model_->Draw();
 }
 
-void ModelRender::SetModel(const std::string& filePath)
+void ModelRenderer::SetModel(const std::string& filePath)
 {
 	// モデルを検索してセットする
 	model_ = ModelManager::GetInstance()->FindModel(filePath);
 }
 
 #ifdef _DEBUG
-void ModelRender::DebugGui(size_t index)
+void ModelRenderer::DebugGui(size_t index)
 {
 	std::string label = "TransformRender" + std::to_string(index);
 	if (ImGui::TreeNode(label.c_str())) {

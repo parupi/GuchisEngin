@@ -10,7 +10,7 @@
 #include <offscreen/VignetteEffect.h>
 #include <offscreen/SmoothEffect.h>
 #include <Primitive/PrimitiveDrawer.h>
-#include <Render/RenderManager.h>
+#include <Renderer/RendererManager.h>
 
 void SampleScene::Initialize()
 {
@@ -43,16 +43,16 @@ void SampleScene::Initialize()
 	//animationObject_ = std::make_unique<Object3d>();
 	//animationObject_->Initialize("simpleSkin");
 
-	render1_ = std::make_unique<ModelRender>("render1", "multiMaterial");
+	render1_ = std::make_unique<ModelRenderer>("render1", "multiMaterial");
 	//render1_->SetModel();
 	//render2_ =;
 	//render2_->SetModel("Terrain");
 
-	RenderManager::GetInstance()->AddRender(std::move(render1_));
-	RenderManager::GetInstance()->AddRender(std::make_unique<ModelRender>("render2", "Terrain"));
+	RendererManager::GetInstance()->AddRender(std::move(render1_));
+	RendererManager::GetInstance()->AddRender(std::make_unique<ModelRenderer>("render2", "Terrain"));
 
-	object_->AddRender(RenderManager::GetInstance()->FindRender("render1"));
-	object_->AddRender(RenderManager::GetInstance()->FindRender("render2"));
+	object_->AddRender(RendererManager::GetInstance()->FindRender("render1"));
+	object_->AddRender(RendererManager::GetInstance()->FindRender("render2"));
 
 	//transform_.Initialize();
 	//animationTransform_.Initialize();

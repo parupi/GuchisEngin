@@ -1,13 +1,13 @@
 #pragma once
-#include "BaseRender.h"
+#include "BaseRenderer.h"
 #include <Model/Model.h>
 #include <CameraManager.h>
 #include <Camera/Camera.h>
-class ModelRender : public BaseRender
+class ModelRenderer : public BaseRenderer
 {
 public:
-	ModelRender(const std::string& renderName, const std::string& filePath);
-	~ModelRender() = default;
+	ModelRenderer(const std::string& renderName, const std::string& filePath);
+	~ModelRenderer() = default;
 
 	void Update(WorldTransform* parentTransform) override;
 

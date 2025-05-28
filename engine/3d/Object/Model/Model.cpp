@@ -9,7 +9,7 @@
 #include "Mesh/Mesh.h"
 #include "Material/Material.h"
 #include <Object3d.h>
-#include <Render/ModelRender.h>
+#include <Renderer/ModelRenderer.h>
 
 void Model::Initialize(ModelLoader* modelManager, const std::string& fileName)
 {
@@ -54,7 +54,7 @@ void Model::Draw()
 }
 
 #ifdef _DEBUG
-void Model::DebugGui(ModelRender* render)
+void Model::DebugGui(ModelRenderer* render)
 {
 	if (ImGui::TreeNode("Models")) {
 		auto& modelMap = ModelManager::GetInstance()->models;
