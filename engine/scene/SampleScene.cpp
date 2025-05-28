@@ -11,6 +11,8 @@
 #include <offscreen/SmoothEffect.h>
 #include <Primitive/PrimitiveDrawer.h>
 #include <Renderer/RendererManager.h>
+#include <Collider/CollisionManager.h>
+#include <Collider/SphereCollider.h>
 
 void SampleScene::Initialize()
 {
@@ -40,6 +42,8 @@ void SampleScene::Initialize()
 	object_ = std::make_unique<Object3d>();
 	object_->Initialize("multiMaterial");
 
+	object2_ = std::make_unique<Object3d>();
+	object2_->Initialize("multiMaterial");
 	//animationObject_ = std::make_unique<Object3d>();
 	//animationObject_->Initialize("simpleSkin");
 
@@ -48,11 +52,14 @@ void SampleScene::Initialize()
 	//render2_ =;
 	//render2_->SetModel("Terrain");
 
-	RendererManager::GetInstance()->AddRender(std::move(render1_));
-	RendererManager::GetInstance()->AddRender(std::make_unique<ModelRenderer>("render2", "Terrain"));
+	RendererManager::GetInstance()->AddRenderer(std::move(render1_));
+	RendererManager::GetInstance()->AddRenderer(std::make_unique<ModelRenderer>("render2", "Terrain"));
+	RendererManager::GetInstance()->AddRenderer(std::make_unique<ModelRenderer>("render3", "multiMesh"));
 
-	object_->AddRender(RendererManager::GetInstance()->FindRender("render1"));
-	object_->AddRender(RendererManager::GetInstance()->FindRender("render2"));
+	object_->AddRenderer(RendererManager::GetInstance()->FindRender("render1"));
+	object_->AddRenderer(RendererManager::GetInstance()->FindRender("render2"));
+
+	object2_->AddRenderer(RendererManager::GetInstance()->FindRender("render3"));
 
 	//transform_.Initialize();
 	//animationTransform_.Initialize();
@@ -78,6 +85,18 @@ void SampleScene::Initialize()
 
 	//grayEffect_ = std::make_unique<GrayEffect>();
 	//grayEffect_->Initialize();
+
+
+	std::unique_ptr<SphereCollider> collider = std::make_unique<SphereCollider>("collider1");
+	collider->Initialize();
+	CollisionManager::GetInstance()->AddCollider(std::move(collider));
+
+	std::unique_ptr<SphereCollider> collider2 = std::make_unique<SphereCollider>("collider2");
+	collider2->Initialize();
+	CollisionManager::GetInstance()->AddCollider(std::move(collider2));
+
+	object_->AddCollider(CollisionManager::GetInstance()->FindCollider("collider1"));
+	object2_->AddCollider(CollisionManager::GetInstance()->FindCollider("collider2"));
 
 	OffScreenManager::GetInstance()->AddEfect(std::make_unique<GrayEffect>());
 	OffScreenManager::GetInstance()->AddEfect(std::make_unique<VignetteEffect>());
@@ -116,6 +135,7 @@ void SampleScene::Update()
 
 
 	object_->Update();
+	object2_->Update();
 
 	//animationObject_->Update();
 
@@ -173,6 +193,7 @@ void SampleScene::Draw()
 	lightManager_->BindLightsToShader();
 	cameraManager_->BindCameraToShader();
 	object_->Draw();
+	object2_->Draw();
 	
 
 	//SpriteManager::GetInstance()->DrawSet();
@@ -203,8 +224,8 @@ void SampleScene::DebugUpdate()
 	object_->DebugGui();
 	ImGui::End();
 
-	//ImGui::Begin("AnimationObject");
-	//animationObject_->DebugGui();
-	//ImGui::End();
+	ImGui::Begin("Object2");
+	object2_->DebugGui();
+	ImGui::End();
 }
 #endif

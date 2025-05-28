@@ -63,15 +63,32 @@ void Object3d::DebugGui()
 		ImGui::TreePop();
 	}
 
-
 	for (size_t i = 0; i < renders_.size(); i++) {
 		renders_[i]->DebugGui(i);
 	}
 }
 
+void Object3d::OnCollisionEnter(BaseCollider* other)
+{
+}
+
+void Object3d::OnCollisionStay(BaseCollider* other)
+{
+}
+
+void Object3d::OnCollisionExit(BaseCollider* other)
+{
+}
+
 #endif // _DEBUG
 
-void Object3d::AddRender(BaseRenderer* render)
+void Object3d::AddRenderer(BaseRenderer* render)
 {
 	renders_.push_back(render);
+}
+
+void Object3d::AddCollider(BaseCollider* collider)
+{
+	collider->SetOwner(this);
+	colliders_.push_back(collider);
 }

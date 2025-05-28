@@ -108,6 +108,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\3d\Collider\AABBCollider.cpp" />
+    <ClCompile Include="engine\3d\Collider\BaseCollider.cpp" />
+    <ClCompile Include="engine\3d\Collider\CollisionManager.cpp" />
     <ClCompile Include="engine\3d\Light\BaseLight.cpp" />
     <ClCompile Include="engine\3d\Light\DirectionalLight.cpp" />
     <ClCompile Include="engine\offscreen\BaseOffScreen.cpp" />
@@ -174,6 +177,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\3d\Light\SpotLight.cpp" />
     <ClCompile Include="engine\3d\Object\Renderer\ModelRenderer.cpp" />
     <ClCompile Include="engine\3d\Object\Renderer\RendererManager.cpp" />
+    <ClCompile Include="engine\3d\Collider\SphereCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\shaders\BoxFilter.PS.hlsl">
@@ -260,6 +264,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\3d\Collider\BaseCollider.h" />
+    <ClInclude Include="engine\3d\Collider\AABBCollider.h" />
+    <ClInclude Include="engine\3d\Collider\CollisionManager.h" />
     <ClInclude Include="engine\3d\Object\Renderer\BaseRenderer.h" />
     <ClInclude Include="engine\3d\Light\DirectionalLight.h" />
     <ClInclude Include="engine\3d\Light\BaseLight.h" />
@@ -333,6 +340,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\3d\Light\SpotLight.h" />
     <ClInclude Include="engine\3d\Object\Renderer\ModelRenderer.h" />
     <ClInclude Include="engine\3d\Object\Renderer\RendererManager.h" />
+    <ClInclude Include="engine\3d\Collider\SphereCollider.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

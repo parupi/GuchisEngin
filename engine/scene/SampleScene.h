@@ -15,6 +15,7 @@
 #include "offscreen/GrayEffect.h"
 #include <Light/LightManager.h>
 #include <Renderer/ModelRenderer.h>
+#include <Collider/AABBCollider.h>
 class SampleScene : public BaseScene
 {
 public:
@@ -38,7 +39,8 @@ private:
 	std::shared_ptr<Camera> normalCamera_;
 
 	std::unique_ptr<Object3d> object_;
-	std::unique_ptr<Object3d> animationObject_;
+	std::unique_ptr<Object3d> object2_;
+	//std::unique_ptr<Object3d> animationObject_;
 	std::unique_ptr<Sprite> sprite;
 
 	//Vector4 color1 = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -56,6 +58,7 @@ private:
 
 	std::unique_ptr<ModelRenderer> render1_;
 	std::unique_ptr<ModelRenderer> render2_;
+
 
 	Vector3 pos_{0.0f, -2.0f, 0.0f};
 };

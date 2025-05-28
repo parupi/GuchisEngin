@@ -16,7 +16,13 @@ void RendererManager::Initialize(DirectXManager* dxManager)
 	dxManager_ = dxManager;
 }
 
-void RendererManager::AddRender(std::unique_ptr<BaseRenderer> render)
+void RendererManager::Finalize()
+{
+	delete instance;
+	instance = nullptr;
+}
+
+void RendererManager::AddRenderer(std::unique_ptr<BaseRenderer> render)
 {
 	renders_.push_back(std::move(render));
 }
