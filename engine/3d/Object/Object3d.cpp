@@ -71,7 +71,13 @@ void Object3d::DebugGui()
 
 #endif // _DEBUG
 
-void Object3d::AddRender(BaseRenderer* render)
+void Object3d::AddRenderer(BaseRenderer* render)
 {
 	renders_.push_back(render);
+}
+
+void Object3d::AddCollider(BaseCollider* collider)
+{
+	collider->SetOwner(this);
+	colliders_.push_back(collider);
 }

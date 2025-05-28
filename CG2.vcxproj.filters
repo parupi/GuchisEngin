@@ -84,6 +84,9 @@
     <ClCompile Include="engine\3d\Light\SpotLight.cpp" />
     <ClCompile Include="engine\3d\Object\Renderer\ModelRenderer.cpp" />
     <ClCompile Include="engine\3d\Object\Renderer\RendererManager.cpp" />
+    <ClCompile Include="engine\3d\Collider\AABBCollider.cpp" />
+    <ClCompile Include="engine\3d\Collider\CollisionManager.cpp" />
+    <ClCompile Include="engine\3d\Collider\BaseCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\3d\Object\Model\BaseModel.h" />
@@ -159,6 +162,9 @@
     <ClInclude Include="engine\3d\Object\Renderer\BaseRenderer.h" />
     <ClInclude Include="engine\3d\Object\Renderer\ModelRenderer.h" />
     <ClInclude Include="engine\3d\Object\Renderer\RendererManager.h" />
+    <ClInclude Include="engine\3d\Collider\AABBCollider.h" />
+    <ClInclude Include="engine\3d\Collider\CollisionManager.h" />
+    <ClInclude Include="engine\3d\Collider\BaseCollider.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\shaders\Fullscreen.hlsli" />

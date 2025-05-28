@@ -108,6 +108,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\3d\Collider\AABBCollider.cpp" />
+    <ClCompile Include="engine\3d\Collider\BaseCollider.cpp" />
+    <ClCompile Include="engine\3d\Collider\CollisionManager.cpp" />
     <ClCompile Include="engine\3d\Light\BaseLight.cpp" />
     <ClCompile Include="engine\3d\Light\DirectionalLight.cpp" />
     <ClCompile Include="engine\offscreen\BaseOffScreen.cpp" />
@@ -260,6 +263,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\3d\Collider\BaseCollider.h" />
+    <ClInclude Include="engine\3d\Collider\AABBCollider.h" />
+    <ClInclude Include="engine\3d\Collider\CollisionManager.h" />
     <ClInclude Include="engine\3d\Object\Renderer\BaseRenderer.h" />
     <ClInclude Include="engine\3d\Light\DirectionalLight.h" />
     <ClInclude Include="engine\3d\Light\BaseLight.h" />

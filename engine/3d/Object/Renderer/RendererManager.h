@@ -17,9 +17,10 @@ public:
 	static RendererManager* GetInstance();
 	// 初期化処理
 	void Initialize(DirectXManager* dxManager);
-
+	// 終了処理
+	void Finalize();
 	// レンダー追加処理
-	void AddRender(std::unique_ptr<BaseRenderer> render);
+	void AddRenderer(std::unique_ptr<BaseRenderer> render);
 
 	BaseRenderer* FindRender(std::string renderName);
 

@@ -6,6 +6,7 @@
 #include <Light/LightManager.h>
 #include <CameraManager.h>
 #include <Renderer/RendererManager.h>
+#include <Collider/CollisionManager.h>
 
 void MyGameTitle::Initialize()
 {
@@ -29,6 +30,8 @@ void MyGameTitle::Initialize()
 
 	RendererManager::GetInstance()->Initialize(dxManager.get());
 
+	CollisionManager::GetInstance()->Initialize();
+
 	CameraManager::GetInstance()->Initialize(dxManager.get());
 
 	LightManager::GetInstance()->Initialize(dxManager.get());
@@ -45,6 +48,9 @@ void MyGameTitle::Initialize()
 
 void MyGameTitle::Finalize()
 {
+	PrimitiveDrawer::GetInstance()->Finalize();
+	RendererManager::GetInstance()->Finalize();
+	CollisionManager::GetInstance()->Finalize();
 	CameraManager::GetInstance()->Finalize();
 	ParticleManager::GetInstance()->Finalize();
 	SpriteManager::GetInstance()->Finalize();
@@ -60,6 +66,7 @@ void MyGameTitle::Update()
 {
 	ImGuiManager::GetInstance()->Begin();
 	GuchisFramework::Update();
+	CollisionManager::GetInstance()->Update();
 
 	OffScreenManager::GetInstance()->Update();
 	GlobalVariables::GetInstance()->Update();
@@ -74,13 +81,15 @@ void MyGameTitle::Draw()
 	PrimitiveDrawer::GetInstance()->BeginDraw();
 	SceneManager::GetInstance()->Draw();
 
-	PrimitiveDrawer::GetInstance()->EndDraw();
+
 
 	dxManager->BeginDraw();
 
 	//SceneManager::GetInstance()->DrawRTV();
 
 	OffScreenManager::GetInstance()->Draw();
+	CollisionManager::GetInstance()->Draw();
+	PrimitiveDrawer::GetInstance()->EndDraw();
 
 
 	ImGuiManager::GetInstance()->Draw();

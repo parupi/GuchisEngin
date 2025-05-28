@@ -60,6 +60,8 @@ public:
 	void SetParent(WorldTransform* parent) { parent_ = parent; }
 	WorldTransform* GetParent() { return parent_; }
 	void DetachParent() { parent_ = nullptr; }
+
+	Vector3 GetWorldPos();
 private:
 	// 定数バッファ
 	Microsoft::WRL::ComPtr<ID3D12Resource> constBuffer_;
@@ -76,6 +78,8 @@ private:
 	Matrix4x4 matWorld_;
 	// 親となるワールド変換へのポインタ
 	WorldTransform* parent_ = nullptr;
+	// ワールド座標を保持しておく
+	Vector3 worldPos_{};
 
 	// コピー禁止
 	WorldTransform(const WorldTransform&) = delete;

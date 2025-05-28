@@ -11,6 +11,7 @@
 #include <offscreen/SmoothEffect.h>
 #include <Primitive/PrimitiveDrawer.h>
 #include <Renderer/RendererManager.h>
+#include <Collider/CollisionManager.h>
 
 void SampleScene::Initialize()
 {
@@ -48,11 +49,11 @@ void SampleScene::Initialize()
 	//render2_ =;
 	//render2_->SetModel("Terrain");
 
-	RendererManager::GetInstance()->AddRender(std::move(render1_));
-	RendererManager::GetInstance()->AddRender(std::make_unique<ModelRenderer>("render2", "Terrain"));
+	RendererManager::GetInstance()->AddRenderer(std::move(render1_));
+	RendererManager::GetInstance()->AddRenderer(std::make_unique<ModelRenderer>("render2", "Terrain"));
 
-	object_->AddRender(RendererManager::GetInstance()->FindRender("render1"));
-	object_->AddRender(RendererManager::GetInstance()->FindRender("render2"));
+	object_->AddRenderer(RendererManager::GetInstance()->FindRender("render1"));
+	object_->AddRenderer(RendererManager::GetInstance()->FindRender("render2"));
 
 	//transform_.Initialize();
 	//animationTransform_.Initialize();
@@ -78,6 +79,13 @@ void SampleScene::Initialize()
 
 	//grayEffect_ = std::make_unique<GrayEffect>();
 	//grayEffect_->Initialize();
+
+
+	std::unique_ptr<AABBCollider> collider = std::make_unique<AABBCollider>("collider1");
+	collider->Initialize();
+	CollisionManager::GetInstance()->AddCollider(std::move(collider));
+
+	object_->AddCollider(CollisionManager::GetInstance()->FindCollider("collider1"));
 
 	OffScreenManager::GetInstance()->AddEfect(std::make_unique<GrayEffect>());
 	OffScreenManager::GetInstance()->AddEfect(std::make_unique<VignetteEffect>());

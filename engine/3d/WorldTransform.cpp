@@ -43,12 +43,13 @@ void WorldTransform::TransferMatrix()
 		constMap->World = matWorld_; // 定数バッファに行列をコピー
 		constMap->WorldInverseTranspose = Inverse(matWorld_);
 	}
+
+
 }
 
 #ifdef _DEBUG
 void WorldTransform::DebugGui()
 {
-	//if (ImGui::TreeNode("Transform")) {
 	if (ImGui::Button("ResetRotate")) {
 		rotation_ = Identity();
 	}
@@ -66,8 +67,17 @@ void WorldTransform::DebugGui()
 	Vector3 rotate = { 0.0f, 0.0f, 0.0f };
 	ImGui::DragFloat3("rotation", &rotate.x, 0.1f);
 	rotation_ = (rotation_ * Normalize(EulerDegree(rotate)));
-	//ImGui::TreePop();
-//}
 }
+
+
+
 #endif // _DEBUG
 
+Vector3 WorldTransform::GetWorldPos()
+{
+	worldPos_.x = matWorld_.m[3][0];
+	worldPos_.y = matWorld_.m[3][1];
+	worldPos_.z = matWorld_.m[3][2];
+
+	return worldPos_;
+}
