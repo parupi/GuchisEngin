@@ -82,6 +82,15 @@
     <ClCompile Include="engine\3d\Light\DirectionalLight.cpp" />
     <ClCompile Include="engine\3d\Light\BaseLight.cpp" />
     <ClCompile Include="engine\3d\Light\SpotLight.cpp" />
+    <ClCompile Include="engine\3d\Object\Renderer\ModelRenderer.cpp" />
+    <ClCompile Include="engine\3d\Object\Renderer\RendererManager.cpp" />
+    <ClCompile Include="engine\3d\Collider\AABBCollider.cpp" />
+    <ClCompile Include="engine\3d\Collider\CollisionManager.cpp" />
+    <ClCompile Include="engine\3d\Collider\BaseCollider.cpp" />
+    <ClCompile Include="engine\3d\Collider\SphereCollider.cpp" />
+    <ClCompile Include="engine\3d\Object\Renderer\PrimitiveFactory.cpp" />
+    <ClCompile Include="engine\3d\Object\Renderer\PrimitiveRenderer.cpp" />
+    <ClCompile Include="engine\3d\Object\Renderer\MeshGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\3d\Object\Model\BaseModel.h" />
@@ -154,6 +163,16 @@
     <ClInclude Include="engine\3d\Light\LightStructs.h" />
     <ClInclude Include="engine\3d\Light\DirectionalLight.h" />
     <ClInclude Include="engine\3d\Light\SpotLight.h" />
+    <ClInclude Include="engine\3d\Object\Renderer\BaseRenderer.h" />
+    <ClInclude Include="engine\3d\Object\Renderer\ModelRenderer.h" />
+    <ClInclude Include="engine\3d\Object\Renderer\RendererManager.h" />
+    <ClInclude Include="engine\3d\Collider\AABBCollider.h" />
+    <ClInclude Include="engine\3d\Collider\CollisionManager.h" />
+    <ClInclude Include="engine\3d\Collider\BaseCollider.h" />
+    <ClInclude Include="engine\3d\Collider\SphereCollider.h" />
+    <ClInclude Include="engine\3d\Object\Renderer\PrimitiveFactory.h" />
+    <ClInclude Include="engine\3d\Object\Renderer\PrimitiveRenderer.h" />
+    <ClInclude Include="engine\3d\Object\Renderer\MeshGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\shaders\Fullscreen.hlsli" />
