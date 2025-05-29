@@ -9,7 +9,7 @@ public:
 #ifdef _DEBUG
 	virtual void DebugGui(size_t index) = 0;
 #endif // DEBUG
-
+	
 	std::string name;
 };
 

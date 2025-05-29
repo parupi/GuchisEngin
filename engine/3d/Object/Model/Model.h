@@ -33,6 +33,7 @@ public: // メンバ関数
 	void Draw() override;
 #ifdef _DEBUG
 	void DebugGui(ModelRenderer* render);
+	void DebugGuiPrimitive();
 #endif // _DEBUG
 
 

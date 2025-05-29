@@ -110,4 +110,11 @@ void Model::DebugGui(ModelRenderer* render)
 		materials_[i]->DebugGui(static_cast<uint32_t>(i));
 	}
 }
+
+void Model::DebugGuiPrimitive()
+{
+
+		materials_[0]->DebugGui(static_cast<uint32_t>(1));
+
+}
 #endif // _DEBUG

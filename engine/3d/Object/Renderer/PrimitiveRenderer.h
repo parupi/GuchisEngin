@@ -12,7 +12,7 @@ public:
         Cylinder
     };
 
-    PrimitiveRenderer(const std::string& renderName, PrimitiveType type);
+    PrimitiveRenderer(const std::string& renderName, PrimitiveType type, std::string textureName);
 
     void Update(WorldTransform* parentTransform) override;
     void Draw(WorldTransform* parentTransform) override;

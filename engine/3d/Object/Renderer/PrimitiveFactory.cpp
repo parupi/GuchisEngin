@@ -3,7 +3,7 @@
 #include <TextureManager.h>
 
 // PrimitiveFactory.cpp
-std::unique_ptr<Model> PrimitiveFactory::Create(PrimitiveRenderer::PrimitiveType type) {
+std::unique_ptr<Model> PrimitiveFactory::Create(PrimitiveRenderer::PrimitiveType type, std::string textureName) {
     MeshData meshData;
     MaterialData mat;
     switch (type) {
@@ -24,9 +24,9 @@ std::unique_ptr<Model> PrimitiveFactory::Create(PrimitiveRenderer::PrimitiveType
     meshData.materialIndex = 0;
  
   
-    mat.textureFilePath = "uvChecker.png";
-    TextureManager::GetInstance()->LoadTexture("uvChecker.png");
-    mat.textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath("uvChecker.png");
+    mat.textureFilePath = textureName;
+    TextureManager::GetInstance()->LoadTexture(textureName);
+    mat.textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(textureName);
 
     auto model = std::make_unique<Model>();
     model->InitializeFromMesh(meshData, mat); // モデルにメッシュを直接渡す初期化関数が必要
