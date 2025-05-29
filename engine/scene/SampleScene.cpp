@@ -13,6 +13,7 @@
 #include <Renderer/RendererManager.h>
 #include <Collider/CollisionManager.h>
 #include <Collider/SphereCollider.h>
+#include <Renderer/PrimitiveRenderer.h>
 
 void SampleScene::Initialize()
 {
@@ -54,12 +55,16 @@ void SampleScene::Initialize()
 
 	RendererManager::GetInstance()->AddRenderer(std::move(render1_));
 	RendererManager::GetInstance()->AddRenderer(std::make_unique<ModelRenderer>("render2", "Terrain"));
-	RendererManager::GetInstance()->AddRenderer(std::make_unique<ModelRenderer>("render3", "multiMesh"));
+	RendererManager::GetInstance()->AddRenderer(std::make_unique<PrimitiveRenderer>("renderPlane", PrimitiveRenderer::PrimitiveType::Plane, "uvChecker.png"));
+	RendererManager::GetInstance()->AddRenderer(std::make_unique<PrimitiveRenderer>("renderRing", PrimitiveRenderer::PrimitiveType::Ring, "uvChecker.png"));
+	RendererManager::GetInstance()->AddRenderer(std::make_unique<PrimitiveRenderer>("renderCylinder", PrimitiveRenderer::PrimitiveType::Cylinder, "uvChecker.png"));
 
 	object_->AddRenderer(RendererManager::GetInstance()->FindRender("render1"));
 	object_->AddRenderer(RendererManager::GetInstance()->FindRender("render2"));
 
-	object2_->AddRenderer(RendererManager::GetInstance()->FindRender("render3"));
+	object2_->AddRenderer(RendererManager::GetInstance()->FindRender("renderPlane"));
+	object2_->AddRenderer(RendererManager::GetInstance()->FindRender("renderRing"));
+	object2_->AddRenderer(RendererManager::GetInstance()->FindRender("renderCylinder"));
 
 	//transform_.Initialize();
 	//animationTransform_.Initialize();

@@ -33,6 +33,21 @@ void Model::Initialize(ModelLoader* modelManager, const std::string& fileName)
 	}
 }
 
+void Model::InitializeFromMesh(const MeshData& meshData, const MaterialData& materialData)
+{
+	modelLoader_ = ModelManager::GetInstance()->GetModelLoader();
+
+	// Meshの生成と初期化
+	auto mesh = std::make_unique<Mesh>();
+	mesh->Initialize(modelLoader_->GetDxManager(), modelLoader_->GetSrvManager(), meshData);
+	meshes_.push_back(std::move(mesh));
+
+	// Materialの生成と初期化
+	auto material = std::make_unique<Material>();
+	material->Initialize(modelLoader_->GetDxManager(), modelLoader_->GetSrvManager(), materialData);
+	materials_.push_back(std::move(material));
+}
+
 void Model::Update()
 {
 	for (size_t i = 0; i < materials_.size(); i++) {
@@ -94,5 +109,12 @@ void Model::DebugGui(ModelRenderer* render)
 		}
 		materials_[i]->DebugGui(static_cast<uint32_t>(i));
 	}
+}
+
+void Model::DebugGuiPrimitive()
+{
+
+		materials_[0]->DebugGui(static_cast<uint32_t>(1));
+
 }
 #endif // _DEBUG
