@@ -21,8 +21,8 @@ void SampleScene::Initialize()
 	normalCamera_ = std::make_shared<Camera>();
 	cameraManager_->AddCamera(normalCamera_);
 	cameraManager_->SetActiveCamera(0);
-	normalCamera_->GetTranslate() = { 0.0f, 35.0f, -44.0f };
-	normalCamera_->GetRotate() = { 0.68f, 0.0f, 0.0f };
+	normalCamera_->GetTranslate() = { 0.0f, 5.0f, -10.0f };
+	normalCamera_->GetRotate() = { 0.5f, 0.0f, 0.0f };
 
 
 	// .gltfファイルからモデルを読み込む
@@ -59,13 +59,15 @@ void SampleScene::Initialize()
 	RendererManager::GetInstance()->AddRenderer(std::make_unique<PrimitiveRenderer>("renderRing", PrimitiveRenderer::PrimitiveType::Ring, "uvChecker.png"));
 	RendererManager::GetInstance()->AddRenderer(std::make_unique<PrimitiveRenderer>("renderCylinder", PrimitiveRenderer::PrimitiveType::Cylinder, "uvChecker.png"));
 
-	object_->AddRenderer(RendererManager::GetInstance()->FindRender("render1"));
-	object_->AddRenderer(RendererManager::GetInstance()->FindRender("render2"));
-
-	object2_->AddRenderer(RendererManager::GetInstance()->FindRender("renderPlane"));
-	object2_->AddRenderer(RendererManager::GetInstance()->FindRender("renderRing"));
+	//object_->AddRenderer(RendererManager::GetInstance()->FindRender("render1"));
+	//object_->AddRenderer(RendererManager::GetInstance()->FindRender("render2"));
+	object_->AddRenderer(RendererManager::GetInstance()->FindRender("renderRing"));
+	//object2_->AddRenderer(RendererManager::GetInstance()->FindRender("renderPlane"));
+	//object2_->AddRenderer(RendererManager::GetInstance()->FindRender("renderRing"));
 	object2_->AddRenderer(RendererManager::GetInstance()->FindRender("renderCylinder"));
 
+	object_->GetWorldTransform()->GetTranslation().x = 1.0f;
+	object2_->GetWorldTransform()->GetTranslation().x = -1.0f;
 	//transform_.Initialize();
 	//animationTransform_.Initialize();
 
@@ -92,16 +94,16 @@ void SampleScene::Initialize()
 	//grayEffect_->Initialize();
 
 
-	std::unique_ptr<SphereCollider> collider = std::make_unique<SphereCollider>("collider1");
-	collider->Initialize();
-	CollisionManager::GetInstance()->AddCollider(std::move(collider));
+	//std::unique_ptr<SphereCollider> collider = std::make_unique<SphereCollider>("collider1");
+	//collider->Initialize();
+	//CollisionManager::GetInstance()->AddCollider(std::move(collider));
 
-	std::unique_ptr<SphereCollider> collider2 = std::make_unique<SphereCollider>("collider2");
-	collider2->Initialize();
-	CollisionManager::GetInstance()->AddCollider(std::move(collider2));
+	//std::unique_ptr<SphereCollider> collider2 = std::make_unique<SphereCollider>("collider2");
+	//collider2->Initialize();
+	//CollisionManager::GetInstance()->AddCollider(std::move(collider2));
 
-	object_->AddCollider(CollisionManager::GetInstance()->FindCollider("collider1"));
-	object2_->AddCollider(CollisionManager::GetInstance()->FindCollider("collider2"));
+	//object_->AddCollider(CollisionManager::GetInstance()->FindCollider("collider1"));
+	//object2_->AddCollider(CollisionManager::GetInstance()->FindCollider("collider2"));
 
 	OffScreenManager::GetInstance()->AddEfect(std::make_unique<GrayEffect>());
 	OffScreenManager::GetInstance()->AddEfect(std::make_unique<VignetteEffect>());
