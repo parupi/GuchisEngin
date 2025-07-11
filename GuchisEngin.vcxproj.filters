@@ -360,6 +360,8 @@
     <ClInclude Include="Externals\imgui\imstb_truetype.h">
       <Filter>Externals\imgui</Filter>
     </ClInclude>
+    <ClInclude Include="App\GameObject\Player\Player.h" />
+    <ClInclude Include="App\GameObject\GameCamera\GameCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App\scene\Object3dFactory.cpp">
@@ -591,5 +593,7 @@
       <Filter>Externals\imgui</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="App\GameObject\Player\Player.cpp" />
+    <ClCompile Include="App\GameObject\GameCamera\GameCamera.cpp" />
   </ItemGroup>
 </Project>

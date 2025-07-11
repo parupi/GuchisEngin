@@ -1,14 +1,14 @@
 {
     "test": {
-        "Count": 6,
+        "Count": 2,
         "EmitAll": false,
         "EmitPosition": [
             0.0,
             0.0,
             5.0
         ],
-        "Frequency": 1.7300000190734863,
-        "IsActive": false,
+        "Frequency": 0.500000190734863,
+        "IsActive": true,
         "IsBillboard": false,
         "maxAlpha": 1.0,
         "maxColor": [
@@ -23,9 +23,9 @@
             3.0
         ],
         "maxScale": [
-            0.75,
-            50.0,
-            0.75
+            1.0,
+            1.0,
+            1.0
         ],
         "maxTranslate": [
             0.0,
@@ -50,9 +50,9 @@
             -3.0
         ],
         "minScale": [
-            0.5,
-            25.0,
-            0.5
+            1.0,
+            1.0,
+            1.0
         ],
         "minTranslate": [
             0.0,
