@@ -1,6 +1,7 @@
 #include "OffScreen.h"
 #ifdef _DEBUG
-#include <imgui.h>
+#include "debuger/ImGuiManager.h"
+#include <imgui/imgui.h>
 #endif
 
 void OffScreen::Initialize(DirectXManager* dxManager, PSOManager* psoManager)
@@ -16,6 +17,7 @@ void OffScreen::Finalize()
 
 void OffScreen::Update()
 {
+#ifdef _DEBUG
 	ImGui::Begin("OffScreen");
 	// エフェクト名の文字列配列
 	const char* effectNames[] = {
@@ -37,12 +39,13 @@ void OffScreen::Update()
 		effectType_ = static_cast<OffScreenEffectType>(currentEffect);
 	}
 	ImGui::End();
+#endif
 }
 
 void OffScreen::Draw(/*OffScreenEffectType effectType*/)
 {
-	dxManager_->GetCommandList()->SetPipelineState(psoManager_->GetOffScreenPSO(effectType_).Get());
-	dxManager_->GetCommandList()->SetGraphicsRootSignature(psoManager_->GetOffScreenSignature().Get());
+	dxManager_->GetCommandList()->SetPipelineState(psoManager_->GetOffScreenPSO(effectType_));
+	dxManager_->GetCommandList()->SetGraphicsRootSignature(psoManager_->GetOffScreenSignature());
 	dxManager_->GetCommandList()->SetGraphicsRootDescriptorTable(0, dxManager_->GetSrvHandle().second);
 	dxManager_->GetCommandList()->DrawInstanced(3, 1, 0, 1);
 }

@@ -1,10 +1,11 @@
 #include "Quaternion.h"
 #include <cmath>    // sqrtf
 #include <stdexcept>
-#include <imgui.h>
-#include <Matrix4x4.h>
-#include <Vector3.h>
+#include <imgui/imgui.h>
+#include <math/Matrix4x4.h>
+#include <math/Vector3.h>
 #include <numbers>
+#include <math/function.h>
 // コンストラクタ
 Quaternion::Quaternion(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
 
@@ -161,6 +162,63 @@ const Quaternion EulerRadian(float pitch, float yaw, float roll) noexcept {
     result.z = cosPitch * cos_yaw * sin_roll - sin_pitch * sin_yaw * cos_roll;
     result.w = cosPitch * cos_yaw * cos_roll + sin_pitch * sin_yaw * sin_roll;
     return result;
+}
+
+const Quaternion LookRotation(const Vector3& direction)
+{
+    Vector3 forward = Normalize(direction);
+    Vector3 up = { 0.0f, 1.0f, 0.0f }; // ワールド上の上方向
+
+    // forwardとupが並行にならないようにチェック
+    if (std::abs(Dot(forward, up)) > 0.999f) {
+        up = { 0.0f, 0.0f, 1.0f }; // 代わりのupベクトル
+    }
+
+    Vector3 right = Normalize(Cross(up, forward));
+    up = Cross(forward, right);
+
+    Matrix4x4 lookMatrix = {
+        right.x,   right.y,   right.z,   0.0f,
+        up.x,      up.y,      up.z,      0.0f,
+        forward.x, forward.y, forward.z, 0.0f,
+        0.0f,      0.0f,      0.0f,      1.0f,
+    };
+
+    return QuaternionFromMatrix(lookMatrix);
+}
+
+Quaternion QuaternionFromMatrix(const Matrix4x4& m)
+{
+    Quaternion q{};
+    float trace = m.m[0][0] + m.m[1][1] + m.m[2][2];  // 対角成分の和
+
+    if (trace > 0.0f) {
+        float s = sqrtf(trace + 1.0f) * 2.0f; // s = 4 * qw
+        q.w = 0.25f * s;
+        q.x = (m.m[2][1] - m.m[1][2]) / s;
+        q.y = (m.m[0][2] - m.m[2][0]) / s;
+        q.z = (m.m[1][0] - m.m[0][1]) / s;
+    } else if (m.m[0][0] > m.m[1][1] && m.m[0][0] > m.m[2][2]) {
+        float s = sqrtf(1.0f + m.m[0][0] - m.m[1][1] - m.m[2][2]) * 2.0f; // s = 4 * qx
+        q.w = (m.m[2][1] - m.m[1][2]) / s;
+        q.x = 0.25f * s;
+        q.y = (m.m[0][1] + m.m[1][0]) / s;
+        q.z = (m.m[0][2] + m.m[2][0]) / s;
+    } else if (m.m[1][1] > m.m[2][2]) {
+        float s = sqrtf(1.0f + m.m[1][1] - m.m[0][0] - m.m[2][2]) * 2.0f; // s = 4 * qy
+        q.w = (m.m[0][2] - m.m[2][0]) / s;
+        q.x = (m.m[0][1] + m.m[1][0]) / s;
+        q.y = 0.25f * s;
+        q.z = (m.m[1][2] + m.m[2][1]) / s;
+    } else {
+        float s = sqrtf(1.0f + m.m[2][2] - m.m[0][0] - m.m[1][1]) * 2.0f; // s = 4 * qz
+        q.w = (m.m[1][0] - m.m[0][1]) / s;
+        q.x = (m.m[0][2] + m.m[2][0]) / s;
+        q.y = (m.m[1][2] + m.m[2][1]) / s;
+        q.z = 0.25f * s;
+    }
+
+    return q;
 }
 
 
