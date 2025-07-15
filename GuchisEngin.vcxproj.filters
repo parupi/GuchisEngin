@@ -7,6 +7,15 @@
     <Filter Include="App\GameData">
       <UniqueIdentifier>{E90015FD-D563-A4A1-7EE9-DC576A2B7024}</UniqueIdentifier>
     </Filter>
+    <Filter Include="App\GameObject">
+      <UniqueIdentifier>{06590EB0-F226-02B6-DBBA-72DCC727DE1A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="App\GameObject\GameCamera">
+      <UniqueIdentifier>{B84AB7E4-240D-EB6E-6DBD-79FBD9BEC34C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="App\GameObject\Player">
+      <UniqueIdentifier>{62A742A5-CE13-FE9F-9707-96FD03332008}</UniqueIdentifier>
+    </Filter>
     <Filter Include="App\scene">
       <UniqueIdentifier>{0370F805-6FDA-AC7C-B818-5E2224C28AD1}</UniqueIdentifier>
     </Filter>
@@ -99,14 +108,17 @@
     <ClInclude Include="App\GameData\CollisionCategory.h">
       <Filter>App\GameData</Filter>
     </ClInclude>
+    <ClInclude Include="App\GameObject\GameCamera\GameCamera.h">
+      <Filter>App\GameObject\GameCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="App\GameObject\Player\Player.h">
+      <Filter>App\GameObject\Player</Filter>
+    </ClInclude>
     <ClInclude Include="App\scene\Object3dFactory.h">
       <Filter>App\scene</Filter>
     </ClInclude>
     <ClInclude Include="App\scene\SceneFactory.h">
       <Filter>App\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="App\scene\fade\Fade.h">
-      <Filter>App\scene\fade</Filter>
     </ClInclude>
     <ClInclude Include="Engine\2d\Sprite.h">
       <Filter>Engine\2d</Filter>
@@ -312,9 +324,6 @@
     <ClInclude Include="Engine\offscreen\GrayEffect.h">
       <Filter>Engine\offscreen</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\offscreen\OffScreen.h">
-      <Filter>Engine\offscreen</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\offscreen\OffScreenManager.h">
       <Filter>Engine\offscreen</Filter>
     </ClInclude>
@@ -362,14 +371,17 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="App\GameObject\GameCamera\GameCamera.cpp">
+      <Filter>App\GameObject\GameCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="App\GameObject\Player\Player.cpp">
+      <Filter>App\GameObject\Player</Filter>
+    </ClCompile>
     <ClCompile Include="App\scene\Object3dFactory.cpp">
       <Filter>App\scene</Filter>
     </ClCompile>
     <ClCompile Include="App\scene\SceneFactory.cpp">
       <Filter>App\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="App\scene\fade\Fade.cpp">
-      <Filter>App\scene\fade</Filter>
     </ClCompile>
     <ClCompile Include="Engine\2d\Sprite.cpp">
       <Filter>Engine\2d</Filter>
@@ -542,13 +554,7 @@
     <ClCompile Include="Engine\math\function.cpp">
       <Filter>Engine\math</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\offscreen\BaseOffScreen.cpp">
-      <Filter>Engine\offscreen</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\offscreen\GrayEffect.cpp">
-      <Filter>Engine\offscreen</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\offscreen\OffScreen.cpp">
       <Filter>Engine\offscreen</Filter>
     </ClCompile>
     <ClCompile Include="Engine\offscreen\OffScreenManager.cpp">
@@ -559,9 +565,6 @@
     </ClCompile>
     <ClCompile Include="Engine\offscreen\VignetteEffect.cpp">
       <Filter>Engine\offscreen</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\scene\BaseScene.cpp">
-      <Filter>Engine\scene</Filter>
     </ClCompile>
     <ClCompile Include="Engine\scene\SampleScene.cpp">
       <Filter>Engine\scene</Filter>

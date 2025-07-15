@@ -20,7 +20,7 @@ public:
 	// 初期化
 	void Initialize(DirectXManager* directXManager, PSOManager* psoManager);
 	// 描画前処理
-	void DrawSet(BlendMode blendMode = BlendMode::kNormal);
+	void DrawObject(BlendMode blendMode = BlendMode::kNormal);
 	// 終了
 	void Finalize();
 private:

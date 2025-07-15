@@ -18,7 +18,7 @@ void SpriteManager::Initialize(DirectXManager* directXManager, PSOManager* psoMa
 	psoManager_ = psoManager;
 }
 
-void SpriteManager::DrawSet(BlendMode blendMode)
+void SpriteManager::DrawObject(BlendMode blendMode)
 {
 	dxManager_->GetCommandList()->SetPipelineState(psoManager_->GetSpritePSO(blendMode));			// PSOを設定
 	dxManager_->GetCommandList()->SetGraphicsRootSignature(psoManager_->GetSpriteSignature());
