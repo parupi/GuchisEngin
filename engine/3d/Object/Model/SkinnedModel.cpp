@@ -1,11 +1,11 @@
 #include "SkinnedModel.h"
-#include "Model/Animation/Skeleton.h"
-#include "Model/Animation/SkinCluster.h"
-#include "Model/Animation/Animation.h"
-#include <TextureManager.h>
-#include "ModelManager.h"
-#include <Object3d.h>
-#include <Renderer/ModelRenderer.h>
+#include "3d/Object/Model/Animation/Skeleton.h"
+#include "3d/Object/Model/Animation/SkinCluster.h"
+#include "3d/Object/Model/Animation/Animation.h"
+#include <base/TextureManager.h>
+#include "3d/Object/Model/ModelManager.h"
+#include <3d/Object/Object3d.h>
+#include <3d/Object/Renderer/ModelRenderer.h>
 
 void SkinnedModel::Initialize(ModelLoader* modelLoader, const std::string& fileName)
 {
@@ -20,8 +20,8 @@ void SkinnedModel::Initialize(ModelLoader* modelLoader, const std::string& fileN
 	skeleton_->Initialize(this);
 
 	// アニメーション作成
-	animator_ = std::make_unique<Animation>();
-	animator_->Initialize(this, fileName);
+	animation_ = std::make_unique<Animation>();
+	animation_->Initialize(this, fileName);
 
 	// メッシュとマテリアルの作成
 	for (auto& skinnedMeshData : modelData_.meshes) {
@@ -37,41 +37,59 @@ void SkinnedModel::Initialize(ModelLoader* modelLoader, const std::string& fileN
 	}
 
 	// スキンクラスタ作成
-	skinCluster_ = std::make_unique<SkinCluster>();
-	const auto& skinClusterData = modelData_.skinClusterData;
-	const auto& meshData = modelData_.meshes.at(0); // 複数メッシュがある場合は要拡張
+	for (const auto& mesh : modelData_.meshes) {
+		std::unique_ptr<SkinCluster> skinCluster = std::make_unique<SkinCluster>();
+		skinCluster->Initialize(
+			skeleton_->GetSkeletonData(),
+			mesh, // 各メッシュごと
+			mesh.skinClusterData,
+			GetDxManager(),
+			GetSrvManager()
+		);
+		skinClusters_.emplace_back(std::move(skinCluster));
 
-	skinCluster_->Initialize(skeleton_->GetSkeletonData(), meshData, skinClusterData, GetDxManager(), GetSrvManager());
-
+	}
 }
 
 void SkinnedModel::Update()
 {
-	animationTime += 1.0f / 60.0f;
-	animationTime = std::fmod(animationTime, animator_->GetAnimation().duration); // 最後までいったらリピート再生
+	// アニメーションの更新を呼ぶ（ここが抜けていた）
+	animation_->Update();
 
-	skeleton_->ApplyAnimation(animator_->GetAnimation(), animationTime);
+	// アニメーションの時間取得
+	animationTime = animation_->GetAnimationTime();
+
+	//skeleton_->ApplyAnimation(animation_->GetCurrentAnimation(), animationTime);
 	skeleton_->Update();
-	skinCluster_->UpdateSkinCluster(skeleton_->GetSkeletonData());
+	for (const auto& skinCluster : skinClusters_) {
+		skinCluster->UpdateSkinCluster(skeleton_->GetSkeletonData());
+	}
 }
 
 void SkinnedModel::Draw()
 {
-	modelLoader_->GetDxManager()->GetCommandList()->SetGraphicsRootDescriptorTable(7, skinCluster_->GetSkinCluster().paletteSrvHandle.second);
+	for (size_t i = 0; i < meshes_.size(); ++i) {
+		assert(i < skinClusters_.size());
+		const auto& skinCluster = skinClusters_[i];
 
-	const auto& view = skinCluster_->GetSkinCluster().influenceBufferView;
-	modelLoader_->GetDxManager()->GetCommandList()->IASetVertexBuffers(1, 1, &view);
+		// パレットSRVをバインド
+		modelLoader_->GetDxManager()->GetCommandList()->SetGraphicsRootDescriptorTable(7, skinCluster->GetSkinCluster().paletteSrvHandle.second);
 
-	for (const auto& mesh : meshes_) {
-		// このメッシュに対応するマテリアルを設定
+		// 頂点バッファ（インフルエンス）を設定
+		const auto& view = skinCluster->GetSkinCluster().influenceBufferView;
+		modelLoader_->GetDxManager()->GetCommandList()->IASetVertexBuffers(1, 1, &view);
+
+		// マテリアル設定
+		const auto& mesh = meshes_[i];
 		assert(mesh->GetMeshData().materialIndex < materials_.size());
-		materials_[mesh->GetMeshData().materialIndex]->Draw();
+		materials_[mesh->GetMeshData().materialIndex]->Bind();
 
-		// メッシュを描画
+		// 描画
 		mesh->Draw();
 	}
-}
 
+}
+#ifdef _DEBUG
 void SkinnedModel::DebugGui(ModelRenderer* render)
 {
 	if (ImGui::TreeNode("Models")) {
@@ -94,7 +112,7 @@ void SkinnedModel::DebugGui(ModelRenderer* render)
 					bool isSelected = (selectedIndex == i);
 					if (ImGui::Selectable(modelNames[i].c_str(), isSelected)) {
 						selectedIndex = i;
-						//object->SetModel(modelNames[selectedIndex]);
+						render->SetModel(modelNames[selectedIndex]);
 					}
 					if (isSelected) {
 						ImGui::SetItemDefaultFocus();
@@ -106,3 +124,4 @@ void SkinnedModel::DebugGui(ModelRenderer* render)
 		ImGui::TreePop();
 	}
 }
+#endif

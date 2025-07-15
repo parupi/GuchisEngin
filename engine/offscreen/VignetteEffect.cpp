@@ -1,6 +1,6 @@
 #include "VignetteEffect.h"
 #include "OffScreenManager.h"
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 VignetteEffect::VignetteEffect()
 {
@@ -24,13 +24,13 @@ void VignetteEffect::Update()
 
 void VignetteEffect::Draw()
 {
-	dxManager_->GetCommandList()->SetPipelineState(psoManager_->GetOffScreenPSO(OffScreenEffectType::kVignette).Get());
-	dxManager_->GetCommandList()->SetGraphicsRootSignature(psoManager_->GetOffScreenSignature().Get());
+	dxManager_->GetCommandList()->SetPipelineState(psoManager_->GetOffScreenPSO(OffScreenEffectType::kVignette));
+	dxManager_->GetCommandList()->SetGraphicsRootSignature(psoManager_->GetOffScreenSignature());
 	dxManager_->GetCommandList()->SetGraphicsRootDescriptorTable(0, dxManager_->GetSrvHandle().second);
 
 	dxManager_->GetCommandList()->SetGraphicsRootConstantBufferView(1, effectResource_->GetGPUVirtualAddress());
 
-	dxManager_->GetCommandList()->DrawInstanced(3, 1, 0, 1);
+	dxManager_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
 }
 
 void VignetteEffect::CreateEffectResource()

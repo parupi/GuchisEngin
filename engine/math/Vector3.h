@@ -10,6 +10,7 @@ struct Vector3 final {
     float y;
     float z;
 
+    Vector3 operator-() const;
     // ベクトルの加算
     Vector3 operator+(const Vector3& other) const;
     // ベクトルの減算
@@ -22,6 +23,8 @@ struct Vector3 final {
     Vector3& operator+=(const Vector3& other);
     // ベクトルの減算代入
     Vector3& operator-=(const Vector3& other);
+
+    Vector3& operator*=(const Vector3& other);
     // ベクトルのスカラー倍代入
     Vector3& operator*=(float scalar);
     // ベクトルのスカラー除算代入
@@ -31,6 +34,10 @@ struct Vector3 final {
     // ベクトルの非等価比較
     bool operator!=(const Vector3& other) const;
 };
+
+inline Vector3 operator*(float scalar, const Vector3& vec) {
+    return vec * scalar;  // 右側の operator*(float) を使っているならOK
+}
 
 // ヘルパー関数
 float Dot(const Vector3& v1, const Vector3& v2);

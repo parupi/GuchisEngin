@@ -1,7 +1,5 @@
 #include "Material.h"
-#include "DirectXManager.h"
-#include "SrvManager.h"
-#include <TextureManager.h>
+#include <base/TextureManager.h>
 
 Material::Material()
 {
@@ -31,7 +29,7 @@ void Material::Update()
 	materialForGPU_->uvTransform = uvTransformMatrix;
 }
 
-void Material::Draw()
+void Material::Bind()
 {
 	// マテリアルCBufferの場所を指定
 	directXManager_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
@@ -78,4 +76,11 @@ void Material::CreateMaterialResource()
 	materialForGPU_->uvTransform = MakeIdentity4x4();
 	materialForGPU_->shininess = 20.0f;
 
+	//// MaterialData から反映
+	//materialForGPU_->color.x = materialData_.Kd.r;                 // 拡散反射色を使用
+	//materialForGPU_->color.y = materialData_.Kd.g;                 // 拡散反射色を使用
+	//materialForGPU_->color.z = materialData_.Kd.r;                 // 拡散反射色を使用
+	//materialForGPU_->enableLighting = true;
+	//materialForGPU_->uvTransform = MakeIdentity4x4();
+	//materialForGPU_->shininess = materialData_.Ns;             // 鏡面反射強度を反映
 }

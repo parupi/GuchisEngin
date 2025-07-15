@@ -1,5 +1,5 @@
 #pragma once
-#include "Model/ModelStructs.h"
+#include "3d/Object/Model/ModelStructs.h"
 
 
 class SkinnedModel;
@@ -11,10 +11,10 @@ public:
 	void Initialize(SkinnedModel* model);
 	// 更新
 	void Update();
-	// SkinClusterの更新
-	//void Update();
-	// 
-	void ApplyAnimation(const AnimationData& animation, float animationTime);
+	// アニメーションを適用
+	void ApplyAnimation(AnimationData* current, AnimationData* prev, float time, float blendTime, float blendProgress);
+
+	const Matrix4x4& GetJointMatrix(const std::string& name) const;
 private:
 	// Nodeの階層からSkeletonを作る
 	void CreateSkeleton(const Node& rootNode);

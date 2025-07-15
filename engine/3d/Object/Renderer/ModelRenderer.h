@@ -1,8 +1,8 @@
 #pragma once
 #include "BaseRenderer.h"
-#include <Model/Model.h>
-#include <CameraManager.h>
-#include <Camera/Camera.h>
+#include <3d/Object/Model/Model.h>
+#include <3d/Camera/Camera.h>
+#include <3d/Camera/CameraManager.h>
 class ModelRenderer : public BaseRenderer
 {
 public:
@@ -18,10 +18,15 @@ public:
 #ifdef _DEBUG
 	void DebugGui(size_t index) override;
 #endif // DEBUG
+
+
+	WorldTransform* GetWorldTransform() const override { return localTransform_.get(); }
+
+	BaseModel* GetModel() const override { return model_; }
 private:
 	BaseModel* model_;
-	std::unique_ptr<WorldTransform> localTransform_;
 
-	Camera* camera_ = CameraManager::GetInstance()->GetActiveCamera().get();
+
+	Camera* camera_ = CameraManager::GetInstance()->GetActiveCamera();
 };
 

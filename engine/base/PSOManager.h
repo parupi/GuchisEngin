@@ -1,7 +1,6 @@
 #pragma once
 #include <wrl.h>
 #include <d3d12.h>
-#include "d3dx12.h"
 #include <mutex>
 #include "DirectXManager.h"
 
@@ -31,24 +30,26 @@ public:
 
 public:// アクセッサ
 	// スプライト
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> GetSpriteSignature() { return spriteSignature_; }
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> GetSpritePSO(BlendMode blendMode);
-	// パーティクル
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> GetParticleSignature() { return particleSignature_; }
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> GetParticlePSO(BlendMode blendMode);
-	// オブジェクト
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> GetObjectSignature() { return objectSignature_; }
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> GetObjectPSO();
-	// アニメーション
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> GetAnimationSignature() { return animationSignature_; }
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> GetAnimationPSO();
-	// オフスクリーン
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> GetOffScreenSignature() { return offScreenSignature_; }
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> GetOffScreenPSO(OffScreenEffectType effectType);
-	// プリミティブ
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> GetPrimitiveSignature() { return primitiveSignature_; }
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> GetPrimitivePSO();
+	ID3D12RootSignature* GetSpriteSignature() { return spriteSignature_.Get(); }
+	ID3D12PipelineState* GetSpritePSO(BlendMode blendMode);
+					   
+	ID3D12RootSignature* GetParticleSignature() { return particleSignature_.Get(); }
+	ID3D12PipelineState* GetParticlePSO(BlendMode blendMode);
+					   
+	ID3D12RootSignature* GetObjectSignature() { return objectSignature_.Get(); }
+	ID3D12PipelineState* GetObjectPSO(BlendMode blendMode);
+					   
+	ID3D12RootSignature* GetAnimationSignature() { return animationSignature_.Get(); }
+	ID3D12PipelineState* GetAnimationPSO();
+					   
+	ID3D12RootSignature* GetOffScreenSignature() { return offScreenSignature_.Get(); }
+	ID3D12PipelineState* GetOffScreenPSO(OffScreenEffectType effectType);
+					   
+	ID3D12RootSignature* GetPrimitiveSignature() { return primitiveSignature_.Get(); }
+	ID3D12PipelineState* GetPrimitivePSO();
 
+	ID3D12RootSignature* GetSkyboxSignature() { return skyboxSignature_.Get(); }
+	ID3D12PipelineState* GetSkyboxPSO();
 private:
 	// スプライト
 	void CreateSpriteSignature();
@@ -58,7 +59,7 @@ private:
 	void CreateParticlePSO(BlendMode blendMode);
 	// オブジェクト
 	void CreateObjectSignature();
-	void CreateObjectPSO();
+	void CreateObjectPSO(BlendMode blendMode);
 	// アニメーション
 	void CreateAnimationSignature();
 	void CreateAnimationPSO();
@@ -68,6 +69,10 @@ private:
 	// プリミティブ
 	void CreatePrimitiveSignature();
 	void CreatePrimitivePSO();
+	// スカイボックス
+	void CreateSkyboxSignature();
+	void CreateSkyboxPSO();
+
 private:
 	DirectXManager* dxManager_ = nullptr;
 
@@ -80,7 +85,7 @@ private: // データ格納用変数
 	std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, 6> particleGraphicsPipelineState_;
 	// オブジェクト
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> objectSignature_;
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> objectGraphicsPipelineState_;
+	std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, 6> objectGraphicsPipelineState_;
 	// アニメーション
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> animationSignature_;
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> animationGraphicsPipelineState_;
@@ -90,4 +95,7 @@ private: // データ格納用変数
 	// プリミティブ
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> primitiveSignature_;
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> primitiveGraphicsPipelineState_;
+	// スカイボックス
+	Microsoft::WRL::ComPtr<ID3D12RootSignature> skyboxSignature_;
+	Microsoft::WRL::ComPtr<ID3D12PipelineState> skyboxGraphicsPipelineState_;
 };
