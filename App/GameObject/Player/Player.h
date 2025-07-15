@@ -21,12 +21,4 @@ public: // メンバ関数
 	// 更新処理
 	void Update() override;
 	void Draw() override;
-
-private:
-	Vector3 velocity_{};
-
-	JumpState jumpState_ = JumpState::None;
-	std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
-
-	Object3d* weapon_ = nullptr;
 };

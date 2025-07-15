@@ -21,8 +21,6 @@ void SampleScene::Initialize()
 	// カメラの生成
 	normalCamera_ = std::make_unique<GameCamera>("GameCamera");
 
-
-
 	// .gltfファイルからモデルを読み込む
 	ModelManager::GetInstance()->LoadSkinnedModel("walk");
 	ModelManager::GetInstance()->LoadSkinnedModel("simpleSkin");
@@ -50,43 +48,22 @@ void SampleScene::Initialize()
 	object_->Initialize();
 	object_->GetWorldTransform()->GetTranslation().y = -4.0f;
 
-	weapon_ = std::make_unique<Object3d>("Weapon");
-	weapon_->Initialize();
-
 	player_ = std::make_unique<Player>("Player");
 	player_->Initialize();
-
-
-	normalCamera_->SetPlayer(player_.get());
 
 	cameraManager_->AddCamera(std::move(normalCamera_));
 	cameraManager_->SetActiveCamera(0);
 
 	render1_ = std::make_unique<PrimitiveRenderer>("renderPlane", PrimitiveType::Plane, "Terrain.png");
 
-	render1_->GetWorldTransform()->GetScale() = { 1000.0f, 10.0f, 1000.0f };
-	static_cast<Model*>(render1_->GetModel())->GetMaterials(0)->GetUVData().size.x = 100;
-	static_cast<Model*>(render1_->GetModel())->GetMaterials(0)->GetUVData().size.y = 100;
-
 	RendererManager::GetInstance()->AddRenderer(std::move(render1_));
 
+	RendererManager::GetInstance()->AddRenderer(std::make_unique<ModelRenderer>("Obj", "multiMaterial"));
+
 	object_->AddRenderer(RendererManager::GetInstance()->FindRender("renderPlane"));
+	object_->AddRenderer(RendererManager::GetInstance()->FindRender("Obj"));
 	// ゲームオブジェクトを追加
 	Object3dManager::GetInstance()->AddObject(std::move(object_));
-
-	
-
-	render2_ = std::make_unique<ModelRenderer>("Weapon", "weapon");
-
-	render2_->GetWorldTransform()->GetScale() = { 0.5f, 0.5f, 0.5f };
-	render2_->GetWorldTransform()->GetTranslation().y = 0.4f;
-
-	// 武器のレンダラーを生成
-	RendererManager::GetInstance()->AddRenderer(std::move(render2_));
-	// 武器のレンダラーを追加
-	weapon_->AddRenderer(RendererManager::GetInstance()->FindRender("Weapon"));
-	// ゲームオブジェクトを追加
-	Object3dManager::GetInstance()->AddObject(std::move(weapon_));
 
 	// ============ライト=================//
 	//lightManager_ = std::make_unique<LightManager>();
@@ -122,7 +99,7 @@ void SampleScene::Update()
 
 void SampleScene::Draw()
 {
-	Object3dManager::GetInstance()->DrawSet();
+	Object3dManager::GetInstance()->DrawObject();
 
 	Object3dManager::GetInstance()->DrawSetForAnimation();
 	lightManager_->BindLightsToShader();
@@ -142,12 +119,8 @@ void SampleScene::DrawRTV()
 #ifdef _DEBUG
 void SampleScene::DebugUpdate()
 {
-	//ImGui::Begin("Object");
-	//object_->DebugGui();
-	//ImGui::End();
-
-	//ImGui::Begin("Object2");
-	//object2_->DebugGui();
-	//ImGui::End();
+	ImGui::Begin("Object");
+	object_->DebugGui();
+	ImGui::End();
 }
 #endif

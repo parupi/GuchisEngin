@@ -41,7 +41,7 @@ void Object3dManager::Update()
 	}
 }
 
-void Object3dManager::DrawSet()
+void Object3dManager::DrawObject()
 {
 	for (auto& object : objects_) {
 		// ブレンドモードが違っていたら新しくPSOを設定

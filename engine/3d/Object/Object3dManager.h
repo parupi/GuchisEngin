@@ -26,7 +26,7 @@ public:
 	// 更新
 	void Update();
 	// 描画前処理
-	void DrawSet();
+	void DrawObject();
 	// アニメーション用描画前処理
 	void DrawSetForAnimation();
 

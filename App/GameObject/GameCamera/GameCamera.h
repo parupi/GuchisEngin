@@ -9,11 +9,5 @@ public: // メンバ関数
 
 	// 更新
 	void Update() override;
-
-	void SetPlayer(Player* player) { player_ = player; }
-
-private:
-	Player* player_ = nullptr;
-
 };
 
